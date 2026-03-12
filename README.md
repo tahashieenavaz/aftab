@@ -12,3 +12,18 @@ pip install aftab
 
 ## Usage
 
+## Reproducibility
+
+We run our experiments across four different seeds, and used <a href="https://github.com/tahashieenavaz/baloot">Baloot</a> library to enforce the seed across all the involved libraries.
+
+```py
+from baloot import seed_everything
+
+seed_everything(10000)
+```
+
+We used the following numbers as our seeds:
+- 475284
+- 219842
+- 525975
+- 909314
