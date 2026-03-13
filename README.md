@@ -12,6 +12,12 @@ pip install aftab
 
 ## Usage
 
+## Statistical Significance
+
+<p align="center">
+    <img src="./figures/statistical_significance.png" />
+</p>
+
 ## Reproducibility
 
 We run our experiments across four different seeds, and used <a href="https://github.com/tahashieenavaz/baloot">Baloot</a> library to enforce the seed across all the involved libraries.
