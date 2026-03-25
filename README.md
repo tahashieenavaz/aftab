@@ -43,3 +43,16 @@ We used the following numbers as our seeds:
 - 219842
 - 525975
 - 909314
+
+## Citation
+
+Please cite this work should you find that useful.
+
+```
+@article{aftab2026benchmarking,
+  title={Aftab: Benchmarking {CNN} Encoders in {PQN}},
+  author={Shieenavaz, Taha and Zareshahraki, Shabnam and Nanni, Loris},
+  journal={arXiv preprint arXiv:YYMM.NNNNN},
+  year={2026}
+}
+```
