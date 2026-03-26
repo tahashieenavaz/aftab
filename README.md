@@ -27,11 +27,28 @@ agent.save("pong.model")
 ### Alpha
 <img src="/figures/archs/alpha.png" />
 
+```py
+from aftab import AlphaEncoder
+
+print(AlphaEncoder)
+```
+
 ### Beta
 <img src="/figures/archs/beta.png" />
 
+```py
+from aftab import BetaEncoder
+
+print(BetaEncoder)
+```
 ### Gamma
 <img src="/figures/archs/gamma.png" />
+
+```py
+from aftab import GammaEncoder
+
+print(GammaEncoder)
+```
 
 ### Delta
 <img src="/figures/archs/delta.png" />
