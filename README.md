@@ -26,7 +26,7 @@ agent.train()
 agent.save("pong.model")
 ```
 
-## Specifications
+## Parameter Count
 
 <div align="center">
 
