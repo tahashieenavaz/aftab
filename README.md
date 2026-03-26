@@ -51,14 +51,19 @@ agent.save("pong.model")
 | Hyperparameter | Value |
 | :--- | :--- |
 | Learning rate | $2.5 \times 10^{-4}$ |
-| Training / Test environments | 128 / 8 |
-| Optimizer / Weight decay | Rectified Adam / 0 |
-| Adam $\epsilon$ / Total Frames | $1 \times 10^{-5}$ / 200,000,000 |
+| Training environments | 128 |
+| Test environments | 8 |
+| Optimizer | Rectified Adam |
+| Weight decay | 0 |
+| Adam $\epsilon$ | $1 \times 10^{-5}$ |
+| Total Frames | 200,000,000 |
 | Loss function | Mean Squared Error |
 | Scheduler | Linear Annealing |
 | $\epsilon$-greedy exploration | 10% of total frames |
-| Discount factor ($\gamma$) / $\lambda$ | 0.99 / 0.65 |
-| Epochs / Batch size | 2 / 4096 |
+| Discount factor ($\gamma$) | 0.99 |
+| GAE parameter ($\lambda$) | 0.65 |
+| Epochs | 2 |
+| Batch size | 4096 |
 
 </div>
 
