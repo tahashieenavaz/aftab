@@ -25,6 +25,7 @@ agent.save("pong.model")
 ## Specifications
 
 <div align="center">
+
 | Variant  | Encoder Parameters | Regression Head | Total Parameters |
 |----------|------------------|-----------------|------------------|
 | Base     | 78,304           | 1,686,500       | 1,764,804        |
@@ -36,6 +37,7 @@ agent.save("pong.model")
 | Zeta     | 77,232           | 2,537,396       | 2,614,628        |
 | Eta      | 78,400           | 23,739,460      | 23,817,860       |
 | Theta    | 76,288           | 1,127,428       | 1,203,716        |
+
 </div>
 
 ## Architectures
