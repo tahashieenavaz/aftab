@@ -1,5 +1,9 @@
 <p align="center">
-    <img src="./figures/global.png" />
+
+| Image 1 | Image 2 |
+| :---: | :---: |
+| ![Global Performance](figures/global.png) | ![Last 50M Frames](figures/global_zoomed.png) |
+
 </p>
 
 ## Installation
