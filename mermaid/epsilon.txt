@@ -1,0 +1,21 @@
+flowchart LR
+    classDef input fill:#eceff4,stroke:#4c566a,stroke-width:2px,color:#2e3440
+    classDef layer fill:#81a1c1,stroke:#4c566a,color:#fff
+    classDef norm fill:#8fbcbb,stroke:#4c566a,color:#2e3440
+    classDef act fill:#d08770,stroke:#4c566a,color:#fff
+    classDef macro fill:#e5e9f0,stroke:#4c566a,stroke-dasharray: 5 5,color:#2e3440
+    classDef output fill:#5e81ac,stroke:#2e3440,stroke-width:2px,color:#fff
+
+    Input[/"Input: 4x84x84"/]:::input --> B1
+    subgraph B1["Block 1: 84x84"]
+        direction TB
+        L1C(["Conv2d: 4 -> 32<br>k=3, s=2, p=1"]):::layer
+        L1N(["LayerNorm2d"]):::norm
+        L1A(["ReLU"]):::act
+        L1C --> L1N --> L1A
+    end
+    B1 --> B2(["Block 2: 42x42<br>32 -> 48 ch, k=3, s=2"]):::layer
+    B2 --> B3(["Block 3: 21x21<br>48 -> 64 ch, k=3, s=2"]):::layer
+    B3 --> B4(["Block 4: 10x10<br>64 -> 64 ch, k=3, s=1"]):::layer
+    B4 --> Flat(["Flatten: 8x8x64"]):::macro
+    Flat --> Output[/"4,096 Feature Vector"/]:::output
