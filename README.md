@@ -22,6 +22,33 @@ agent.train()
 agent.save("pong.model")
 ```
 
+## Architectures
+
+### Alpha
+<img src="/figures/archs/alpha.svg" />
+
+### Beta
+<img src="/figures/archs/beta.svg" />
+
+### Gamma
+<img src="/figures/archs/gamma.svg" />
+
+### Delta
+<img src="/figures/archs/delta.svg" />
+
+### Epsilon
+<img src="/figures/archs/epsilon.svg" />
+
+### Zeta
+<img src="/figures/archs/zeta.svg" />
+
+### Eta
+<img src="/figures/archs/eta.svg" />
+
+### Theta
+<img src="/figures/archs/theta.svg" />
+
+
 ## Statistical Significance
 
 <p align="center">
