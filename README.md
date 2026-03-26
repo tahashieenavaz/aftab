@@ -1,6 +1,6 @@
 <p align="center">
 
-| Image 1 | Image 2 |
+| Performance | Performance (Last 50M Frames) |
 | :---: | :---: |
 | ![Global Performance](figures/global.png) | ![Last 50M Frames](figures/global_zoomed.png) |
 
