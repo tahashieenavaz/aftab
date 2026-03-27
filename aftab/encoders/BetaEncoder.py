@@ -1,9 +1,9 @@
 import torch
-from ..common import LayerNorm2d
+from ..common import LayerNorm2d, ModuleType
 
 
 class BetaEncoder(torch.nn.Module):
-    def __init__(self, *, activation=torch.nn.ReLU):
+    def __init__(self, *, activation: ModuleType = torch.nn.ReLU):
         super().__init__()
         self.stream = torch.nn.Sequential(
             torch.nn.Conv2d(4, 32, kernel_size=6, stride=2, padding=2),
