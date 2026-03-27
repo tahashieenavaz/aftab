@@ -17,7 +17,7 @@ class HadamardGammaBlockA(torch.nn.Module):
 
 
 class HadamardGammaBlockB(torch.nn.Module):
-    def __init__(self, activation=Type[torch.nn.Module]):
+    def __init__(self, activation: ModuleType):
         super().__init__()
         self.convolutional = torch.nn.Conv2d(32, 48, kernel_size=3, stride=2, padding=1)
         self.normalization = LayerNorm2d(48)
@@ -31,7 +31,7 @@ class HadamardGammaBlockB(torch.nn.Module):
 
 
 class HadamardGammaBlockC(torch.nn.Module):
-    def __init__(self, activation: Type[torch.nn.Module]):
+    def __init__(self, activation: ModuleType):
         super().__init__()
         self.convolutional = torch.nn.Conv2d(48, 64, kernel_size=3, stride=1, padding=0)
         self.normalization = LayerNorm2d(64)
@@ -45,7 +45,7 @@ class HadamardGammaBlockC(torch.nn.Module):
 
 
 class HadamardGammaBlockD(torch.nn.Module):
-    def __init__(self, activation: Type[torch.nn.Module]):
+    def __init__(self, activation: ModuleType):
         super().__init__()
         self.convolutional = torch.nn.Conv2d(64, 64, kernel_size=3, stride=2, padding=0)
         self.normalization = LayerNorm2d(64)
@@ -59,7 +59,7 @@ class HadamardGammaBlockD(torch.nn.Module):
 
 
 class HadamardGammaBlockE(torch.nn.Module):
-    def __init__(self, activation: Type[torch.nn.Module]):
+    def __init__(self, activation: ModuleType):
         super().__init__()
         self.convolutional = torch.nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=0)
         self.normalization = LayerNorm2d(64)
@@ -73,7 +73,7 @@ class HadamardGammaBlockE(torch.nn.Module):
 
 
 class HadamaxGammaEncoder(torch.nn.Module):
-    def __init__(self, activation: Type[torch.nn.Module] = torch.nn.ReLU):
+    def __init__(self, activation: ModuleType = torch.nn.ReLU):
         super().__init__()
 
         self.a = HadamardGammaBlockA(activation=activation)
