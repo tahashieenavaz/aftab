@@ -3,7 +3,7 @@ from ..common import LayerNorm2d
 from typing import Type
 
 
-class BlockA(torch.nn.Module):
+class HadamardGammaHadamardGammaBlockA(torch.nn.Module):
     def __init__(self, activation: Type[torch.nn.Module]):
         super().__init__()
         self.convolutional = torch.nn.Conv2d(4, 32, kernel_size=3, stride=2, padding=1)
@@ -17,7 +17,7 @@ class BlockA(torch.nn.Module):
         return x
 
 
-class BlockB(torch.nn.Module):
+class HadamardGammaBlockB(torch.nn.Module):
     def __init__(self, activation=Type[torch.nn.Module]):
         super().__init__()
         self.convolutional = torch.nn.Conv2d(32, 48, kernel_size=3, stride=2, padding=1)
@@ -31,7 +31,7 @@ class BlockB(torch.nn.Module):
         return x
 
 
-class BlockC(torch.nn.Module):
+class HadamardGammaBlockC(torch.nn.Module):
     def __init__(self, activation: Type[torch.nn.Module]):
         super().__init__()
         self.convolutional = torch.nn.Conv2d(48, 64, kernel_size=3, stride=1, padding=0)
@@ -45,7 +45,7 @@ class BlockC(torch.nn.Module):
         return x
 
 
-class BlockD(torch.nn.Module):
+class HadamardGammaBlockD(torch.nn.Module):
     def __init__(self, activation: Type[torch.nn.Module]):
         super().__init__()
         self.convolutional = torch.nn.Conv2d(64, 64, kernel_size=3, stride=2, padding=0)
@@ -59,7 +59,7 @@ class BlockD(torch.nn.Module):
         return x
 
 
-class BlockE(torch.nn.Module):
+class HadamardGammaBlockE(torch.nn.Module):
     def __init__(self, activation: Type[torch.nn.Module]):
         super().__init__()
         self.convolutional = torch.nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=0)
@@ -77,20 +77,20 @@ class HadamaxGammaEncoder(torch.nn.Module):
     def __init__(self, activation: Type[torch.nn.Module] = torch.nn.ReLU):
         super().__init__()
 
-        self.a = BlockA(activation=activation)
-        self.a_prime = BlockA(activation=activation)
+        self.a = HadamardGammaHadamardGammaBlockA(activation=activation)
+        self.a_prime = HadamardGammaHadamardGammaBlockA(activation=activation)
 
-        self.b = BlockB(activation=activation)
-        self.b_prime = BlockB(activation=activation)
+        self.b = HadamardGammaBlockB(activation=activation)
+        self.b_prime = HadamardGammaBlockB(activation=activation)
 
-        self.c = BlockC(activation=activation)
-        self.c_prime = BlockC(activation=activation)
+        self.c = HadamardGammaBlockC(activation=activation)
+        self.c_prime = HadamardGammaBlockC(activation=activation)
 
-        self.d = BlockD(activation=activation)
-        self.d_prime = BlockD(activation=activation)
+        self.d = HadamardGammaBlockD(activation=activation)
+        self.d_prime = HadamardGammaBlockD(activation=activation)
 
-        self.e = BlockE(activation=activation)
-        self.e_prime = BlockE(activation=activation)
+        self.e = HadamardGammaBlockE(activation=activation)
+        self.e_prime = HadamardGammaBlockE(activation=activation)
 
     def forward(self, x):
         a = self.a(x)
@@ -117,4 +117,7 @@ class HadamaxGammaEncoder(torch.nn.Module):
         e_prime = self.e_prime(x)
         x = e * e_prime
         x = torch.nn.functional.max_pool2d(x, kernel_size=3, stride=1, padding=1)
-        return x.flatten(start_dim=1)
+
+        x = x.flatten(start_dim=1)
+
+        return x
