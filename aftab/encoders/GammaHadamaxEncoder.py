@@ -48,7 +48,7 @@ class HadamaxLayer(torch.nn.Module):
         )
 
 
-class GammaHadamaxFeatureExtractor(torch.nn.Module):
+class GammaHadamaxEncoder(torch.nn.Module):
     def __init__(self, activation=torch.nn.GELU):
         super().__init__()
         self.stream = torch.nn.Sequential(
