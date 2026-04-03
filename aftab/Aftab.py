@@ -1,4 +1,5 @@
 import torch
+import numpy
 from baloot import acceleration_device
 from typing import Type
 from .maps import AftabMapEncoder
@@ -15,6 +16,8 @@ class Aftab:
         lmbda: float = 0.65,
         lr: float = 0.00025,
         logging_interval: int = 10,
+        num_train_environments: int = 128,
+        num_test_environments: int = 8,
     ):
         self.device = acceleration_device()
         self.frameskip = frameskip
@@ -25,6 +28,9 @@ class Aftab:
         self.num_minibatches = num_minibatches
         self.logging_interval = logging_interval
         self.encoder = encoder
+        self.num_train_environments = num_train_environments
+        self.num_test_environments = num_test_environments
+        self.total_environments = int(num_train_environments + num_test_environments)
 
         if isinstance(encoder, str):
             module = AftabMapEncoder.get(encoder)
@@ -32,3 +38,8 @@ class Aftab:
 
     def train(self, environment):
         torch.set_float32_matmul_precision("high")
+        all_train_rewards = []
+        all_test_rewards = []
+        all_loss = []
+
+        episode_returns = numpy.zeros(self.total_envs, dtype=numpy.float32)
