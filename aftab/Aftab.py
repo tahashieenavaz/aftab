@@ -1,11 +1,13 @@
 import torch
 from baloot import acceleration_device
+from typing import Type
+from .maps import AftabMapEncoder
 
 
 class Aftab:
     def __init__(
         self,
-        encoder_identifier: str = "gamma",
+        encoder: str | Type[torch.nn.Module] = "gamma",
         frameskip: int = 4,
         num_minibatches: int = 32,
         epochs: int = 2,
@@ -22,6 +24,11 @@ class Aftab:
         self.epochs = epochs
         self.num_minibatches = num_minibatches
         self.logging_interval = logging_interval
+        self.encoder = encoder
+
+        if isinstance(encoder, str):
+            module = AftabMapEncoder.get(encoder)
+            self.encoder = module
 
     def train(self, environment):
         torch.set_float32_matmul_precision("high")
