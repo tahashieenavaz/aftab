@@ -24,6 +24,8 @@ class Aftab:
         steps_per_update: int = 32,
         total_frames: int = 200_000_000,
         seed: int = 42,
+        episodic_life: bool = True,
+        reward_clip: bool = True,
     ):
         self.device = acceleration_device()
         self.frameskip = frameskip
@@ -43,7 +45,12 @@ class Aftab:
         self.actual_frames = int(total_frames / frameskip)
         self.total_updates = math.ceil(self.actual_frames / self.batch_size)
         self.seed = seed
+        self.reward_clip = reward_clip
+        self.episodic_life = episodic_life
 
+        ######
+        # This line ensures users can pass a string (predefined) or their defined encoder to the system.
+        ######
         if isinstance(encoder, str):
             module = AftabMapEncoder.get(encoder)
             self.encoder = module
@@ -65,6 +72,6 @@ class Aftab:
             num_threads=self.cpu_count,
             thread_affinity_offset=0,
             noop_max=30,
-            reward_clip=True,
-            episodic_life=True,
+            reward_clip=self.reward_clip,
+            episodic_life=self.episodic_life,
         )
