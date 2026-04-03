@@ -2,6 +2,7 @@ import torch
 import numpy
 import os
 import math
+import envpool
 from baloot import acceleration_device, seed_everything
 from typing import Type
 from .maps import AftabMapEncoder
@@ -50,7 +51,20 @@ class Aftab:
     def train(self, environment):
         seed_everything(self.seed)
         torch.set_float32_matmul_precision("high")
+
         all_train_rewards = []
         all_test_rewards = []
         all_loss = []
         episode_returns = numpy.zeros(self.total_envs, dtype=numpy.float32)
+
+        train_env = envpool.make(
+            environment,
+            env_type="gymnasium",
+            num_envs=self.num_train_environments,
+            seed=self.seed,
+            num_threads=self.cpu_count,
+            thread_affinity_offset=0,
+            noop_max=30,
+            reward_clip=True,
+            episodic_life=True,
+        )
