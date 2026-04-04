@@ -7,7 +7,7 @@ from ..common import LayerNorm2d, ModuleType
 #####
 
 
-class GammaEncoder(torch.nn.Module):
+class ResidualGammaEncoder(torch.nn.Module):
     def __init__(self, *, activation: ModuleType = torch.nn.ReLU):
         super().__init__()
         self.alef = torch.nn.Sequential(

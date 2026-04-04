@@ -7,6 +7,8 @@ from ..encoders import EtaEncoder
 from ..encoders import ZetaEncoder
 from ..encoders import ThetaEncoder
 from ..encoders import GammaHadamaxEncoder
+from ..encoders import ResidualGammaEncoder
+
 
 AftabMapEncoder = {
     "alpha": AlphaEncoder,
@@ -19,4 +21,6 @@ AftabMapEncoder = {
     "theta": ThetaEncoder,
     "gammahadamax": GammaHadamaxEncoder,
     "hadamaxgamma": GammaHadamaxEncoder,
+    "gammaresidual": ResidualGammaEncoder,
+    "residualgamma": ResidualGammaEncoder,
 }
