@@ -30,6 +30,7 @@ class Aftab:
         noop: int = 30,
         gradient_norm: float = 10.0,
         log_interval: int = 10,
+        verbose: bool = False,
         optimizer_epsilon: float = 1e-5,
         train_episodic_life: bool = True,
         train_reward_clip: bool = True,
@@ -64,6 +65,7 @@ class Aftab:
         self.optimizer_epsilon = optimizer_epsilon
         self.gradient_norm = gradient_norm
         self.log_interval = log_interval
+        self.verbose = verbose
 
         ######
         # This line ensures users can pass a string (predefined) or their defined encoder to the system.
@@ -274,7 +276,7 @@ class Aftab:
                 )
 
             flat_obs = b_obs[:, : self.num_train_environments].reshape(
-                (-1,) + obs_shape
+                (-1,) + observation_shape
             )
             flat_act = b_act[:, : self.num_train_environments].reshape(-1)
             flat_tgt = targets[:, : self.num_train_environments].reshape(-1)
@@ -320,7 +322,7 @@ class Aftab:
                 else numpy.mean(all_test_rewards[-10:])
             )
 
-            if update % self.log_interval == 0:
+            if self.verbose and update % self.log_interval == 0:
                 print(
                     f"Update {update} | Frames: {frame_count} | Loss: {avg_loss:.4f}",
                     flush=True,
