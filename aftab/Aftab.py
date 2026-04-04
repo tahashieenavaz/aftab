@@ -24,6 +24,8 @@ class Aftab:
         steps_per_update: int = 32,
         total_frames: int = 200_000_000,
         seed: int = 42,
+        min_test_cpu_count: int = 4,
+        noop: int = 30,
         train_episodic_life: bool = True,
         train_reward_clip: bool = True,
         test_episodic_life: bool = False,
@@ -51,6 +53,8 @@ class Aftab:
         self.train_episodic_life = train_episodic_life
         self.test_reward_clip = test_reward_clip
         self.test_episodic_life = test_episodic_life
+        self.min_test_cpu_count = min_test_cpu_count
+        self.noop = noop
 
         ######
         # This line ensures users can pass a string (predefined) or their defined encoder to the system.
@@ -75,7 +79,7 @@ class Aftab:
             seed=self.seed,
             num_threads=self.cpu_count,
             thread_affinity_offset=0,
-            noop_max=30,
+            noop_max=self.noop,
             reward_clip=self.reward_clip,
             episodic_life=self.episodic_life,
         )
@@ -85,9 +89,12 @@ class Aftab:
             env_type="gymnasium",
             num_envs=self.num_test_environments,
             seed=self.seed + 1000,
-            num_threads=min(4, self.cpu_count),
+            num_threads=min(self.min_test_cpu_count, self.cpu_count),
             thread_affinity_offset=0,
-            noop_max=30,
+            noop_max=self.noop,
             reward_clip=self.test_reward_clip,
             episodic_life=self.test_episodic_life,
         )
+
+        action_dimension = train_env.action_space.n
+        # net = model(action_dimension).to(self.device)
