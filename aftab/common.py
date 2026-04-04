@@ -38,6 +38,11 @@ def lambda_returns(
     return out
 
 
+def flush(message: str, **kwargs):
+    kwargs["flush"] = True
+    print(message, **kwargs)
+
+
 def epsilon_greedy_vectorized(q_values, eps):
     if isinstance(eps, (np.ndarray, list)):
         eps = torch.tensor(eps, device=q_values.device, dtype=torch.float32)
