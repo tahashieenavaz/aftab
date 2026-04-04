@@ -12,7 +12,7 @@ class Aftab:
     def __init__(
         self,
         encoder: str | Type[torch.nn.Module] = "gamma",
-        frameskip: int = 4,
+        frame_skip: int = 4,
         num_minibatches: int = 32,
         epochs: int = 2,
         gamma: float = 0.99,
@@ -32,7 +32,7 @@ class Aftab:
         test_reward_clip: bool = True,
     ):
         self.device = acceleration_device()
-        self.frameskip = frameskip
+        self.frame_skip = frame_skip
         self.lr = lr
         self.lmbda = lmbda
         self.gamma = gamma
@@ -82,6 +82,7 @@ class Aftab:
             noop_max=self.noop,
             reward_clip=self.reward_clip,
             episodic_life=self.episodic_life,
+            frame_skip=self.frame_skip,
         )
 
         test_env = envpool.make(
@@ -94,6 +95,7 @@ class Aftab:
             noop_max=self.noop,
             reward_clip=self.test_reward_clip,
             episodic_life=self.test_episodic_life,
+            frame_skip=self.frame_skip,
         )
 
         action_dimension = train_env.action_space.n
