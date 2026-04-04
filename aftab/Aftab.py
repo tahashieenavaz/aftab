@@ -48,6 +48,7 @@ class Aftab:
         self.cpu_count = os.cpu_count()
         self.steps_per_update = steps_per_update
         self.batch_size = int(num_train_environments * steps_per_update)
+        self.minibatch_size = int(self.batch_size // num_minibatches)
         self.actual_frames = int(total_frames / self.frame_skip)
         self.total_updates = math.ceil(self.actual_frames / self.batch_size)
         self.seed = seed
