@@ -115,7 +115,11 @@ class Aftab:
         action_dimension = train_env.action_space.n
         self._network = self.make_network(action_dimension, self.encoder)
 
-        # net = model(action_dimension).to(self.device)
+        ######
+        # a dummy pass ensure all the lazy layer are initialized
+        ######
+        with torch.no_grad():
+            self._network(torch.randn(1, 4, 84, 84).to(self.device))
 
     def save(name: str):
         pass
