@@ -77,16 +77,8 @@ class Aftab:
     def set_seed(self):
         seed_everything(self.seed)
 
-    def train(self, environment):
-        self.set_precision()
-        self.set_seed()
-
-        all_train_rewards = []
-        all_test_rewards = []
-        all_loss = []
-        episode_returns = numpy.zeros(self.total_envs, dtype=numpy.float32)
-
-        train_env = envpool.make(
+    def make_environments(self, environment: str):
+        train_environment = envpool.make(
             environment,
             env_type="gymnasium",
             num_envs=self.num_train_environments,
@@ -99,7 +91,7 @@ class Aftab:
             frame_skip=self.frame_skip,
         )
 
-        test_env = envpool.make(
+        test_environment = envpool.make(
             environment,
             env_type="gymnasium",
             num_envs=self.num_test_environments,
@@ -112,7 +104,17 @@ class Aftab:
             frame_skip=self.frame_skip,
         )
 
-        action_dimension = train_env.action_space.n
+        return train_environment, test_environment
+
+    def train(self, environment):
+        self.set_precision()
+        self.set_seed()
+        all_train_rewards = []
+        all_test_rewards = []
+        all_loss = []
+        episode_returns = numpy.zeros(self.total_envs, dtype=numpy.float32)
+        train_environment, test_environment = self.make_environments(environment)
+        action_dimension = train_environment.action_space.n
         self._network = self.make_network(action_dimension, self.encoder)
 
         ######
