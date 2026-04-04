@@ -8,4 +8,4 @@ from .ZetaEncoder import ZetaEncoder
 from .EtaEncoder import EtaEncoder
 from .ThetaEncoder import ThetaEncoder
 from .GammaHadamaxEncoder import GammaHadamaxEncoder
-from .GammaHadamaxReLUEncoder import GammaHadamaxReLUEncoder
+from .ResidualGammaEncoder import ResidualGammaEncoder
