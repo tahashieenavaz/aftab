@@ -158,5 +158,7 @@ class Aftab:
             device=self.device,
         )
 
+        scaler = torch.amp.GradScaler("cuda")
+
     def save(name: str):
         pass
