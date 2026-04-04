@@ -27,6 +27,7 @@ class Aftab:
         seed: int = 42,
         min_test_cpu_count: int = 4,
         noop: int = 30,
+        optimizer_epsilon: float = 1e-5,
         train_episodic_life: bool = True,
         train_reward_clip: bool = True,
         test_episodic_life: bool = False,
@@ -56,6 +57,7 @@ class Aftab:
         self.test_episodic_life = test_episodic_life
         self.min_test_cpu_count = min_test_cpu_count
         self.noop = noop
+        self.optimizer_epsilon = optimizer_epsilon
 
         ######
         # This line ensures users can pass a string (predefined) or their defined encoder to the system.
@@ -126,6 +128,13 @@ class Aftab:
         obs_train, _ = train_environment.reset()
         obs_test, _ = test_environment.reset()
         observation = numpy.concatenate([obs_train, obs_test], axis=0)
+        observation = torch.as_tensor(
+            observation, dtype=torch.uint8, device=self.device
+        )
+        optimizer = torch.optim.RAdam(
+            self._network.parameters(), lr=self.lr, eps=self.optimizer_epsilon
+        )
+        # minibatch_size = int(batch_size // num_minibatches)
 
     def save(name: str):
         pass
