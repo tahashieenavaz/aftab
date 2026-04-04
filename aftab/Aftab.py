@@ -332,5 +332,8 @@ class Aftab:
                     flush=True,
                 )
 
+        train_environment.close()
+        test_environment.close()
+
     def save(name: str):
         pass
