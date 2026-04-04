@@ -7,7 +7,7 @@ from baloot import acceleration_device, seed_everything
 from typing import Type
 from .maps import AftabMapEncoder
 from .agents import PQNAgent
-from .common import epsilon_greedy_vectorized, lambda_returns
+from .common import epsilon_greedy_vectorized, lambda_returns, flush
 
 
 class Aftab:
@@ -330,13 +330,9 @@ class Aftab:
             )
 
             if self.verbose and update % self.log_interval == 0:
-                print(
-                    f"Update {update} | Frames: {frame_count} | Loss: {avg_loss:.4f}",
-                    flush=True,
-                )
-                print(
-                    f"--> Test Score: {test_score:.4f} | Epsilon: {train_eps_val}",
-                    flush=True,
+                flush(f"Update {update} | Frames: {frame_count} | Loss: {avg_loss:.4f}")
+                flush(
+                    f"Test Score: {test_score:.4f} | Epsilon: {train_eps_val}",
                 )
 
         train_environment.close()
@@ -345,6 +341,9 @@ class Aftab:
         self.final_training_rewards = all_train_rewards
         self.final_test_rewards = all_test_rewards
         self.final_loss_evolution = all_loss
+
+        if self.verbose:
+            flush(f"Training finished.")
 
     def save(name: str):
         pass
