@@ -123,5 +123,9 @@ class Aftab:
         with torch.no_grad():
             self._network(torch.randn(1, 4, 84, 84).to(self.device))
 
+        obs_train, _ = train_environment.reset()
+        obs_test, _ = test_environment.reset()
+        observation = numpy.concatenate([obs_train, obs_test], axis=0)
+
     def save(name: str):
         pass
