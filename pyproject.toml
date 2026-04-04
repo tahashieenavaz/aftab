@@ -19,7 +19,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = ["numpy==1.26.4", "torch", "envpool"]
+dependencies = ["numpy==1.26.4", "torch", "envpool", "baloot"]
 keywords = ["reinforcement learning", "dqn", "aftab", "drl", "pqn", "deep reinforcement learning"]
 license = { file = "LICENSE" }
 urls = { Homepage="https://github.com/tahashieenavaz/aftab", Repository="https://github.com/tahashieenavaz/aftab", Documentation="https://github.com/tahashieenavaz/aftab#readme" }
