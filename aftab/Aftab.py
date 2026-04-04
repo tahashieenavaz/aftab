@@ -135,6 +135,28 @@ class Aftab:
         optimizer = torch.optim.RAdam(
             self._network.parameters(), lr=self.lr, eps=self.optimizer_epsilon
         )
+        frame_count = 0
+        observation_shape = train_environment.observation_space.shape
+        b_act = torch.empty(
+            (self.steps_per_update, self.total_environments),
+            dtype=torch.int64,
+            device=self.device,
+        )
+        b_rew = torch.empty(
+            (self.steps_per_update, self.total_environments),
+            dtype=torch.float32,
+            device=self.device,
+        )
+        b_done = torch.empty(
+            (self.steps_per_update, self.total_environments),
+            dtype=torch.float32,
+            device=self.device,
+        )
+        b_q = torch.empty(
+            (self.steps_per_update, self.total_environments, action_dimension),
+            dtype=torch.float32,
+            device=self.device,
+        )
 
     def save(name: str):
         pass
