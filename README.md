@@ -16,7 +16,7 @@ pip install aftab
 
 ## Usage
 
-You can import the agent and configure all the hyperparameters based on following guide.
+You can import the agent and configure all the hyper-parameters based on following guide.
 
 ```python
 from aftab import Aftab
