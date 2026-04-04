@@ -21,9 +21,14 @@ You can import the agent and configure all the hyperparameters based on followin
 ```python
 from aftab import Aftab
 
-agent = Aftab(environment="pong", encoder="gamma")
-agent.train(frames=200_000_000)
-agent.save("pong.gamma.model")
+seeds = [1,2,3,4]
+environments = ["Pong-v5", "IceHockey-v5"]
+
+for environment in environments:
+  agent = Aftab(environment="pong", encoder="gamma")
+  for seed in seeds:
+    agent.train(frames=200_000_000)
+    agent.save(environment=environment, seed=seed)
 ```
 
 ## Results
