@@ -34,6 +34,7 @@ class Aftab:
         train_reward_clip: bool = True,
         test_episodic_life: bool = False,
         test_reward_clip: bool = True,
+        optimizer_instance: Type[torch.nn.Module] = torch.optim.RAdam,
     ):
         self.device = acceleration_device()
         self.frame_skip = frame_skip
@@ -62,6 +63,7 @@ class Aftab:
         self.gradient_norm = gradient_norm
         self.log_interval = log_interval
         self.verbose = verbose
+        self.optimizer_instance = optimizer_instance
 
         ######
         # this line ensures users can pass a string (predefined) or their defined encoder to the system.
@@ -177,7 +179,7 @@ class Aftab:
         observation = torch.as_tensor(
             observation, dtype=torch.uint8, device=self.device
         )
-        optimizer = torch.optim.RAdam(
+        optimizer = self.optimizer_instance(
             self._network.parameters(), lr=self.lr, eps=self.optimizer_epsilon
         )
         frame_count = 0
