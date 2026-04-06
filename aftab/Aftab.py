@@ -35,6 +35,7 @@ class Aftab:
         test_episodic_life: bool = False,
         test_reward_clip: bool = True,
         optimizer_instance: Type[torch.nn.Module] = torch.optim.RAdam,
+        should_compile: bool = False,
     ):
         self.device = acceleration_device()
         self.frame_skip = frame_skip
@@ -64,6 +65,7 @@ class Aftab:
         self.log_interval = log_interval
         self.verbose = verbose
         self.optimizer_instance = optimizer_instance
+        self.should_compile = should_compile
 
         ######
         # this line ensures users can pass a string (predefined) or their defined encoder to the system.
@@ -156,6 +158,10 @@ class Aftab:
             batch_q,
         )
 
+    @torch.no_grad()
+    def _perform_dummy_pass(self):
+        self._network(torch.randn(1, 4, 84, 84).to(self.device))
+
     def train(self, environment, seed: int = 42):
         self.set_precision()
         self.set_seed(seed)
@@ -167,11 +173,10 @@ class Aftab:
         action_dimension = train_environment.action_space.n
         self._network = self.make_network(action_dimension, self.encoder)
 
-        ######
-        # a dummy pass ensure all the lazy layer are initialized
-        ######
-        with torch.no_grad():
-            self._network(torch.randn(1, 4, 84, 84).to(self.device))
+        if self.should_compile:
+            self._network = torch.compile(self._network)
+
+        self._perform_dummy_pass()
 
         observation_train, _ = train_environment.reset()
         observation_test, _ = test_environment.reset()
