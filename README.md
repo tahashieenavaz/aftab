@@ -191,7 +191,7 @@ seed_everything(909314)
 
 ## Available Atari Environments
 
-A comprehensive set of Atari environments has been developed by the ingenious [maintainers](https://github.com/sail-sg/envpool/graphs/contributors) of the library [EnvPool](https://github.com/sail-sg/envpool) which could be found [here](https://envpool.readthedocs.io/en/latest/env/atari.html#available-tasks). 
+A comprehensive set of Atari environments has been developed by the professional [maintainers](https://github.com/sail-sg/envpool/graphs/contributors) of the library [EnvPool](https://github.com/sail-sg/envpool) which could be found [here](https://envpool.readthedocs.io/en/latest/env/atari.html#available-tasks). 
 
 Aftab takes the input environment variable and passes it directly to EvnPool library. Therefore, feel free to refer to the aforementioned list as your project necessitates.
 
