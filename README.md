@@ -163,31 +163,16 @@ for environment in environments:
 
 ## Reproducibility
 
-We run our experiments across four different seeds, and used <a href="https://github.com/tahashieenavaz/baloot">Baloot</a> library to enforce the seed across all the involved libraries.
+As in the deep reinforcement learning context providing a standalone dataset which is used to conduct researcher's experiments is not possible, we present to you the list of the seeds which has been used to perform our experiments. That can be used to replicate our results spotlessly. 
 
 ```py
-from baloot import seed_everything
+from aftab import Aftab
 
-seed_everything(10000)
+seeds = [475284, 219842, 525975, 909314]
+# the rest of the code
 ```
 
-The following numbers were used as our seeds for experiments. 
-
-```py
-from baloot import seed_everything
-
-# first set of experiments
-seed_everything(475284)
-
-# second set of experiments
-seed_everything(219842)
-
-# third set of experiments
-seed_everything(525975)
-
-# fourth set of experiments
-seed_everything(909314)
-```
+Trivially, our seeds themselves were generated randomly using [Python random library](https://docs.python.org/3/library/random.html) as well. 
 
 ## Available Atari Environments
 
