@@ -119,6 +119,41 @@ class Aftab:
 
         return train_environment, test_environment
 
+    def make_batches(self, observation_shape, action_dimension):
+        batch_observations = torch.empty(
+            (self.steps_per_update, self.total_environments) + observation_shape,
+            dtype=torch.uint8,
+            device=self._device,
+        )
+        batch_actions = torch.empty(
+            (self.steps_per_update, self.total_environments),
+            dtype=torch.int64,
+            device=self.device,
+        )
+        batch_rewards = torch.empty(
+            (self.steps_per_update, self.total_environments),
+            dtype=torch.float32,
+            device=self.device,
+        )
+        batch_terminations = torch.empty(
+            (self.steps_per_update, self.total_environments),
+            dtype=torch.float32,
+            device=self.device,
+        )
+        batch_q = torch.empty(
+            (self.steps_per_update, self.total_environments, action_dimension),
+            dtype=torch.float32,
+            device=self.device,
+        )
+
+        return (
+            batch_observations,
+            batch_actions,
+            batch_rewards,
+            batch_terminations,
+            batch_q,
+        )
+
     def train(self, environment, seed: int = 42):
         self.set_precision()
         self.set_seed(seed)
@@ -147,30 +182,15 @@ class Aftab:
         )
         frame_count = 0
         observation_shape = train_environment.observation_space.shape
-        b_obs = torch.empty(
-            (self.steps_per_update, self.total_environments) + observation_shape,
-            dtype=torch.uint8,
-            device=self._device,
-        )
-        b_act = torch.empty(
-            (self.steps_per_update, self.total_environments),
-            dtype=torch.int64,
-            device=self.device,
-        )
-        b_rew = torch.empty(
-            (self.steps_per_update, self.total_environments),
-            dtype=torch.float32,
-            device=self.device,
-        )
-        b_done = torch.empty(
-            (self.steps_per_update, self.total_environments),
-            dtype=torch.float32,
-            device=self.device,
-        )
-        b_q = torch.empty(
-            (self.steps_per_update, self.total_environments, action_dimension),
-            dtype=torch.float32,
-            device=self.device,
+
+        (
+            batch_observations,
+            batch_actions,
+            batch_rewards,
+            batch_terminations,
+            batch_q,
+        ) = self.make_batches(
+            observation_shape=observation_shape, action_dimension=action_dimension
         )
 
         scaler = torch.amp.GradScaler("cuda")
@@ -179,7 +199,7 @@ class Aftab:
             self._network.eval()
             for step in range(self.steps_per_update):
                 float_observations = observation.float()
-                train_eps_val = self._network.epsilon.get(
+                training_epsilon_value = self._network.epsilon.get(
                     frame_count,
                     self.actual_frames,
                     all_train_rewards,
@@ -187,7 +207,7 @@ class Aftab:
                 )
                 epsilon_vector = torch.full(
                     (self.num_train_environments,),
-                    train_eps_val,
+                    training_epsilon_value,
                     device=self.device,
                     dtype=torch.float32,
                 )
@@ -213,17 +233,30 @@ class Aftab:
                 act_train = actions[: self.num_train_environments]
                 act_test = actions[self.num_train_environments :]
 
-                next_obs_train, rew_train, term_train, trunc_train, info_train = (
-                    train_environment.step(act_train)
+                (
+                    next_observation_train,
+                    reward_train,
+                    termination_train,
+                    truncation_train,
+                    info_train,
+                ) = train_environment.step(act_train)
+                (
+                    next_observation_test,
+                    reward_test,
+                    termination_test,
+                    truncation_test,
+                    info_test,
+                ) = test_environment.step(act_test)
+                next_observation = numpy.concatenate(
+                    [next_observation_train, next_observation_test], axis=0
                 )
-                next_obs_test, rew_test, term_test, trunc_test, info_test = (
-                    test_environment.step(act_test)
+                rewards = numpy.concatenate([reward_train, reward_test], axis=0)
+                terminations = numpy.concatenate(
+                    [termination_train, termination_test], axis=0
                 )
-
-                next_obs = numpy.concatenate([next_obs_train, next_obs_test], axis=0)
-                rewards = numpy.concatenate([rew_train, rew_test], axis=0)
-                terms = numpy.concatenate([term_train, term_test], axis=0)
-                truncs = numpy.concatenate([trunc_train, trunc_test], axis=0)
+                truncations = numpy.concatenate(
+                    [truncation_train, truncation_test], axis=0
+                )
 
                 infos = {}
                 for k, v_train in info_train.items():
@@ -242,7 +275,7 @@ class Aftab:
                         # Skip non-array keys (like nested dicts or raw python types)
                         continue
 
-                dones = numpy.logical_or(terms, truncs)
+                dones = numpy.logical_or(terminations, truncations)
 
                 # Since we filter infos, ensure 'reward' (which is always an array in EnvPool) exists
                 if "reward" in infos:
@@ -258,13 +291,15 @@ class Aftab:
                             all_test_rewards.append(score)
                     episode_returns[dones] = 0
 
-                b_obs[step] = obs
-                b_act[step] = torch.as_tensor(actions, device=self.device)
-                b_rew[step] = torch.as_tensor(rewards, device=self.device)
-                b_done[step] = torch.as_tensor(dones, device=self.device)
-                b_q[step] = q_values
+                batch_observations[step] = observation
+                batch_actions[step] = torch.as_tensor(actions, device=self.device)
+                batch_rewards[step] = torch.as_tensor(rewards, device=self.device)
+                batch_terminations[step] = torch.as_tensor(dones, device=self.device)
+                batch_q[step] = q_values
 
-                obs = torch.as_tensor(next_obs, dtype=torch.uint8, device=self.device)
+                observation = torch.as_tensor(
+                    next_observation, dtype=torch.uint8, device=self.device
+                )
                 frame_count += self.num_train_environments
 
             with (
@@ -272,16 +307,20 @@ class Aftab:
                 torch.autocast(device_type=self.device.type, dtype=torch.float16),
             ):
                 next_q = self._network(obs.float()).max(dim=-1).values
-                max_q_seq = b_q.max(dim=-1).values
+                max_q_seq = batch_q.max(dim=-1).values
                 q_seq_for_lambda = torch.cat([max_q_seq, next_q.unsqueeze(0)])
                 targets = lambda_returns(
-                    b_rew, b_done, q_seq_for_lambda[1:], self.gamma, self.lmbda
+                    batch_rewards,
+                    batch_terminations,
+                    q_seq_for_lambda[1:],
+                    self.gamma,
+                    self.lmbda,
                 )
 
-            flat_obs = b_obs[:, : self.num_train_environments].reshape(
+            flat_obs = batch_observations[:, : self.num_train_environments].reshape(
                 (-1,) + observation_shape
             )
-            flat_act = b_act[:, : self.num_train_environments].reshape(-1)
+            flat_act = batch_actions[:, : self.num_train_environments].reshape(-1)
             flat_tgt = targets[:, : self.num_train_environments].reshape(-1)
 
             self._network.train()
@@ -294,7 +333,7 @@ class Aftab:
                     end = start + self.minibatch_size
                     mb_idx = indices[start:end]
 
-                    mb_obs = flat_obs[mb_idx]
+                    mbatch_observations = flat_obs[mb_idx]
                     mb_act = flat_act[mb_idx]
                     mb_tgt = flat_tgt[mb_idx]
 
@@ -303,7 +342,7 @@ class Aftab:
                     with torch.autocast(
                         device_type=self.device.type, dtype=torch.float16
                     ):
-                        q_values = self._network(mb_obs.float())
+                        q_values = self._network(mbatch_observations.float())
                         q_taken = q_values.gather(1, mb_act.unsqueeze(1)).squeeze()
                         loss = self._network.loss(q_taken, mb_tgt)
 
@@ -328,7 +367,7 @@ class Aftab:
             if self.verbose and update % self.log_interval == 0:
                 flush(f"Update {update} | Frames: {frame_count} | Loss: {avg_loss:.4f}")
                 flush(
-                    f"Test Score: {test_score:.4f} | Epsilon: {train_eps_val}",
+                    f"Test Score: {test_score:.4f} | Epsilon: {training_epsilon_value}",
                 )
 
         train_environment.close()
