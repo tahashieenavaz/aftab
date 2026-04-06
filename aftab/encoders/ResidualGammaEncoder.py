@@ -8,18 +8,18 @@ class ResBlock(torch.nn.Module):
         in_channels: int,
         out_channels: int,
         stride: int,
-        conv1: torch.nn.Module,
-        norm1: torch.nn.Module,
-        act1: torch.nn.Module,
-        conv2: torch.nn.Module,
-        norm2: torch.nn.Module,
+        first_convolutional: torch.nn.Module,
+        first_normalization: torch.nn.Module,
+        first_activation: torch.nn.Module,
+        second_convolutional: torch.nn.Module,
+        second_normalization: torch.nn.Module,
     ):
         super().__init__()
-        self.conv1 = conv1
-        self.norm1 = norm1
-        self.act1 = act1
-        self.conv2 = conv2
-        self.norm2 = norm2
+        self.first_convolutional = first_convolutional
+        self.first_normalization = first_normalization
+        self.first_activation = first_activation
+        self.second_convolutional = second_convolutional
+        self.second_normalization = second_normalization
 
         if in_channels != out_channels or stride != 1:
             self.shortcut = torch.nn.Sequential(
@@ -34,12 +34,12 @@ class ResBlock(torch.nn.Module):
     def forward(self, x):
         identity = self.shortcut(x)
 
-        out = self.conv1(x)
-        out = self.norm1(out)
-        out = self.act1(out)
+        out = self.first_convolutional(x)
+        out = self.first_normalization(out)
+        out = self.first_activation(out)
 
-        out = self.conv2(out)
-        out = self.norm2(out)
+        out = self.second_convolutional(out)
+        out = self.second_normalization(out)
 
         if identity.shape[2:] != out.shape[2:]:
             diff_h = identity.shape[2] - out.shape[2]
@@ -67,15 +67,15 @@ class GammaEncoder(torch.nn.Module):
             in_channels=32,
             out_channels=64,
             stride=2,
-            conv1=torch.nn.Conv2d(
+            first_convolutional=torch.nn.Conv2d(
                 32, 48, kernel_size=3, stride=2, padding=1, bias=False
             ),
-            norm1=LayerNorm2d(48),
-            act1=activation(),
-            conv2=torch.nn.Conv2d(
+            first_normalization=LayerNorm2d(48),
+            first_activation=activation(),
+            second_convolutional=torch.nn.Conv2d(
                 48, 64, kernel_size=3, stride=1, padding=0, bias=False
             ),
-            norm2=LayerNorm2d(64),
+            second_normalization=LayerNorm2d(64),
         )
         self.be_activation = activation()
 
@@ -83,15 +83,15 @@ class GammaEncoder(torch.nn.Module):
             in_channels=64,
             out_channels=64,
             stride=2,
-            conv1=torch.nn.Conv2d(
+            first_convolutional=torch.nn.Conv2d(
                 64, 64, kernel_size=3, stride=2, padding=0, bias=False
             ),
-            norm1=LayerNorm2d(64),
-            act1=activation(),
-            conv2=torch.nn.Conv2d(
+            first_normalization=LayerNorm2d(64),
+            first_activation=activation(),
+            second_convolutional=torch.nn.Conv2d(
                 64, 64, kernel_size=3, stride=1, padding=0, bias=False
             ),
-            norm2=LayerNorm2d(64),
+            second_normalization=LayerNorm2d(64),
         )
         self.pe_activation = activation()
 
