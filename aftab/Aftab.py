@@ -35,8 +35,8 @@ class Aftab:
         train_reward_clip: bool = True,
         test_episodic_life: bool = False,
         test_reward_clip: bool = True,
-        optimizer_instance: Type[torch.nn.Module] = torch.optim.RAdam,
         should_compile: bool = False,
+        optimizer_instance: Type[torch.nn.Module] = torch.optim.RAdam,
     ):
         self.device = acceleration_device()
         self.frame_skip = frame_skip
