@@ -15,6 +15,7 @@ class Aftab:
     def __init__(
         self,
         encoder: str | Type[torch.nn.Module] = "gamma",
+        optimizer_instance: Type[torch.nn.Module] = torch.optim.RAdam,
         frame_skip: int = 4,
         num_minibatches: int = 32,
         epochs: int = 2,
@@ -36,7 +37,7 @@ class Aftab:
         test_episodic_life: bool = False,
         test_reward_clip: bool = True,
         should_compile: bool = False,
-        optimizer_instance: Type[torch.nn.Module] = torch.optim.RAdam,
+        stack_number: int = 4,
     ):
         self.device = acceleration_device()
         self.frame_skip = frame_skip
@@ -67,6 +68,7 @@ class Aftab:
         self.verbose = verbose
         self.optimizer_instance = optimizer_instance
         self.should_compile = should_compile
+        self.stack_number = stack_number
 
         ######
         # this line ensures users can pass a string (predefined) or their defined encoder to the system.
@@ -108,6 +110,7 @@ class Aftab:
             reward_clip=self.reward_clip,
             episodic_life=self.episodic_life,
             frame_skip=self.frame_skip,
+            stack_num=self.stack_number,
         )
 
         test_environment = envpool.make(
@@ -121,6 +124,7 @@ class Aftab:
             reward_clip=self.test_reward_clip,
             episodic_life=self.test_episodic_life,
             frame_skip=self.frame_skip,
+            stack_num=self.stack_number,
         )
 
         return train_environment, test_environment
