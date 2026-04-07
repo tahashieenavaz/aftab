@@ -174,6 +174,14 @@ seeds = [475284, 219842, 525975, 909314]
 
 Trivially, our seeds themselves were generated randomly using [Python random library](https://docs.python.org/3/library/random.html) as well. 
 
+As an alternative, one can simply import the default seeds from the installed library as shown below.
+
+```py
+from aftab import aftab_seeds
+
+print(aftab_seeds)
+```
+
 ## Available Atari Environments
 
 A comprehensive set of Atari environments has been developed by the professional [maintainers](https://github.com/sail-sg/envpool/graphs/contributors) of the library [EnvPool](https://github.com/sail-sg/envpool) which could be found [here](https://envpool.readthedocs.io/en/latest/env/atari.html#available-tasks). 
