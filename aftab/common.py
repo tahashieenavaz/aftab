@@ -6,6 +6,8 @@ from typing import Type
 
 ModuleType = Type[torch.nn.Module]
 
+default_seeds = [475284, 219842, 525975, 909314]
+
 
 class LayerNorm2d(torch.nn.Module):
     def __init__(self, num_features, eps=1e-6):
