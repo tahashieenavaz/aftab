@@ -287,12 +287,10 @@ class Aftab:
                         else:
                             infos[k] = numpy.concatenate([v_train, v_test], axis=0)
                     else:
-                        # Skip non-array keys (like nested dicts or raw python types)
                         continue
 
                 dones = numpy.logical_or(terminations, truncations)
 
-                # Since we filter infos, ensure 'reward' (which is always an array in EnvPool) exists
                 if "reward" in infos:
                     episode_returns += infos["reward"]
 
@@ -331,7 +329,6 @@ class Aftab:
                     self.gamma,
                     self.lmbda,
                 )
-
             flat_obs = batch_observations[:, : self.num_train_environments].reshape(
                 (-1,) + observation_shape
             )
