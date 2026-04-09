@@ -4,9 +4,6 @@ from baloot import acceleration_device
 from typing import Type
 
 
-ModuleType = Type[torch.nn.Module]
-
-
 class LinearEpsilon:
     def __init__(self, ratio: float = 0.1, target=0.001):
         self.top = 1.0
