@@ -4,6 +4,7 @@ import os
 import math
 import envpool
 import time
+from typing import Tuple
 from baloot import acceleration_device, seed_everything, funnel
 from typing import Type
 from .maps import AftabMapEncoder
@@ -173,7 +174,9 @@ class Aftab:
         self._network(dummy_input)
 
     @torch.no_grad()
-    def get_actions(self, float_observations, epsilon_value):
+    def get_actions(
+        self, float_observations, epsilon_value
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
         with torch.autocast(device_type=self.device.type, dtype=torch.float16):
             q_values = self._network(float_observations)
             if self._network.epsilon_greedy:
@@ -188,7 +191,7 @@ class Aftab:
 
         return actions_train, actions_test
 
-    def get_epsilons(self, epsilon_value):
+    def get_epsilons(self, epsilon_value) -> torch.Tensor:
         training_epsilon_vector = torch.full(
             (self.num_train_environments,),
             epsilon_value,
@@ -390,7 +393,7 @@ class Aftab:
             if self.verbose and update % self.log_interval == 0:
                 flush(f"Update {update} | Frames: {frame_count} | Loss: {avg_loss:.4f}")
                 flush(
-                    f"Test Score: {test_score:.4f} | Epsilon: {training_epsilon_value}",
+                    f"Test Score: {test_score:.4f}",
                 )
 
         train_environment.close()
