@@ -8,7 +8,7 @@ from baloot import acceleration_device, seed_everything, funnel
 from typing import Type
 from .maps import AftabMapEncoder
 from .agents import PQNAgent
-from .common import epsilon_greedy_vectorized, lambda_returns, flush
+from .functions import lambda_returns, epsilon_greedy_vectorized, flush
 
 
 class Aftab:
