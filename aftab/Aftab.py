@@ -172,6 +172,36 @@ class Aftab:
         dummy_input = self.get_dummy_sample()
         self._network(dummy_input)
 
+    @torch.no_grad()
+    def get_actions(self, float_observations, epsilon_value):
+        with torch.autocast(device_type=self.device.type, dtype=torch.float16):
+            q_values = self._network(float_observations)
+            if self._network.epsilon_greedy:
+                actions = epsilon_greedy_vectorized(
+                    q_values, self.get_epsilons(epsilon_value)
+                )
+            else:
+                actions = q_values.argmax(dim=-1).cpu().numpy()
+
+        actions_train = actions[: self.num_train_environments]
+        actions_test = actions[self.num_train_environments :]
+
+        return actions_train, actions_test
+
+    def get_epsilons(self, epsilon_value):
+        training_epsilon_vector = torch.full(
+            (self.num_train_environments,),
+            epsilon_value,
+            device=self.device,
+            dtype=torch.float32,
+        )
+        test_epsilon_vector = torch.zeros(
+            (self.num_test_environments,),
+            device=self.device,
+            dtype=torch.float32,
+        )
+        return torch.cat([training_epsilon_vector, test_epsilon_vector])
+
     def train(self, environment, seed: int = 42):
         self.set_precision()
         self.set_seed(seed)
@@ -218,39 +248,16 @@ class Aftab:
             self._network.eval()
             for step in range(self.steps_per_update):
                 float_observations = observation.float()
-                training_epsilon_value = self._network.epsilon.get(
+                epsilon_value = self._network.epsilon.get(
                     frame_count,
                     self.actual_frames,
                     all_train_rewards,
                     episode_returns[: self.num_train_environments],
                 )
-                epsilon_vector = torch.full(
-                    (self.num_train_environments,),
-                    training_epsilon_value,
-                    device=self.device,
-                    dtype=torch.float32,
-                )
-                test_epsilon_vector = torch.zeros(
-                    (self.num_test_environments,),
-                    device=self.device,
-                    dtype=torch.float32,
-                )
-                full_epsilon_vector = torch.cat([epsilon_vector, test_epsilon_vector])
 
-                with (
-                    torch.no_grad(),
-                    torch.autocast(device_type=self.device.type, dtype=torch.float16),
-                ):
-                    q_values = self._network(float_observations)
-                    if self._network.epsilon_greedy:
-                        actions = epsilon_greedy_vectorized(
-                            q_values, full_epsilon_vector
-                        )
-                    else:
-                        actions = q_values.argmax(dim=-1).cpu().numpy()
-
-                act_train = actions[: self.num_train_environments]
-                act_test = actions[self.num_train_environments :]
+                actions_train, actions_test = self.get_actions(
+                    float_observations, epsilon_value
+                )
 
                 (
                     next_observation_train,
@@ -258,14 +265,14 @@ class Aftab:
                     termination_train,
                     truncation_train,
                     info_train,
-                ) = train_environment.step(act_train)
+                ) = train_environment.step(actions_train)
                 (
                     next_observation_test,
                     reward_test,
                     termination_test,
                     truncation_test,
                     info_test,
-                ) = test_environment.step(act_test)
+                ) = test_environment.step(actions_test)
                 next_observation = numpy.concatenate(
                     [next_observation_train, next_observation_test], axis=0
                 )
