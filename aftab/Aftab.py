@@ -349,7 +349,7 @@ class Aftab:
                     end = start + self.minibatch_size
                     mb_idx = indices[start:end]
 
-                    mbatch_observations = flat_obs[mb_idx]
+                    mini_batch_observations = flat_obs[mb_idx]
                     mb_act = flat_act[mb_idx]
                     mb_tgt = flat_tgt[mb_idx]
 
@@ -358,7 +358,7 @@ class Aftab:
                     with torch.autocast(
                         device_type=self.device.type, dtype=torch.float16
                     ):
-                        q_values = self._network(mbatch_observations.float())
+                        q_values = self._network(mini_batch_observations.float())
                         q_taken = q_values.gather(1, mb_act.unsqueeze(1)).squeeze()
                         loss = self._network.loss(q_taken, mb_tgt)
 
@@ -399,14 +399,14 @@ class Aftab:
         training_finish_time = time.time()
         self.final_duration = training_finish_time - training_start_time
 
-    def make_filename(self, **arguments):
+    def make_log_filename(self, **arguments):
         dynamic_part = "_".join(f"{k}-{v}" for k, v in arguments.items())
         static_part = f"environment-{self.environment}"
         return f"{static_part}_{dynamic_part}"
 
     def save(self, **arguments) -> None:
         funnel(
-            self.make_filename(**arguments),
+            self.make_log_filename(**arguments),
             {
                 "training_reward": self.final_training_rewards,
                 "test_reward": self.final_test_rewards,
