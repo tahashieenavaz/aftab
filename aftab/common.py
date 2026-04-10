@@ -15,10 +15,3 @@ class LinearEpsilon:
         if decay_duration == 0:
             return top
         return max(target, top - (frames / decay_duration) * (top - target))
-
-
-def mse_loss(A, B):
-    _device = acceleration_device()
-    A = A.to(_device)
-    B = B.to(_device)
-    return 0.5 * torch.nn.functional.mse_loss(A, B)
