@@ -7,5 +7,5 @@ from .EpsilonEncoder import EpsilonEncoder
 from .ZetaEncoder import ZetaEncoder
 from .EtaEncoder import EtaEncoder
 from .ThetaEncoder import ThetaEncoder
-from .GammaHadamaxEncoder import GammaHadamaxEncoder
+from .HadamaxGammaEncoder import HadamaxGammaEncoder
 from .ResidualGammaEncoder import ResidualGammaEncoder

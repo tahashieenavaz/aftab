@@ -2,7 +2,7 @@ import torch
 from .HadamaxLayer import HadamaxLayer
 
 
-class GammaHadamaxEncoder(torch.nn.Module):
+class HadamaxGammaEncoder(torch.nn.Module):
     def __init__(self, activation=torch.nn.GELU):
         super().__init__()
         self.stream = torch.nn.Sequential(
