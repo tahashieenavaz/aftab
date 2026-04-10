@@ -1,8 +1,9 @@
 import torch
 from typing import Type
 from ..encoders import DQNEncoder
-from ..common import LinearEpsilon, mse_loss
+from ..common import LinearEpsilon
 from ..modules import Stream
+from ..functions import mse_loss
 
 
 class PQNAgent(torch.nn.Module):
