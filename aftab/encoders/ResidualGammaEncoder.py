@@ -1,4 +1,5 @@
 import torch
+from .ResidualGammaBlock import ResidualGammaBlock
 from ..modules import LayerNorm2d
 from ..constants import ModuleType
 
