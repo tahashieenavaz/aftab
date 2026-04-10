@@ -4,7 +4,7 @@ from ..modules import LayerNorm2d
 from ..constants import ModuleType
 
 
-class GammaResidualBlock(torch.nn.Module):
+class ResidualGammaBlock(torch.nn.Module):
     def __init__(
         self,
         in_channels: int,
@@ -65,7 +65,7 @@ class ResidualGammaEncoder(torch.nn.Module):
             activation(),
         )
 
-        self.be = GammaResidualBlock(
+        self.be = ResidualGammaBlock(
             in_channels=32,
             out_channels=64,
             stride=2,
@@ -81,7 +81,7 @@ class ResidualGammaEncoder(torch.nn.Module):
         )
         self.be_activation = activation()
 
-        self.pe = GammaResidualBlock(
+        self.pe = ResidualGammaBlock(
             in_channels=64,
             out_channels=64,
             stride=2,
