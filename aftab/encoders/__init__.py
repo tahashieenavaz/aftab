@@ -8,3 +8,5 @@ from .ZetaEncoder import ZetaEncoder
 from .EtaEncoder import EtaEncoder
 from .ThetaEncoder import ThetaEncoder
 from .HadamaxGammaEncoder import HadamaxGammaEncoder
+from .SimpleAttentionGammaEncoder import SimpleAttentionGammaEncoder
+from .EMAGammaEncoder import EMAGammaEncoder
