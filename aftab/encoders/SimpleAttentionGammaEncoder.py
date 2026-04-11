@@ -1,9 +1,9 @@
 import torch
-from ..modules import LayerNorm2d, EfficientMultiScaleAttention
+from ..modules import LayerNorm2d, SimpleAttention
 from ..constants import ModuleType
 
 
-class EMAGammaEncoder(torch.nn.Module):
+class SimpleAttentionGammaEncoder(torch.nn.Module):
     def __init__(self, *, activation: ModuleType = torch.nn.ReLU):
         super().__init__()
         self.stream = torch.nn.Sequential(
@@ -13,19 +13,17 @@ class EMAGammaEncoder(torch.nn.Module):
             torch.nn.Conv2d(32, 48, kernel_size=3, stride=2, padding=1),
             LayerNorm2d(48),
             activation(),
-            EfficientMultiScaleAttention(48),
+            SimpleAttention(),
             torch.nn.Conv2d(48, 64, kernel_size=3, stride=1, padding=0),
             LayerNorm2d(64),
             activation(),
-            EfficientMultiScaleAttention(64),
+            SimpleAttention(),
             torch.nn.Conv2d(64, 64, kernel_size=3, stride=2, padding=0),
             LayerNorm2d(64),
             activation(),
-            EfficientMultiScaleAttention(64),
             torch.nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=0),
             LayerNorm2d(64),
             activation(),
-            EfficientMultiScaleAttention(64),
             torch.nn.Flatten(),
         )
 
