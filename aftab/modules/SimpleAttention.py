@@ -2,7 +2,7 @@ import torch
 
 
 class SimpleAttention(torch.nn.Module):
-    def __init__(self, channels=None, e_lambda=1e-4):
+    def __init__(self, e_lambda=1e-4):
         super().__init__()
         self.activation = torch.nn.Sigmoid()
         self.e_lambda = e_lambda
