@@ -56,7 +56,7 @@ class Aftab:
         self.minibatch_size = int(self.batch_size // num_minibatches)
         self.total_frames = total_frames
         self.check_total_frames()
-        self.actual_frames = int(total_frames / self.frame_skip)
+        self.actual_frames = int(self.total_frames / self.frame_skip)
         self.total_updates = math.ceil(self.actual_frames / self.batch_size)
         self.train_reward_clip = train_reward_clip
         self.train_episodic_life = train_episodic_life
