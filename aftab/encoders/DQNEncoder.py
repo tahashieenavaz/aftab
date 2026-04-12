@@ -1,5 +1,6 @@
 import torch
-from ..common import LayerNorm2d, ModuleType
+from ..modules import LayerNorm2d
+from ..constants import ModuleType
 
 
 class DQNEncoder(torch.nn.Module):
