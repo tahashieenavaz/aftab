@@ -127,8 +127,8 @@ class Aftab:
             num_threads=self.cpu_count,
             thread_affinity_offset=0,
             noop_max=self.noop,
-            reward_clip=self.reward_clip,
-            episodic_life=self.episodic_life,
+            reward_clip=self.train_reward_clip,
+            episodic_life=self.train_episodic_life,
             frame_skip=self.frame_skip,
             stack_num=self.stack_number,
         )
