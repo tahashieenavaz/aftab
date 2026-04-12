@@ -27,7 +27,7 @@ environments = ["Pong-v5", "IceHockey-v5"]
 for environment in environments:
   agent = Aftab(encoder="gamma", frames="pilot")
   for seed in seeds:
-    agent.train(seed=seed)
+    agent.train(environment=environment, seed=seed)
     agent.save(environment=environment, seed=seed, name="MyCustomAftabTests")
 ```
 
