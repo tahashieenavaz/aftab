@@ -236,7 +236,9 @@ class Aftab:
         all_test_rewards = []
         all_loss = []
         episode_returns = numpy.zeros(self.total_environments, dtype=numpy.float32)
-        train_environment, test_environment = self.make_environments(environment)
+        train_environment, test_environment = self.make_environments(
+            environment=environment, seed=seed
+        )
         action_dimension = train_environment.action_space.n
         self._network = self.make_network(action_dimension, self.encoder)
 
