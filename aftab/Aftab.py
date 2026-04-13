@@ -12,7 +12,7 @@ from .mixins import (
     TrainingResultsMixin,
     MatrixPrecisionMixin,
     DummyPassMixin,
-    SetsReproducibilitySeeds,
+    ReproducibilityMixin,
     EnvironmentSetupMixin,
 )
 
@@ -21,8 +21,8 @@ class Aftab(
     TrainingResultsMixin,
     EnvironmentSetupMixin,
     DummyPassMixin,
+    ReproducibilityMixin,
     MatrixPrecisionMixin,
-    SetsReproducibilitySeeds,
 ):
     def __init__(
         self,

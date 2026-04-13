@@ -1,7 +1,7 @@
 from baloot import seed_everything
 
 
-class SetsReproducibilitySeeds:
+class ReproducibilityMixin:
     def __init__(self):
         super().__init__()
 

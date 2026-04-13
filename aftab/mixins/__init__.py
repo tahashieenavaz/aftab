@@ -1,5 +1,5 @@
 from .TrainingResultsMixin import TrainingResultsMixin
 from .MatrixPrecisionMixin import MatrixPrecisionMixin
-from .SetsReproducibilitySeeds import SetsReproducibilitySeeds
+from .ReproducibilityMixin import ReproducibilityMixin
 from .DummyPassMixin import DummyPassMixin
 from .EnvironmentSetupMixin import EnvironmentSetupMixin
