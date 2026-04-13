@@ -6,7 +6,11 @@ class DummyPassMixin:
         super().__init__()
 
     def get_dummy_sample(self):
-        return torch.randn(1, 4, 84, 84).to(self.device)
+        batch_size = 1
+        picture_size = 84
+        return torch.randn(
+            batch_size, self.stack_number, picture_size, picture_size
+        ).to(self.device)
 
     @torch.no_grad()
     def perform_dummy_pass(self):
