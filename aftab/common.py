@@ -6,8 +6,10 @@ class LinearEpsilon:
 
     def get(self, frames, total_frames, all_rewards, episode_returns):
         target = self.target
-        top = self.top
+        maximum = self.maximum
         decay_duration = total_frames * self.ratio
+
         if decay_duration == 0:
-            return top
-        return max(target, top - (frames / decay_duration) * (top - target))
+            return maximum
+
+        return max(target, maximum - (frames / decay_duration) * (maximum - target))
