@@ -9,10 +9,16 @@ from baloot import acceleration_device, seed_everything
 from .maps import encoders_map
 from .agents import PQNAgent
 from .functions import lambda_returns, epsilon_greedy_vectorized, flush
-from .mixins import SavesTrainingResults
+from .mixins import (
+    SavesTrainingResults,
+    SetsMatrixMultiplicationPrecision,
+    SetsReproducibilitySeeds,
+)
 
 
-class Aftab(SavesTrainingResults):
+class Aftab(
+    SavesTrainingResults, SetsMatrixMultiplicationPrecision, SetsReproducibilitySeeds
+):
     def __init__(
         self,
         encoder: str | Type[torch.nn.Module] = "gamma",
@@ -112,12 +118,6 @@ class Aftab(SavesTrainingResults):
 
         fetched_frames = acceptable_frames_idx.get(self.frames)
         self.frames = fetched_frames
-
-    def set_precision(self):
-        torch.set_float32_matmul_precision("high")
-
-    def set_seed(self, seed: int):
-        seed_everything(seed)
 
     def make_environments(self, environment: str, seed: int):
         train_environment = envpool.make(
