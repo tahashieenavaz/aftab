@@ -5,7 +5,7 @@ import math
 import envpool
 import time
 from typing import Type, Literal
-from baloot import acceleration_device, seed_everything, funnel
+from baloot import acceleration_device, seed_everything
 from .maps import encoders_map
 from .agents import PQNAgent
 from .functions import lambda_returns, epsilon_greedy_vectorized, flush
