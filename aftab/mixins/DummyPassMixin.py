@@ -1,7 +1,7 @@
 import torch
 
 
-class PerformsDummyPass:
+class DummyPassMixin:
     def __init__(self):
         super().__init__()
 

@@ -10,9 +10,9 @@ from .agents import PQNAgent
 from .functions import lambda_returns, epsilon_greedy_vectorized, flush
 from .mixins import (
     TrainingResultsMixin,
-    SetsMatrixMultiplicationPrecision,
+    MatrixPrecisionMixin,
+    DummyPassMixin,
     SetsReproducibilitySeeds,
-    PerformsDummyPass,
     EnvironmentSetupMixin,
 )
 
@@ -20,9 +20,9 @@ from .mixins import (
 class Aftab(
     TrainingResultsMixin,
     EnvironmentSetupMixin,
-    SetsMatrixMultiplicationPrecision,
+    DummyPassMixin,
+    MatrixPrecisionMixin,
     SetsReproducibilitySeeds,
-    PerformsDummyPass,
 ):
     def __init__(
         self,

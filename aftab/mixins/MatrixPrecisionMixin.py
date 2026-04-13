@@ -1,7 +1,7 @@
 import torch
 
 
-class SetsMatrixMultiplicationPrecision:
+class MatrixPrecisionMixin:
     def __init__(self):
         super().__init__()
 
