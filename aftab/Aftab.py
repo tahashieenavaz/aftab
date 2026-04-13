@@ -6,7 +6,7 @@ import time
 from typing import Type, Literal
 from .maps import encoders_map
 from .agents import PQNAgent
-from .functions import lambda_returns, epsilon_greedy_vectorized, flush
+from .functions import lambda_returns, flush
 from .mixins import (
     AccelerationDeviceMixin,
     CPUCountMixin,
@@ -15,6 +15,7 @@ from .mixins import (
     DummyPassMixin,
     ReproducibilityMixin,
     EnvironmentSetupMixin,
+    ActionsMixin,
 )
 
 
@@ -26,6 +27,7 @@ class Aftab(
     DummyPassMixin,
     ReproducibilityMixin,
     MatrixPrecisionMixin,
+    ActionsMixin,
 ):
     def __init__(
         self,
@@ -174,22 +176,6 @@ class Aftab(
             q_values = self._network(float_observations)
 
         return q_values
-
-    @torch.no_grad()
-    def get_actions(self, q_values, epsilon_value):
-        with torch.autocast(device_type=self.device.type, dtype=torch.float16):
-            if self._network.epsilon_greedy:
-                actions = epsilon_greedy_vectorized(
-                    q_values, self.get_epsilons(epsilon_value)
-                )
-            else:
-                actions = q_values.argmax(dim=-1).cpu().numpy()
-        return actions
-
-    def split_actions(self, actions):
-        actions_train = actions[: self.num_train_environments]
-        actions_test = actions[self.num_train_environments :]
-        return actions_train, actions_test
 
     def get_epsilons(self, epsilon_value) -> torch.Tensor:
         training_epsilon_vector = torch.full(
