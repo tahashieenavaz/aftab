@@ -7,8 +7,7 @@ class SavesTrainingResults:
 
     def make_log_filename(self, **arguments):
         dynamic_part = "_".join(f"{k}-{v}" for k, v in arguments.items())
-        static_part = f"environment-{self.environment}"
-        return f"{static_part}_{dynamic_part}"
+        return f"{dynamic_part}"
 
     def save(self, **arguments) -> None:
         funnel(
