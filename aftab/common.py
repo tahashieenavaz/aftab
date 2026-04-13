@@ -1,6 +1,6 @@
 class LinearEpsilon:
-    def __init__(self, ratio: float = 0.1, target=0.001):
-        self.top = 1.0
+    def __init__(self, ratio: float = 0.1, target=0.001, maximum: float = 1.0):
+        self.maximum = maximum
         self.target = target
         self.ratio = ratio
 
