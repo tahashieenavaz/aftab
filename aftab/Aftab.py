@@ -13,16 +13,16 @@ from .mixins import (
     SetsMatrixMultiplicationPrecision,
     SetsReproducibilitySeeds,
     PerformsDummyPass,
-    PreparesEnvironments,
+    EnvironmentSetupMixin,
 )
 
 
 class Aftab(
     TrainingResultsMixin,
+    EnvironmentSetupMixin,
     SetsMatrixMultiplicationPrecision,
     SetsReproducibilitySeeds,
     PerformsDummyPass,
-    PreparesEnvironments,
 ):
     def __init__(
         self,

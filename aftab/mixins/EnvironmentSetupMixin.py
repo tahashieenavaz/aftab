@@ -1,7 +1,7 @@
 import envpool
 
 
-class PreparesEnvironments:
+class EnvironmentSetupMixin:
     def __init__(self):
         super().__init__()
 
