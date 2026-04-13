@@ -2,7 +2,6 @@ import torch
 import numpy
 import os
 import math
-import envpool
 import time
 from typing import Type, Literal
 from baloot import acceleration_device
@@ -13,11 +12,17 @@ from .mixins import (
     SavesTrainingResults,
     SetsMatrixMultiplicationPrecision,
     SetsReproducibilitySeeds,
+    PerformsDummyPass,
+    PreparesEnvironments,
 )
 
 
 class Aftab(
-    SavesTrainingResults, SetsMatrixMultiplicationPrecision, SetsReproducibilitySeeds
+    SavesTrainingResults,
+    SetsMatrixMultiplicationPrecision,
+    SetsReproducibilitySeeds,
+    PerformsDummyPass,
+    PreparesEnvironments,
 ):
     def __init__(
         self,
@@ -118,37 +123,6 @@ class Aftab(
 
         fetched_frames = acceptable_frames_idx.get(self.frames)
         self.frames = fetched_frames
-
-    def make_environments(self, environment: str, seed: int):
-        train_environment = envpool.make(
-            environment,
-            env_type="gymnasium",
-            num_envs=self.num_train_environments,
-            seed=seed,
-            num_threads=self.cpu_count,
-            thread_affinity_offset=0,
-            noop_max=self.noop,
-            reward_clip=self.train_reward_clip,
-            episodic_life=self.train_episodic_life,
-            frame_skip=self.frame_skip,
-            stack_num=self.stack_number,
-        )
-
-        test_environment = envpool.make(
-            environment,
-            env_type="gymnasium",
-            num_envs=self.num_test_environments,
-            seed=seed + 1000,
-            num_threads=min(self.min_test_cpu_count, self.cpu_count),
-            thread_affinity_offset=0,
-            noop_max=self.noop,
-            reward_clip=self.test_reward_clip,
-            episodic_life=self.test_episodic_life,
-            frame_skip=self.frame_skip,
-            stack_num=self.stack_number,
-        )
-
-        return train_environment, test_environment
 
     def make_batches(self, observation_shape, action_dimension):
         batch_observations = torch.empty(
