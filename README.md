@@ -136,6 +136,8 @@ for environment in environments:
 | GAE parameter ($\lambda$) | 0.65 |
 | Epochs | 2 |
 | Batch size | 4096 |
+| $\beta_{1}$ | 0.9 |
+| $\beta_{2}$ | 0.999 |
 
 </div>
 
