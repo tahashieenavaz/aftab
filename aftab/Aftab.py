@@ -4,7 +4,7 @@ import os
 import math
 import envpool
 import time
-from typing import Tuple, Type, Literal
+from typing import Type, Literal
 from baloot import acceleration_device, seed_everything, funnel
 from .maps import encoders_map
 from .agents import PQNAgent
