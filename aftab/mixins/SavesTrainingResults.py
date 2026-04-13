@@ -6,8 +6,9 @@ class SavesTrainingResults:
         super().__init__()
 
     def make_log_filename(self, **arguments):
-        dynamic_part = "_".join(f"{k}-{v}" for k, v in arguments.items())
-        return f"{dynamic_part}"
+        filename = "_".join(f"{k}-{v}" for k, v in arguments.items())
+        extension = "pkl"
+        return f"{filename}.{extension}"
 
     def save(self, **arguments) -> None:
         funnel(
