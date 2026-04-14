@@ -19,4 +19,4 @@ def epsilon_greedy_vectorized(q_values, eps):
 
     mask = torch.rand(num_envs, device=q_values.device) < eps
     final_actions = torch.where(mask, random_actions, greedy_actions)
-    return final_actions.cpu().numpy()
+    return final_actions
