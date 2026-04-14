@@ -142,12 +142,6 @@ class Aftab(
             weight_decay=self.optimizer_weight_decay,
         )
 
-    def flush_final_properties(self):
-        self.final_training_rewards = None
-        self.final_test_rewards = None
-        self.final_loss_evolution = None
-        self.final_duration = None
-
     def train(self, environment, seed: int = 42):
         self.flush_final_properties()
         self.set_precision()

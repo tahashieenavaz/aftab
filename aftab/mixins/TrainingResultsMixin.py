@@ -5,6 +5,12 @@ class TrainingResultsMixin:
     def __init__(self):
         super().__init__()
 
+    def flush_final_properties(self):
+        self.final_training_rewards = None
+        self.final_test_rewards = None
+        self.final_loss_evolution = None
+        self.final_duration = None
+
     def make_log_filename(self, **arguments):
         filename = "_".join(f"{k}-{v}" for k, v in arguments.items())
         extension = "pkl"
