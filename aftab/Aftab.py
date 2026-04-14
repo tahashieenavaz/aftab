@@ -20,6 +20,7 @@ from .mixins import (
     NetworkMixin,
     OptimizerMixin,
     QValueMixin,
+    CheckFramesMixin,
 )
 
 
@@ -39,6 +40,7 @@ class Aftab(
     NetworkMixin,
     OptimizerMixin,
     QValueMixin,
+    CheckFramesMixin,
 ):
     def __init__(
         self,
@@ -84,7 +86,6 @@ class Aftab(
         self.batch_size = int(num_train_environments * steps_per_update)
         self.minibatch_size = int(self.batch_size // num_minibatches)
         self.frames = frames
-        self.check_frames()
         self.actual_frames = int(self.frames / self.frame_skip)
         self.total_updates = math.ceil(self.actual_frames / self.batch_size)
         self.train_reward_clip = train_reward_clip
@@ -103,24 +104,6 @@ class Aftab(
         self.optimizer_first_beta = optimizer_first_beta
         self.optimizer_second_beta = optimizer_second_beta
         self.optimizer_weight_decay = optimizer_weight_decay
-
-    def check_frames(self):
-        acceptable_frames_idx = {
-            "pilot": 50_000_000,
-            "ablation": 50_000_000,
-            "full": 200_000_000,
-        }
-
-        if not isinstance(self.frames, str):
-            return
-
-        if self.frames not in acceptable_frames_idx:
-            raise ValueError(
-                f"Total frames was passed a wrong value of `{self.frames}`. Acceptable values are `pilot`, `ablation`, `full`."
-            )
-
-        fetched_frames = acceptable_frames_idx.get(self.frames)
-        self.frames = fetched_frames
 
     def train(self, environment, seed: int = 42):
         self.flush_final_properties()
