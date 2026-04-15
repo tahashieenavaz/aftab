@@ -10,3 +10,4 @@ from .ThetaEncoder import ThetaEncoder
 from .HadamaxGammaEncoder import HadamaxGammaEncoder
 from .SimpleAttentionGammaEncoder import SimpleAttentionGammaEncoder
 from .EMAGammaEncoder import EMAGammaEncoder
+from .HadamaxNatureDQNEncoder import HadamaxNatureDQNEncoder

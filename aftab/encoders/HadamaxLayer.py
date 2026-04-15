@@ -9,6 +9,7 @@ class HadamaxLayer(torch.nn.Module):
         out_channels,
         kernel_size,
         padding,
+        stride,
         pool_kernel,
         pool_stride,
         pool_padding=0,
@@ -19,14 +20,14 @@ class HadamaxLayer(torch.nn.Module):
             in_channels,
             out_channels,
             kernel_size=kernel_size,
-            stride=1,
+            stride=stride,
             padding=padding,
         )
         self.conv_b = torch.nn.Conv2d(
             in_channels,
             out_channels,
             kernel_size=kernel_size,
-            stride=1,
+            stride=stride,
             padding=padding,
         )
 
