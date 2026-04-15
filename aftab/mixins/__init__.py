@@ -15,3 +15,4 @@ from .OptimizerMixin import OptimizerMixin
 from .QValueMixin import QValueMixin
 from .CheckFramesMixin import CheckFramesMixin
 from .LossMixin import LossMixin
+from .TargetMixin import TargetMixin
