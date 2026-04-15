@@ -22,6 +22,7 @@ encoders_map = {
     "theta": ThetaEncoder,
     "hadamax": HadamaxNatureDQNEncoder,
     "dqnhadamax": HadamaxNatureDQNEncoder,
+    "pqnhadamax": HadamaxNatureDQNEncoder,
     "hadamaxgammav1": HadamaxGammaEncoderV1,
     "gammahadamaxv1": HadamaxGammaEncoderV1,
     "hadamaxgammav2": HadamaxGammaEncoderV2,
