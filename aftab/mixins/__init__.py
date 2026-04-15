@@ -3,8 +3,7 @@ from .MatrixPrecisionMixin import MatrixPrecisionMixin
 from .ReproducibilityMixin import ReproducibilityMixin
 from .DummyPassMixin import DummyPassMixin
 from .EnvironmentSetupMixin import EnvironmentSetupMixin
-from .AccelerationDeviceMixin import AccelerationDeviceMixin
-from .CPUMixin import CPUMixin
+from .ConstantsMixin import ConstantsMixin
 from .ActionsMixin import ActionsMixin
 from .CompilationMixin import CompilationMixin
 from .EncoderRefinementMixin import EncoderRefinementMixin

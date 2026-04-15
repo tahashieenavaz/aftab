@@ -6,8 +6,7 @@ from typing import Type, Literal
 from .functions import flush
 from .mixins import (
     EncoderRefinementMixin,
-    AccelerationDeviceMixin,
-    CPUMixin,
+    ConstantsMixin,
     TrainingResultsMixin,
     MatrixPrecisionMixin,
     DummyPassMixin,
@@ -28,8 +27,7 @@ from .mixins import (
 
 class Aftab(
     EncoderRefinementMixin,
-    AccelerationDeviceMixin,
-    CPUMixin,
+    ConstantsMixin,
     TrainingResultsMixin,
     EnvironmentSetupMixin,
     DummyPassMixin,
