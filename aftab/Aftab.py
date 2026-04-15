@@ -254,11 +254,13 @@ class Aftab(
                 batch_rewards=batch_rewards,
                 batch_terminations=batch_terminations,
             )
-            flat_obs = batch_observations[:, : self.num_train_environments].reshape(
-                (-1,) + observation_shape
+            flattened_observations = batch_observations[
+                :, : self.num_train_environments
+            ].reshape((-1,) + observation_shape)
+            flattened_actions = batch_actions[:, : self.num_train_environments].reshape(
+                -1
             )
-            flat_act = batch_actions[:, : self.num_train_environments].reshape(-1)
-            flat_tgt = targets[:, : self.num_train_environments].reshape(-1)
+            flattened_targets = targets[:, : self.num_train_environments].reshape(-1)
 
             self._network.train()
             total_loss = 0.0
@@ -269,9 +271,9 @@ class Aftab(
                 for start in range(0, self.batch_size, self.minibatch_size):
                     end = start + self.minibatch_size
                     mb_idx = indices[start:end]
-                    mini_batch_observations = flat_obs[mb_idx]
-                    mini_batch_actions = flat_act[mb_idx]
-                    mini_batch_targets = flat_tgt[mb_idx]
+                    mini_batch_observations = flattened_observations[mb_idx]
+                    mini_batch_actions = flattened_actions[mb_idx]
+                    mini_batch_targets = flattened_targets[mb_idx]
 
                     optimizer.zero_grad(set_to_none=True)
                     loss = self.get_loss(
