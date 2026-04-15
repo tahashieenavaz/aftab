@@ -1,5 +1,5 @@
 import torch
-from ..modules import LayerNorm2d
+from ..modules import EncoderBlock
 from ..constants import ModuleType
 
 
@@ -7,15 +7,15 @@ class DeltaEncoder(torch.nn.Module):
     def __init__(self, *, activation: ModuleType = torch.nn.ReLU):
         super().__init__()
         self.stream = torch.nn.Sequential(
-            torch.nn.Conv2d(4, 24, 9, 4, 0),
-            LayerNorm2d(24),
-            activation(),
-            torch.nn.Conv2d(24, 48, 5, 2, 0),
-            LayerNorm2d(48),
-            activation(),
-            torch.nn.Conv2d(48, 96, 3, 1, 0),
-            LayerNorm2d(96),
-            activation(),
+            EncoderBlock(
+                4, 24, kernel_size=9, stride=4, padding=0, activation=activation
+            ),
+            EncoderBlock(
+                24, 48, kernel_size=5, stride=2, padding=0, activation=activation
+            ),
+            EncoderBlock(
+                48, 96, kernel_size=3, stride=1, padding=0, activation=activation
+            ),
             torch.nn.Flatten(),
         )
 
