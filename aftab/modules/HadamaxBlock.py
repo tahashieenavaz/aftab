@@ -1,8 +1,8 @@
 import torch
-from ..modules import LayerNorm2d
+from . import LayerNorm2d
 
 
-class HadamaxLayer(torch.nn.Module):
+class HadamaxBlock(torch.nn.Module):
     def __init__(
         self,
         in_channels,

@@ -1,12 +1,12 @@
 import torch
-from .HadamaxLayer import HadamaxLayer
+from ..modules import HadamaxBlock
 
 
 class HadamaxGammaEncoderV1(torch.nn.Module):
     def __init__(self, activation=torch.nn.GELU):
         super().__init__()
         self.stream = torch.nn.Sequential(
-            HadamaxLayer(
+            HadamaxBlock(
                 4,
                 32,
                 kernel_size=3,
@@ -16,7 +16,7 @@ class HadamaxGammaEncoderV1(torch.nn.Module):
                 pool_stride=2,
                 activation=activation,
             ),
-            HadamaxLayer(
+            HadamaxBlock(
                 32,
                 48,
                 kernel_size=3,
@@ -26,7 +26,7 @@ class HadamaxGammaEncoderV1(torch.nn.Module):
                 pool_stride=2,
                 activation=activation,
             ),
-            HadamaxLayer(
+            HadamaxBlock(
                 48,
                 64,
                 kernel_size=3,
@@ -37,7 +37,7 @@ class HadamaxGammaEncoderV1(torch.nn.Module):
                 pool_padding=0,
                 activation=activation,
             ),
-            HadamaxLayer(
+            HadamaxBlock(
                 64,
                 64,
                 kernel_size=3,
@@ -47,7 +47,7 @@ class HadamaxGammaEncoderV1(torch.nn.Module):
                 pool_stride=2,
                 activation=activation,
             ),
-            HadamaxLayer(
+            HadamaxBlock(
                 64,
                 64,
                 kernel_size=3,

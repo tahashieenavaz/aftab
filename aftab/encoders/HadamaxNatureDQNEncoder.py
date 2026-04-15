@@ -1,12 +1,12 @@
 import torch
-from .HadamaxLayer import HadamaxLayer
+from ..modules import HadamaxBlock
 
 
 class HadamaxNatureDQNEncoder(torch.nn.Module):
     def __init__(self, activation=torch.nn.GELU):
         super().__init__()
         self.stream = torch.nn.Sequential(
-            HadamaxLayer(
+            HadamaxBlock(
                 4,
                 32,
                 kernel_size=8,
@@ -16,7 +16,7 @@ class HadamaxNatureDQNEncoder(torch.nn.Module):
                 pool_stride=4,
                 activation=activation,
             ),
-            HadamaxLayer(
+            HadamaxBlock(
                 32,
                 64,
                 kernel_size=4,
@@ -26,7 +26,7 @@ class HadamaxNatureDQNEncoder(torch.nn.Module):
                 pool_stride=2,
                 activation=activation,
             ),
-            HadamaxLayer(
+            HadamaxBlock(
                 64,
                 64,
                 kernel_size=3,
