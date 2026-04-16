@@ -12,4 +12,5 @@ class LinearEpsilon:
         if decay_duration == 0:
             return maximum
 
-        return max(minimum, maximum - (frames / decay_duration) * (maximum - minimum))
+        Δ = maximum - minimum
+        return max(minimum, maximum - (frames / decay_duration) * Δ)
