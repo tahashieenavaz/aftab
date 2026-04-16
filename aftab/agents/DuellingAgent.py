@@ -13,8 +13,8 @@ class PQNAgent(BaseAgent):
         encoder: ModuleType = NatureDQNEncoder,
     ):
         super().__init__(action_dimension=action_dimension, encoder=encoder)
-        self.advantage = Stream(output_dim=action_dimension)
-        self.value = Stream(output_dim=1)
+        self.advantage = Stream(output_dimension=action_dimension)
+        self.value = Stream(output_dimension=1)
 
     def get_value(self, features):
         return self.value(features)

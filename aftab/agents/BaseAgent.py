@@ -8,7 +8,6 @@ class BaseAgent(torch.nn.Module):
     def __init__(self, *, action_dimension: int, encoder: ModuleType):
         self.epsilon_greedy = True
         self.action_dimension = action_dimension
-
         self.epsilon = LinearEpsilon()
         self.phi = encoder()
 
