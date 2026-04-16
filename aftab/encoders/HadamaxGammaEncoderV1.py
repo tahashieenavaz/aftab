@@ -3,7 +3,7 @@ from ..modules import HadamaxBlock
 
 
 class HadamaxGammaEncoderV1(torch.nn.Module):
-    def __init__(self, activation=torch.nn.GELU):
+    def __init__(self, *, activation=torch.nn.GELU):
         super().__init__()
         self.stream = torch.nn.Sequential(
             HadamaxBlock(
