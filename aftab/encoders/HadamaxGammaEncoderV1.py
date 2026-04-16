@@ -14,8 +14,8 @@ class HadamaxGammaEncoderV1(torch.nn.Module):
                 padding=1,
                 pool_kernel=2,
                 pool_stride=2,
-                psi=activation,
                 chi=activation,
+                psi=activation,
             ),
             HadamaxBlock(
                 32,
