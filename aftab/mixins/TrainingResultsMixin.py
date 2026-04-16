@@ -1,26 +1,29 @@
 from baloot import funnel
+from types import SimpleNamespace
 
 
 class TrainingResultsMixin:
     def __init__(self):
         super().__init__()
 
-    def flush_final_properties(self):
-        self.final_training_rewards = None
-        self.final_test_rewards = None
-        self.final_loss_evolution = None
-        self.final_duration = None
+    def flush_results(self):
+        self.results = SimpleNamespace()
+        self.results.rewards = SimpleNamespace()
+        self.results.rewards.train = None
+        self.results.rewards.test = None
+        self.results.loss = None
+        self.results.duration = None
 
     def make_log_filename(self, **kwargs):
         filename = "_".join(f"{k}-{v}" for k, v in kwargs.items())
         return f"{filename}.pkl"
 
     def _build_log_payload(self):
-        duration = self.final_duration or 0
+        duration = self.results.duration or 0
         return {
-            "training_reward": self.final_training_rewards,
-            "test_reward": self.final_test_rewards,
-            "loss": self.final_loss_evolution,
+            "training_reward": self.results.rewards.train,
+            "test_reward": self.results.rewards.test,
+            "loss": self.results.loss,
             "duration_seconds": duration,
             "duration_hours": duration / 3600,
         }

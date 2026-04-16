@@ -108,12 +108,14 @@ class Aftab(
         self.optimizer_weight_decay = optimizer_weight_decay
 
     def train(self, environment, seed: int = 42):
-        self.flush_final_properties()
+        self.flush_results()
         self.set_precision()
         self.set_seed(seed)
+
         all_train_rewards = []
         all_test_rewards = []
         all_loss = []
+
         episode_returns = numpy.zeros(self.total_environments, dtype=numpy.float32)
         train_environment, test_environment = self.make_environments(
             environment=environment, seed=seed
@@ -289,12 +291,10 @@ class Aftab(
         train_environment.close()
         test_environment.close()
 
-        self.final_training_rewards = all_train_rewards
-        self.final_test_rewards = all_test_rewards
-        self.final_loss_evolution = all_loss
+        self.results.rewards.train = all_train_rewards
+        self.results.rewards.test = all_test_rewards
+        self.results.loss = all_loss
+        self.results.duration = time.time() - training_start_time
 
         if self.verbose:
             flush(f"Training finished.")
-
-        training_finish_time = time.time()
-        self.final_duration = training_finish_time - training_start_time
