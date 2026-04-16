@@ -13,10 +13,11 @@ class PQNAgent(torch.nn.Module):
         encoder_instance: Type[torch.nn.Module] = NatureDQNEncoder,
     ):
         super().__init__()
+        self.epsilon_greedy = True
+
+        self.epsilon = LinearEpsilon()
         self.phi = encoder_instance()
         self.q = Stream(output_dim=action_dimension)
-        self.epsilon = LinearEpsilon()
-        self.epsilon_greedy = True
 
     def no_epsilon_greedy(self):
         self.epsilon_greedy = False
