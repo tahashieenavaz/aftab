@@ -6,14 +6,14 @@ class FractionProposalStream(torch.nn.Module):
     def __init__(self, *, number_quantiles: int, embedding_dimension: int):
         super().__init__()
         self.number_quantiles = number_quantiles
-        self.mu = Stream(
+        self.stream = Stream(
             input_dimension=None,
             hidden_dimension=embedding_dimension,
             output_dimension=number_quantiles,
         )
 
     def forward(self, features):
-        q_logits = self.mu(features)
+        q_logits = self.stream(features)
         q_probs = torch.nn.functional.softmax(q_logits, dim=-1)
         q_log_probabilities = torch.log(q_probs.clamp(min=1e-8))
         tau_0 = torch.zeros((features.size(0), 1), device=features.device)
