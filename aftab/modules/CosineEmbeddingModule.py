@@ -17,6 +17,7 @@ class CosineEmbeddingModule(torch.nn.Module):
             input_dimension=embedding_dimension,
             hidden_dimension=embedding_dimension,
             output_dimension=embedding_dimension,
+            normalization=False,
         )
         pi_indices = math.pi * torch.arange(0, embedding_dimension).float()
         self.register_buffer("pi_indices", pi_indices)

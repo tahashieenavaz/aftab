@@ -14,18 +14,16 @@ class Stream(torch.nn.Module):
         normalization: bool = True,
     ):
         super().__init__()
-        self.mu = torch.nn.LazyLineaR(hidden_dimension)
-        self.nu = torch.nn.Linear(hidden_dimension, output_dimension)
-        self.xi = torch.nn.LayerNorm(hidden_dimension)
+        self.first_linear = torch.nn.LazyLinear(hidden_dimension)
+        self.second_linear = torch.nn.Linear(hidden_dimension, output_dimension)
+        self.normalization_layer = torch.nn.LayerNorm(hidden_dimension)
         self.activation = activation()
         self.normalization = normalization
 
     def forward(self, features):
-        features = self.mu(features)
-        features = self.xi(features)
-
+        features = self.first_linear(features)
         if self.normalization:
-            features = self.activation(features)
-
-        features = self.nu(features)
+            features = self.normalization_layer(features)
+        features = self.activation(features)
+        features = self.second_linear(features)
         return features
