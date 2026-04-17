@@ -74,6 +74,7 @@ class Aftab(
         test_reward_clip: bool = True,
         should_compile: bool = True,
         augmentation: bool = False,
+        head_strategy: Literal["regression", "duelling", "fqf"] = "regression",
     ):
         self.frame_skip = frame_skip
         self.lr = lr
@@ -108,6 +109,7 @@ class Aftab(
         self.optimizer_second_beta = optimizer_second_beta
         self.optimizer_weight_decay = optimizer_weight_decay
         self.augmentation = augmentation
+        self.head_strategy = head_strategy
 
     def train(self, environment, seed: int = 42):
         self.flush_results()
