@@ -9,6 +9,8 @@ class BaseNetwork(torch.nn.Module):
     def __init__(
         self, *, action_dimension: int, augmentation: str, encoder: ModuleType
     ):
+        super().__init__()
+
         self.epsilon_greedy = True
         self.action_dimension = action_dimension
         self.epsilon = LinearEpsilon()
