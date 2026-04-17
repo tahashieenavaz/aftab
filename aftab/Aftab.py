@@ -59,6 +59,7 @@ class Aftab(
         frames: int | Literal["pilot", "full", "ablation"] = "pilot",
         min_test_cpu_count: int = 4,
         noop: int = 30,
+        frame_stack: int = 4,
         gradient_norm: float = 10.0,
         log_interval: int = 10,
         verbose: bool = False,
@@ -72,7 +73,7 @@ class Aftab(
         test_episodic_life: bool = False,
         test_reward_clip: bool = True,
         should_compile: bool = True,
-        frame_stack: int = 4,
+        augmentation: bool = False,
     ):
         self.frame_skip = frame_skip
         self.lr = lr
@@ -106,6 +107,7 @@ class Aftab(
         self.optimizer_first_beta = optimizer_first_beta
         self.optimizer_second_beta = optimizer_second_beta
         self.optimizer_weight_decay = optimizer_weight_decay
+        self.augmentation = augmentation
 
     def train(self, environment, seed: int = 42):
         self.flush_results()
