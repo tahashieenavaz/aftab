@@ -1,5 +1,4 @@
 import torch
-import torch.nn.functional as F
 from .DuellingNetwork import BaseNetwork
 from ..modules import QuantileStream, FractionProposalStream
 
@@ -7,6 +6,8 @@ from ..modules import QuantileStream, FractionProposalStream
 class FQFNetwork(BaseNetwork):
     def __init__(
         self,
+        quantile_embedding_dimension: int,
+        number_quantiles: int,
         entropy_coefficient: float = 1e-3,
         fraction_proposal_coefficient: float = 1.0,
         **kwargs,
@@ -17,12 +18,12 @@ class FQFNetwork(BaseNetwork):
         self.fraction_proposal_coefficient = fraction_proposal_coefficient
 
         self.fraction_proposal = FractionProposalStream(
-            number_quantiles=kwargs["number_quantiles"],
-            embedding_dimension=kwargs["embedding_dimension"],
+            number_quantiles=number_quantiles,
+            embedding_dimension=quantile_embedding_dimension,
         )
         self.quantile_value = QuantileStream(
             action_dimension=kwargs["action_dimension"],
-            embedding_dimension=kwargs["embedding_dimension"],
+            embedding_dimension=quantile_embedding_dimension,
         )
 
     def forward(self, x: torch.Tensor):
