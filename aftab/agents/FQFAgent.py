@@ -1,10 +1,13 @@
 import torch
 from .BaseAgent import BaseAgent
+from ..modules import QuantileStream, FractionProposalStream
 
 
 class FQFAgent(BaseAgent):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.fpn = QuantileStream()
+        self.qvn = FractionProposalStream()
 
     def get_q(self, x):
         quantiles, _, _ = self.get_quantiles(x)

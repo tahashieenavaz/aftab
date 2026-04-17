@@ -1,15 +1,27 @@
 import torch
+from ..modules import CosineEmbeddingModule, Stream
 
 
 class QuantileStream(torch.nn.Module):
     def __init__(
-        self, feature_dimension: int, action_dimension: int, number_quantiles: int
+        self,
+        feature_dimension: int,
+        action_dimension: int,
+        embedding_dimension: int = 512,
     ):
         super().__init__()
-        self.mu = torch.nn.Linear(
-            feature_dimension, action_dimension * number_quantiles
+        self.mu = CosineEmbeddingModule(embedding_dimension)
+        self.nu = Stream(
+            input_dimension=embedding_dimension,
+            hidden_dimension=embedding_dimension,
+            output_dimension=action_dimension,
+        )
+        self.xi = torch.nn.Sequential(
+            torch.nn.Linear(feature_dimension, embedding_dimension), torch.nn.ReLU()
         )
 
-    def forward(self, x, tau_hats):
-        B, N = tau_hats.shape
-        return self.mu(x).view(B, N, -1)
+    def forward(self, state_features, fractions):
+        proj_features = self.xi(state_features)
+        phi = self.mu(fractions)
+        merged_features = proj_features.unsqueeze(1) * phi
+        return self.nu(merged_features)
