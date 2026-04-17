@@ -6,6 +6,10 @@ class FQFAgent(BaseAgent):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+    def get_q(self, x):
+        quantiles, _, _ = self.get_quantiles(x)
+        return quantiles.mean(dim=1)
+
     def loss(self, predictions, targets, tau_hats):
         td_error = targets.unsqueeze(1) - predictions.unsqueeze(2)
         huber = torch.where(
