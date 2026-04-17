@@ -63,3 +63,19 @@ class FQFAgent(BaseAgent):
         gradient_term = 2 * q_tau - q_tau_hat[:, 1:] - q_tau_hat[:, :-1]
         loss = (q_probs[:, :-1] * gradient_term).sum(dim=1).mean()
         return loss
+
+    def loss(self, mini_batch_observations, mini_batch_targets, mini_batch_actions):
+        features = self._network.get_features(mini_batch_observations)
+        taus, tau_hats, q_probs = self._network.fpn(features)
+        quantiles = self._network.qvn(features, tau_hats)
+        action_idx = (
+            mini_batch_actions.unsqueeze(-1)
+            .unsqueeze(-1)
+            .expand(-1, quantiles.size(1), 1)
+        )
+        predictions = quantiles.gather(dim=-1, index=action_idx).squeeze(-1)
+        val_loss = self._network.value_loss(predictions, mini_batch_targets, tau_hats)
+        fpn_loss = self._network.fpn_loss(
+            features, mini_batch_actions, quantiles, taus, q_probs
+        )
+        return val_loss + fpn_loss
