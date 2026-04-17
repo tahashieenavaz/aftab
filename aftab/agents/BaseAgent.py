@@ -2,14 +2,20 @@ import torch
 from ..constants import ModuleType
 from ..common import LinearEpsilon
 from ..functions import mse_loss
+from ..modules import RandomShiftModule
 
 
 class BaseAgent(torch.nn.Module):
-    def __init__(self, *, action_dimension: int, encoder: ModuleType):
+    def __init__(
+        self, *, action_dimension: int, augmentation: bool, encoder: ModuleType
+    ):
         self.epsilon_greedy = True
         self.action_dimension = action_dimension
         self.epsilon = LinearEpsilon()
-        self.phi = encoder()
+        if augmentation:
+            self.phi = torch.nn.Sequential(RandomShiftModule(), encoder())
+        else:
+            self.phi = encoder()
 
     def no_epsilon_greedy(self):
         self.epsilon_greedy = False

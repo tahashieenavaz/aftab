@@ -9,10 +9,15 @@ class PQNAgent(BaseAgent):
     def __init__(
         self,
         *,
-        action_dimension,
+        action_dimension: int,
+        augmentation: bool,
         encoder: ModuleType = NatureDQNEncoder,
     ):
-        super().__init__(action_dimension=action_dimension, encoder=encoder)
+        super().__init__(
+            action_dimension=action_dimension,
+            encoder=encoder,
+            augmentation=augmentation,
+        )
         self.advantage = Stream(output_dimension=action_dimension)
         self.value = Stream(output_dimension=1)
 
