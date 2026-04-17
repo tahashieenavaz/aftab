@@ -9,8 +9,8 @@ class NetworkMixin:
         super().__init__()
 
     def __get_dummy_sample(self):
-        if not hasattr(self, "stack_number"):
-            raise AttributeError("Expected `stack_number` to be defined.")
+        if not hasattr(self, "frame_stack"):
+            raise AttributeError("Expected `frame_stack` to be defined.")
 
         if not hasattr(self, "device"):
             raise AttributeError("Expected `device` to be defined.")
@@ -20,7 +20,7 @@ class NetworkMixin:
 
         return torch.randn(
             batch_size,
-            self.stack_number,
+            self.frame_stack,
             picture_size,
             picture_size,
             device=self.device,
