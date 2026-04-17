@@ -1,11 +1,21 @@
 import torch
+import torch.nn.functional as F
 from .DuellingNetwork import BaseNetwork
 from ..modules import QuantileStream, FractionProposalStream
 
 
 class FQFNetwork(BaseNetwork):
-    def __init__(self, **kwargs):
+    def __init__(
+        self,
+        entropy_coefficient: float = 1e-3,
+        fraction_proposal_coefficient: float = 1.0,
+        **kwargs,
+    ):
         super().__init__(**kwargs)
+
+        self.entropy_coefficient = entropy_coefficient
+        self.fraction_proposal_coefficient = fraction_proposal_coefficient
+
         self.fraction_proposal = FractionProposalStream(
             number_quantiles=kwargs["number_quantiles"],
             embedding_dimension=kwargs["embedding_dimension"],
@@ -15,67 +25,82 @@ class FQFNetwork(BaseNetwork):
             embedding_dimension=kwargs["embedding_dimension"],
         )
 
-    def get_quantiles(self, x: torch.Tensor):
+    def forward(self, x: torch.Tensor):
         features = self.get_features(x)
-        taus, tau_hats, q_probs = self.fraction_proposal(features)
+        taus, tau_hats, q_probs, entropy = self.fraction_proposal(features)
         quantiles = self.quantile_value(features, tau_hats)
-        return quantiles, taus, tau_hats, q_probs
+        return {
+            "features": features,
+            "quantiles": quantiles,
+            "taus": taus,
+            "tau_hats": tau_hats,
+            "q_probs": q_probs,
+            "entropy": entropy,
+        }
 
     def get_q(self, x: torch.Tensor) -> torch.Tensor:
-        quantiles, _, _, q_probs = self.get_quantiles(x)
-        q_values = (quantiles * q_probs.unsqueeze(-1)).sum(dim=1)
-        return q_values
+        output = self.forward(x)
+        quantiles = output["quantiles"]
+        q_probs = output["q_probs"]
+        return (quantiles * q_probs.unsqueeze(-1)).sum(dim=1)
 
-    def value_loss(
-        self, predictions: torch.Tensor, targets: torch.Tensor, tau_hats: torch.Tensor
-    ) -> torch.Tensor:
+    def quantile_value_loss(self, predictions, targets, tau_hats):
         td_error = targets.unsqueeze(1) - predictions.unsqueeze(2)
         huber = torch.where(
-            td_error.abs() < 1.0, 0.5 * td_error.pow(2), td_error.abs() - 0.5
+            td_error.abs() < 1.0,
+            0.5 * td_error.pow(2),
+            td_error.abs() - 0.5,
         )
         tau = tau_hats.unsqueeze(2)
-        loss = (torch.abs(tau - (td_error.detach() < 0).float()) * huber).mean()
-        return loss
+        loss = torch.abs(tau - (td_error.detach() < 0).float()) * huber
+        return loss.mean()
 
-    @torch.no_grad()
-    def fpn_loss(
-        self,
-        features: torch.Tensor,
-        actions: torch.Tensor,
-        quantiles_at_tau_hat: torch.Tensor,
-        taus: torch.Tensor,
-        q_probs: torch.Tensor,
-    ) -> torch.Tensor:
+    def fraction_proposal_loss(self, features, actions, quantiles, taus, q_probs):
         inner_taus = taus[:, 1:-1]
-        quantiles_at_tau = self.quantile_value(features.detach(), inner_taus)
-        action_idx = (
-            actions.unsqueeze(-1).unsqueeze(-1).expand(-1, inner_taus.size(1), 1)
-        )
-        q_tau = quantiles_at_tau.gather(dim=-1, index=action_idx).squeeze(-1)
-        action_idx_hat = (
-            actions.unsqueeze(-1)
-            .unsqueeze(-1)
-            .expand(-1, quantiles_at_tau_hat.size(1), 1)
-        )
-        q_tau_hat = quantiles_at_tau_hat.gather(dim=-1, index=action_idx_hat).squeeze(
-            -1
-        )
-        gradient_term = 2 * q_tau - q_tau_hat[:, 1:] - q_tau_hat[:, :-1]
+        quantiles_tau = self.quantile_value(features.detach(), inner_taus)
+        action_idx = actions.unsqueeze(-1).unsqueeze(-1)
+        q_tau = torch.take_along_dim(
+            quantiles_tau,
+            action_idx.expand(-1, inner_taus.size(1), 1),
+            dim=-1,
+        ).squeeze(-1)
+        q_tau_hat = torch.take_along_dim(
+            quantiles,
+            action_idx.expand(-1, quantiles.size(1), 1),
+            dim=-1,
+        ).squeeze(-1)
+        gradient_term = torch.abs(2 * q_tau - q_tau_hat[:, 1:] - q_tau_hat[:, :-1])
         loss = (q_probs[:, :-1] * gradient_term).sum(dim=1).mean()
         return loss
 
-    def loss(self, mini_batch_observations, mini_batch_targets, mini_batch_actions):
-        features = self._network.get_features(mini_batch_observations)
-        taus, tau_hats, q_probs = self.fraction_proposal(features)
-        quantiles = self.quantile_value(features, tau_hats)
-        action_idx = (
-            mini_batch_actions.unsqueeze(-1)
-            .unsqueeze(-1)
-            .expand(-1, quantiles.size(1), 1)
+    def compute_losses(self, observations, targets, actions):
+        output = self.forward(observations)
+
+        features = output["features"]
+        quantiles = output["quantiles"]
+        taus = output["taus"]
+        tau_hats = output["tau_hats"]
+        q_probs = output["q_probs"]
+        entropy = output["entropy"]
+
+        action_idx = actions.unsqueeze(-1).unsqueeze(-1)
+        predictions = torch.take_along_dim(
+            quantiles,
+            action_idx.expand(-1, quantiles.size(1), 1),
+            dim=-1,
+        ).squeeze(-1)
+        val_loss = self.value_loss(predictions, targets, tau_hats)
+        fpn_loss = self.fpn_loss(features, actions, quantiles, taus, q_probs)
+        entropy_loss = -entropy.mean()
+        total_loss = (
+            val_loss
+            + self.fraction_proposal_coefficient * fpn_loss
+            + self.entropy_coefficient * entropy_loss
         )
-        predictions = quantiles.gather(dim=-1, index=action_idx).squeeze(-1)
-        val_loss = self._network.value_loss(predictions, mini_batch_targets, tau_hats)
-        fpn_loss = self._network.fpn_loss(
-            features, mini_batch_actions, quantiles, taus, q_probs
-        )
-        return val_loss + fpn_loss
+
+        return {
+            "total_loss": total_loss,
+            "value_loss": val_loss,
+            "fpn_loss": fpn_loss,
+            "entropy_loss": entropy_loss,
+        }
