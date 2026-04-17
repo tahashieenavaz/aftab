@@ -119,7 +119,7 @@ class Aftab(
         self.set_seed(seed)
 
         episode_returns = numpy.zeros(self.total_environments, dtype=numpy.float32)
-        train_environment, test_environment = self.make_environments(
+        train_environment, test_environment, action_dimension = self.make_environments(
             environment=environment, seed=seed
         )
         self.prepare_network(action_dimension=action_dimension)
