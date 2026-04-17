@@ -1,6 +1,6 @@
 import torch
-from ..maps import agents_map
-from ..agents import PQNAgent
+from ..maps import networks
+from ..networks import PQNNetwork
 from ..constants import ModuleType
 
 
@@ -34,15 +34,15 @@ class NetworkMixin:
         dummy_input = self.__get_dummy_sample()
         self._network(dummy_input)
 
-    def __build_pqn_agent(self, action_dimension: int, agent_instance: ModuleType):
-        self._network = agent_instance(
+    def __build_pqn_network(self, action_dimension: int, network_instance: ModuleType):
+        self._network = network_instance(
             action_dimension=action_dimension, encoder_instance=self.encoder
         )
 
-    def __build_categorical_agent(
-        self, action_dimension: int, agent_instance: ModuleType
+    def __build_categorical_network(
+        self, action_dimension: int, network_instance: ModuleType
     ):
-        self._network = agent_instance(
+        self._network = network_instance(
             action_dimension=action_dimension,
             encoder_instance=self.encoder,
             number_quantiles=self.number_quantiles,
@@ -51,17 +51,17 @@ class NetworkMixin:
 
     def __build_network(self, action_dimension: int):
         try:
-            agent_instance = agents_map[self.agent]
-            if agent_instance == PQNAgent:
-                self.__build_pqn_agent(
-                    action_dimension=action_dimension, agent_instance=agent_instance
+            network_instance = networks[self.network]
+            if network_instance == PQNNetwork:
+                self.__build_pqn_network(
+                    action_dimension=action_dimension, network_instance=network_instance
                 )
             else:
-                self.__build_categorical_agent(
-                    action_dimension=action_dimension, agent_instance=agent_instance
+                self.__build_categorical_network(
+                    action_dimension=action_dimension, network_instance=network_instance
                 )
         except:
-            raise ValueError("Wrong agent id detected.")
+            raise ValueError("Wrong network id detected.")
 
     def __compile_network(self):
         if not getattr(self, "should_compile", False):

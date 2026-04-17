@@ -43,7 +43,7 @@ class Aftab(
     def __init__(
         self,
         encoder: str | Type[torch.nn.Module] = "gamma",
-        agent: Literal["regression", "duelling", "fqf"] = "regression",
+        network: Literal["regression", "duelling", "fqf"] = "regression",
         frames: int | Literal["pilot", "full", "ablation"] = "pilot",
         frame_skip: int = 4,
         num_minibatches: int = 32,
@@ -107,7 +107,7 @@ class Aftab(
         self.optimizer_second_beta = optimizer_second_beta
         self.optimizer_weight_decay = optimizer_weight_decay
         self.augmentation = augmentation
-        self.agent = agent
+        self.network = network
         self.number_quantiles = number_quantiles
         self.quantile_embedding_dimension = quantile_embedding_dimension
 
