@@ -1,11 +1,13 @@
 import torch
 import math
-from ..modules import CosineEmbeddingModule, Stream
+from .Stream import Stream
+from .CosineEmbeddingModule import CosineEmbeddingModule
 
 
 class QuantileStream(torch.nn.Module):
     def __init__(
         self,
+        *,
         action_dimension: int,
         embedding_dimension: int,
     ):
