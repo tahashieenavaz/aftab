@@ -55,6 +55,7 @@ class NetworkMixin:
     def __build_network(self, action_dimension: int):
         try:
             network_instance = networks_map[self.network]
+            print(self.network, network_instance)
             if network_instance == PQNNetwork:
                 self.__build_pqn_network(
                     action_dimension=action_dimension, network_instance=network_instance

@@ -43,6 +43,7 @@ class Aftab(
 ):
     def __init__(
         self,
+        *,
         encoder: str | Type[torch.nn.Module] = "gamma",
         network: Literal["regression", "duelling", "fqf"] = "regression",
         frames: int | Literal["pilot", "full", "ablation"] = "pilot",
