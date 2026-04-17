@@ -128,9 +128,7 @@ class Aftab(
         observation_train, _ = train_environment.reset()
         observation_test, _ = test_environment.reset()
         observation = numpy.concatenate([observation_train, observation_test], axis=0)
-        observation = torch.as_tensor(
-            observation, dtype=torch.uint8, device=self.device
-        )
+        observation = torch.from_numpy(observation, dtype=torch.uint8).to(self.device)
         (
             batch_observations,
             batch_actions,
@@ -217,15 +215,15 @@ class Aftab(
                     episode_returns[terminations] = 0
 
                 batch_observations[step] = observation
-                batch_actions[step] = torch.as_tensor(actions, device=self.device)
-                batch_rewards[step] = torch.as_tensor(rewards, device=self.device)
-                batch_terminations[step] = torch.as_tensor(
-                    terminations, device=self.device
+                batch_actions[step] = torch.from_numpy(actions).to(self.device)
+                batch_rewards[step] = torch.from_numpy(rewards).to(self.device)
+                batch_terminations[step] = torch.from_numpy(terminations).to(
+                    self.device
                 )
                 batch_q[step] = q_values
 
-                observation = torch.as_tensor(
-                    next_observation, dtype=torch.uint8, device=self.device
+                observation = torch.from_numpy(next_observation, dtype=torch.uint8).to(
+                    self.device
                 )
                 frame_count += self.num_train_environments
 
