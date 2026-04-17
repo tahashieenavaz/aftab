@@ -1,25 +1,58 @@
 import torch
-from typing import Type
-from ..agents import PQNAgent, DuellingAgent, FQFAgent
+from ..maps import agents_map
 
 
 class NetworkMixin:
     def __init__(self):
         super().__init__()
 
-    def make_network(
-        self, action_dimension: int, encoder_instance: Type[torch.nn.Module]
-    ) -> Type[torch.nn.Module]:
-        strategy_map = {
-            "regression": PQNAgent,
-            "duelling": DuellingAgent,
-            "fqf": FQFAgent,
-        }
-        if self.strategy == "regression":
-            return PQNAgent(
-                action_dimension=action_dimension, encoder_instance=encoder_instance
+    def __get_dummy_sample(self):
+        if not hasattr(self, "stack_number"):
+            raise AttributeError("Expected `stack_number` to be defined.")
+
+        if not hasattr(self, "device"):
+            raise AttributeError("Expected `device` to be defined.")
+
+        batch_size = 1
+        picture_size = 84
+
+        return torch.randn(
+            batch_size,
+            self.stack_number,
+            picture_size,
+            picture_size,
+            device=self.device,
+        )
+
+    @torch.no_grad()
+    def __perform_dummy_pass(self):
+        if not hasattr(self, "_network"):
+            raise AttributeError("Expected `_network` to be defined.")
+
+        dummy_input = self.__get_dummy_sample()
+        self._network(dummy_input)
+
+    def __build_network(self, action_dimension: int):
+        try:
+            agent_instance = agents_map[self.agent]
+            self._network = agent_instance(
+                action_dimension=action_dimension, encoder_instance=self.encoder
+            )
+        except:
+            raise ValueError("Wrong strategy detected.")
+
+    def __compile_network(self):
+        if not getattr(self, "should_compile", False):
+            return
+
+        if not hasattr(self, "_network"):
+            raise AttributeError(
+                "Expected `_network` to be defined before compilation."
             )
 
-            return PQNAgent(
-                action_dimension=action_dimension, encoder_instance=encoder_instance
-            )
+        self._network = torch.compile(self._network)
+
+    def prepare_network(self, action_dimension: int):
+        self.__build_network(action_dimension=action_dimension)
+        self.__perform_dummy_pass()
+        self.__compile_network()

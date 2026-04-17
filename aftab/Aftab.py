@@ -9,11 +9,9 @@ from .mixins import (
     ConstantsMixin,
     TrainingResultsMixin,
     MatrixPrecisionMixin,
-    DummyPassMixin,
     ReproducibilityMixin,
     EnvironmentSetupMixin,
     ActionsMixin,
-    CompilationMixin,
     BatchMixin,
     EpsilonMixin,
     NetworkMixin,
@@ -30,11 +28,9 @@ class Aftab(
     ConstantsMixin,
     TrainingResultsMixin,
     EnvironmentSetupMixin,
-    DummyPassMixin,
     ReproducibilityMixin,
     MatrixPrecisionMixin,
     ActionsMixin,
-    CompilationMixin,
     BatchMixin,
     EpsilonMixin,
     NetworkMixin,
@@ -74,7 +70,7 @@ class Aftab(
         test_reward_clip: bool = True,
         should_compile: bool = True,
         augmentation: bool = False,
-        strategy: Literal["regression", "duelling", "fqf"] = "regression",
+        agent: Literal["regression", "duelling", "fqf"] = "regression",
     ):
         self.frame_skip = frame_skip
         self.lr = lr
@@ -109,7 +105,7 @@ class Aftab(
         self.optimizer_second_beta = optimizer_second_beta
         self.optimizer_weight_decay = optimizer_weight_decay
         self.augmentation = augmentation
-        self.strategy = strategy
+        self.agent = agent
 
     def train(self, environment, seed: int = 42):
         self.flush_results()
@@ -125,11 +121,7 @@ class Aftab(
             environment=environment, seed=seed
         )
         action_dimension = train_environment.action_space.n
-        self._network = self.make_network(
-            action_dimension=action_dimension, encoder_instance=self.encoder
-        )
-        self.compile_network()
-        self.perform_dummy_pass()
+        self.prepare_network(action_dimension=action_dimension)
 
         observation_train, _ = train_environment.reset()
         observation_test, _ = test_environment.reset()
