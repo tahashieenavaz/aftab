@@ -1,7 +1,7 @@
 import torch
 import numpy
 import time
-from ..functions import flush, lambda_returns
+from ..functions import flush, lambda_returns_quantile
 
 
 class CategoricalTrainMixin:
