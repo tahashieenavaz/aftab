@@ -2,7 +2,7 @@ import torch
 from ..constants import ModuleType
 from ..common import LinearEpsilon
 from ..functions import mse_loss
-from ..modules import RandomShiftModule
+from ..modules.augmentation import RandomShift, ColorIntensity
 
 
 class BaseAgent(torch.nn.Module):
@@ -13,7 +13,7 @@ class BaseAgent(torch.nn.Module):
         self.action_dimension = action_dimension
         self.epsilon = LinearEpsilon()
         if augmentation:
-            self.phi = torch.nn.Sequential(RandomShiftModule(), encoder())
+            self.phi = torch.nn.Sequential(RandomShift(), ColorIntensity(), encoder())
         else:
             self.phi = encoder()
 

@@ -1,7 +1,7 @@
 import torch
 
 
-class RandomShiftModule(torch.nn.Module):
+class RandomShift(torch.nn.Module):
     def __init__(self, padding: int = 4):
         super().__init__()
         self.padding = padding
