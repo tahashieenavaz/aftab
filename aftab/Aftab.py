@@ -123,6 +123,7 @@ class Aftab(
             self.make_environments(environment=environment, seed=seed)
         )
         self.prepare_network(action_dimension=action_dimension)
+        optimizer = self.make_optimizer()
 
         observation_train, _ = train_environment.reset()
         observation_test, _ = test_environment.reset()
@@ -130,7 +131,6 @@ class Aftab(
         observation = torch.as_tensor(
             observation, dtype=torch.uint8, device=self.device
         )
-        optimizer = self.make_optimizer()
         (
             batch_observations,
             batch_actions,
@@ -166,6 +166,7 @@ class Aftab(
                     truncation_train,
                     info_train,
                 ) = train_environment.step(actions_train)
+
                 (
                     next_observation_test,
                     reward_test,
@@ -173,6 +174,7 @@ class Aftab(
                     truncation_test,
                     info_test,
                 ) = test_environment.step(actions_test)
+
                 next_observation = numpy.concatenate(
                     [next_observation_train, next_observation_test], axis=0
                 )
