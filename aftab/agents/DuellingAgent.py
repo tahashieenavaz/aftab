@@ -6,19 +6,9 @@ from .BaseAgent import BaseAgent
 
 
 class PQNAgent(BaseAgent):
-    def __init__(
-        self,
-        *,
-        action_dimension: int,
-        augmentation: bool,
-        encoder: ModuleType = NatureDQNEncoder,
-    ):
-        super().__init__(
-            action_dimension=action_dimension,
-            encoder=encoder,
-            augmentation=augmentation,
-        )
-        self.advantage = Stream(output_dimension=action_dimension)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.advantage = Stream(output_dimension=kwargs["action_dimension"])
         self.value = Stream(output_dimension=1)
 
     def get_value(self, features):

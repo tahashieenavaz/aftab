@@ -6,18 +6,9 @@ from .BaseAgent import BaseAgent
 
 
 class DuellingAgent(BaseAgent):
-    def __init__(
-        self,
-        action_dimension: int,
-        augmentation: bool,
-        encoder: ModuleType = NatureDQNEncoder,
-    ):
-        super().__init__(
-            encoder=encoder,
-            action_dimension=action_dimension,
-            augmentation=augmentation,
-        )
-        self.q = Stream(output_dimension=action_dimension)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.q = Stream(output_dimension=kwargs["action_dimension"])
 
     def get_q(self, states: torch.Tensor) -> torch.Tensor:
         features = self.get_features(states)

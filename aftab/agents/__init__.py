@@ -7,3 +7,5 @@ from .EtaAgent import EtaAgent
 from .ZetaAgent import ZetaAgent
 from .ThetaAgent import ThetaAgent
 from .PQNAgent import PQNAgent
+from .DuellingAgent import DuellingAgent
+from .FQFAgent import FQFAgent
