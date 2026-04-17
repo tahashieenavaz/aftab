@@ -6,13 +6,11 @@ class FractionProposalStream(torch.nn.Module):
     def __init__(
         self,
         *,
-        features_dimension: int,
         number_quantiles: int = 32,
         embedding_dimension: int = 256,
     ):
         super().__init__()
         self.mu = Stream(
-            input_dimension=features_dimension,
             output_dimension=number_quantiles,
             hidden_dimension=embedding_dimension,
         )

@@ -6,8 +6,14 @@ from ..modules import QuantileStream, FractionProposalStream
 class FQFAgent(BaseAgent):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.fraction_proposal = FractionProposalStream()
-        self.quantile = QuantileStream()
+        self.fraction_proposal = FractionProposalStream(
+            number_quantiles=kwargs["number_quantiles"],
+            embedding_dimension=kwargs["embedding_dimension"],
+        )
+        self.quantile = QuantileStream(
+            action_dimension=kwargs["action_dimension"],
+            embedding_dimension=kwargs["embedding_dimension"],
+        )
 
     def get_quantiles(self, x: torch.Tensor):
         features = self.get_features(x)

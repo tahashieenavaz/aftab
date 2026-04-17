@@ -5,9 +5,8 @@ from ..modules import CosineEmbeddingModule, Stream
 class QuantileStream(torch.nn.Module):
     def __init__(
         self,
-        feature_dimension: int,
         action_dimension: int,
-        embedding_dimension: int = 512,
+        embedding_dimension: int = 256,
     ):
         super().__init__()
         self.mu = CosineEmbeddingModule(embedding_dimension)
@@ -17,7 +16,7 @@ class QuantileStream(torch.nn.Module):
             output_dimension=action_dimension,
         )
         self.xi = torch.nn.Sequential(
-            torch.nn.Linear(feature_dimension, embedding_dimension), torch.nn.ReLU()
+            torch.nn.LazyLinear(embedding_dimension), torch.nn.ReLU()
         )
 
     def forward(self, state_features, fractions):

@@ -1,5 +1,7 @@
 import torch
 from ..maps import agents_map
+from ..agents import PQNAgent
+from ..constants import ModuleType
 
 
 class NetworkMixin:
@@ -32,12 +34,32 @@ class NetworkMixin:
         dummy_input = self.__get_dummy_sample()
         self._network(dummy_input)
 
+    def __build_pqn_agent(self, action_dimension: int, agent_instance: ModuleType):
+        self._network = agent_instance(
+            action_dimension=action_dimension, encoder_instance=self.encoder
+        )
+
+    def __build_categorical_agent(
+        self, action_dimension: int, agent_instance: ModuleType
+    ):
+        self._network = agent_instance(
+            action_dimension=action_dimension,
+            encoder_instance=self.encoder,
+            number_quantiles=self.number_quantiles,
+            embedding_dimension=self.embedding_dimension,
+        )
+
     def __build_network(self, action_dimension: int):
         try:
             agent_instance = agents_map[self.agent]
-            self._network = agent_instance(
-                action_dimension=action_dimension, encoder_instance=self.encoder
-            )
+            if agent_instance == PQNAgent:
+                self.__build_pqn_agent(
+                    action_dimension=action_dimension, agent_instance=agent_instance
+                )
+            else:
+                self.__build_categorical_agent(
+                    action_dimension=action_dimension, agent_instance=agent_instance
+                )
         except:
             raise ValueError("Wrong strategy detected.")
 
