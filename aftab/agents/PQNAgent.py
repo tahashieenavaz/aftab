@@ -1,6 +1,4 @@
 import torch
-from ..constants import ModuleType
-from ..encoders import NatureDQNEncoder
 from ..modules import Stream
 from .BaseAgent import BaseAgent
 
