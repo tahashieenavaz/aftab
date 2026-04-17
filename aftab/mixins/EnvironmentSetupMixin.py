@@ -34,4 +34,5 @@ class EnvironmentSetupMixin:
             stack_num=self.frame_stack,
         )
         action_dimension = train_environment.action_space.n
-        return train_environment, test_environment, action_dimension
+        observation_shape = train_environment.observation_space.shape
+        return train_environment, test_environment, action_dimension, observation_shape
