@@ -6,10 +6,14 @@ from .Stream import Stream
 
 class CosineEmbeddingModule(torch.nn.Module):
     def __init__(
-        self, *, embedding_dimension: int, activation: ModuleType = torch.nn.ReLU
+        self,
+        *,
+        embedding_dimension: int,
+        activation: ModuleType = torch.nn.ReLU,
     ):
         super().__init__()
-        self.mu = Stream(
+        self.embedding_dimension = embedding_dimension
+        self.cosine_network = Stream(
             input_dimension=embedding_dimension,
             hidden_dimension=embedding_dimension,
             output_dimension=embedding_dimension,
@@ -19,7 +23,7 @@ class CosineEmbeddingModule(torch.nn.Module):
         self.activation = activation()
 
     def forward(self, fractions: torch.Tensor):
-        cosine_embeddings = torch.cos(
-            fractions.unsqueeze(-1) * self.pi_indices.view(1, 1, -1)
-        )
-        return self.activation(self.mu(cosine_embeddings))
+        cos = torch.cos(fractions.unsqueeze(-1) * self.pi_indices.view(1, 1, -1))
+        cos = cos * math.sqrt(1.0 / self.embedding_dimension)
+        embeddings = self.cosine_network(cos)
+        return self.activation(embeddings)
