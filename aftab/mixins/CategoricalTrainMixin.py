@@ -219,7 +219,6 @@ class CategoricalTrainMixin:
                         device_type=self.device.type, dtype=torch.float16
                     ):
                         features = self._network.phi(mini_batch_observations)
-                        # Detached features to isolate the fraction proposal network representation updates.
                         tau, tau_hat, q_probs, entropy = (
                             self._network.fraction_proposal(features.detach())
                         )
@@ -232,7 +231,6 @@ class CategoricalTrainMixin:
                         )
                         current_quantiles = quantiles.gather(2, action_idx).squeeze(-1)
 
-                        # Compute Quantile Huber Loss
                         u = mini_batch_targets.unsqueeze(
                             1
                         ) - current_quantiles.unsqueeze(2)
@@ -248,7 +246,6 @@ class CategoricalTrainMixin:
                             (asym_weights * huber_loss).sum(dim=1).mean(dim=1).mean()
                         )
 
-                        # Compute Fraction Proposal Loss
                         with torch.no_grad():
                             quantiles_tau = self._network.quantile_value(
                                 features.detach(), tau[:, 1:-1]
