@@ -78,48 +78,26 @@ class Aftab(
         reward_centering: bool = True,
         reward_centering_beta: float = 0.01,
     ):
-        self.encoder = encoder
-        self.frames = frames
-        self.frame_skip = frame_skip
-        self.lr = lr
-        self.fraction_proposal_lr = fraction_proposal_lr
-        self.lmbda = lmbda
-        self.gamma = gamma
-        self.epochs = epochs
-        self.num_minibatches = num_minibatches
-        self.num_train_environments = num_train_environments
-        self.num_test_environments = num_test_environments
-        self.total_environments = int(num_train_environments + num_test_environments)
-        self.steps_per_update = steps_per_update
-        self.batch_size = int(num_train_environments * steps_per_update)
-        self.minibatch_size = int(self.batch_size // num_minibatches)
-        self.actual_frames = int(self.frames / self.frame_skip)
-        self.total_updates = math.ceil(self.actual_frames / self.batch_size)
-        self.train_reward_clip = train_reward_clip
-        self.train_episodic_life = train_episodic_life
-        self.test_reward_clip = test_reward_clip
-        self.test_episodic_life = test_episodic_life
-        self.min_test_cpu_count = min_test_cpu_count
-        self.noop = noop
-        self.gradient_norm = gradient_norm
-        self.log_interval = log_interval
-        self.verbose = verbose
-        self.should_compile = should_compile
-        self.frame_stack = frame_stack
-        self.optimizer_instance = optimizer_instance
-        self.optimizer_epsilon = optimizer_epsilon
-        self.optimizer_first_beta = optimizer_first_beta
-        self.optimizer_second_beta = optimizer_second_beta
-        self.optimizer_weight_decay = optimizer_weight_decay
-        self.augmentation = augmentation
-        self.network = network
-        self.number_quantiles = number_quantiles
-        self.quantile_embedding_dimension = quantile_embedding_dimension
-        self.reward_centring = reward_centering
-        self.reward_centering_beta = reward_centering_beta
-        self.q_value_iterations = q_value_iterations
+        params = locals()
+        params.pop("self")
+        self._init_hyperparameters(**params)
 
         super().__init__()
+
+        self._calculate_derived_attributes()
+
+    def _init_hyperparameters(self, **hyperparameters):
+        for key, value in hyperparameters.items():
+            setattr(self, key, value)
+
+    def _calculate_derived_attributes(self):
+        self.total_environments = int(
+            self.num_train_environments + self.num_test_environments
+        )
+        self.batch_size = int(self.num_train_environments * self.steps_per_update)
+        self.minibatch_size = int(self.batch_size // self.num_minibatches)
+        self.actual_frames = int(self.frames / self.frame_skip)
+        self.total_updates = math.ceil(self.actual_frames / self.batch_size)
 
     def train(self, environment: str, seed: int = 42):
         self._train_loop(environment=environment, seed=seed)
