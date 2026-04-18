@@ -69,11 +69,11 @@ class Aftab(
         optimizer_weight_decay: float = 0.0,
         optimizer_first_beta: float = 0.9,
         optimizer_second_beta: float = 0.999,
-        train_episodic_life: bool = True,
-        train_reward_clip: bool = True,
-        test_episodic_life: bool = False,
-        test_reward_clip: bool = True,
         should_compile: bool = True,
+        train_episodic_life: bool = True,
+        test_episodic_life: bool = False,
+        train_reward_clip: bool = True,
+        test_reward_clip: bool = True,
         reward_centering: bool = True,
         reward_centering_beta: float = 0.01,
     ):
@@ -115,6 +115,7 @@ class Aftab(
         self.number_quantiles = number_quantiles
         self.quantile_embedding_dimension = quantile_embedding_dimension
         self.reward_centring = reward_centering
+        self.reward_centering_beta = reward_centering_beta
 
         super().__init__()
 
