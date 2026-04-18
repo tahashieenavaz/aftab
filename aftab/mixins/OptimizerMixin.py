@@ -5,7 +5,7 @@ class OptimizerMixin:
     def __init__(self):
         super().__init__()
 
-    def __build_quantile_optimizers(self):
+    def __build_categorical_optimizers(self):
         image_encoder_parameters = list(self._network.phi.parameters())
         quantile_value_parameters = list(self._network.quantile_value.parameters())
         fraction_proposal_parameters = list(
@@ -31,7 +31,7 @@ class OptimizerMixin:
             }
         )
 
-    def __build_regression_optimizer(self):
+    def __build_non_categorical_optimizer(self):
         return self.optimizer_instance(
             self._network.parameters(),
             lr=self.lr,
@@ -41,7 +41,7 @@ class OptimizerMixin:
         )
 
     def make_optimizer(self):
-        if self.network == "regression":
-            return self.__build_regression_optimizer()
+        if self.network in ["q", "duelling"]:
+            return self.__build_non_categorical_optimizer()
         else:
-            return self.__build_quantile_optimizers()
+            return self.__build_categorical_optimizers()

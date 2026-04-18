@@ -395,7 +395,7 @@ class TrainMixin:
 
     def _train_loop(self, *, environment: str, seed: int):
         frame_count = 0
-        is_distributional = self.network not in ["regression", "duelling"]
+        is_distributional = self.network not in ["q", "duelling"]
 
         (
             train_environment,

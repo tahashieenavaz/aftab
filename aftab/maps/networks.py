@@ -1,7 +1,7 @@
 from ..networks import PQNNetwork, DuellingNetwork, FQFNetwork
 
 networks_map = {
-    "regression": PQNNetwork,
+    "q": PQNNetwork,
     "duelling": DuellingNetwork,
     "fqf": FQFNetwork,
 }
