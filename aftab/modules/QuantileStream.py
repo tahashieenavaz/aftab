@@ -30,6 +30,5 @@ class QuantileStream(torch.nn.Module):
         B, N, D = phi.shape
         psi = psi.view(B, 1, D)
         merged = psi * phi
-        merged = merged / math.sqrt(D)
         quantiles = self.nu(merged)
         return quantiles

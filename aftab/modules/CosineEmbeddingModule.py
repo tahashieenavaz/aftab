@@ -19,12 +19,11 @@ class CosineEmbeddingModule(torch.nn.Module):
             output_dimension=embedding_dimension,
             normalization=False,
         )
-        pi_indices = math.pi * torch.arange(0, embedding_dimension).float()
+        pi_indices = math.pi * torch.arange(1, embedding_dimension + 1).float()
         self.register_buffer("pi_indices", pi_indices)
         self.activation = activation()
 
     def forward(self, fractions: torch.Tensor):
         cos = torch.cos(fractions.unsqueeze(-1) * self.pi_indices.view(1, 1, -1))
-        cos = cos * math.sqrt(1.0 / self.embedding_dimension)
         embeddings = self.cosine_network(cos)
         return self.activation(embeddings)
