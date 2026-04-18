@@ -110,20 +110,13 @@ class TrainMixin:
             )
 
             if is_regression:
-                q_values = self.get_q_values(
+                q_values = self.get_regression_q_values(
                     float_observations=float_observations, gradient=False
                 )
             else:
-                with torch.no_grad():
-                    with torch.autocast(
-                        device_type=self.device.type, dtype=torch.float16
-                    ):
-                        features = self._network.phi(float_observations)
-                        tau, tau_hat, q_probs, _ = self._network.fraction_proposal(
-                            features
-                        )
-                        quantiles = self._network.quantile_value(features, tau_hat)
-                        q_values = (q_probs.unsqueeze(-1) * quantiles).sum(dim=1)
+                q_values = self.get_distributional_q_values(
+                    float_observations=float_observations, gradient=False
+                )
 
             actions = self.get_actions(q_values=q_values, epsilon_value=epsilon_value)
             actions_train, actions_test = self.split_actions(actions)
