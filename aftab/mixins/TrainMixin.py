@@ -13,6 +13,9 @@ class TrainMixin:
         self.set_precision()
         self.set_seed(seed)
 
+        if getattr(self, "reward_centering", False):
+            self._average_reward = 0.0
+
         train_environment, test_environment, action_dimension, observation_shape = (
             self.make_environments(environment=environment, seed=seed)
         )
