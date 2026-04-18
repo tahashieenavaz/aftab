@@ -76,6 +76,7 @@ class Aftab(
         test_episodic_life: bool = False,
         test_reward_clip: bool = True,
         should_compile: bool = True,
+        reward_centering: bool = True,
     ):
         self.encoder = encoder
         self.frames = frames
@@ -114,6 +115,7 @@ class Aftab(
         self.network = network
         self.number_quantiles = number_quantiles
         self.quantile_embedding_dimension = quantile_embedding_dimension
+        self.reward_centring = reward_centering
 
         super().__init__()
 
