@@ -114,16 +114,9 @@ class TrainMixin:
                     float_observations=float_observations, gradient=False
                 )
             else:
-                with torch.no_grad():
-                    with torch.autocast(
-                        device_type=self.device.type, dtype=torch.float16
-                    ):
-                        features = self._network.phi(float_observations)
-                        tau, tau_hat, q_probs, _ = self._network.fraction_proposal(
-                            features
-                        )
-                        quantiles = self._network.quantile_value(features, tau_hat)
-                        q_values = (q_probs.unsqueeze(-1) * quantiles).sum(dim=1)
+                q_values, quantiles = self.get_q_and_quantiles(
+                    float_observations=float_observations, gradient=False
+                )
 
             actions = self.get_actions(q_values=q_values, epsilon_value=epsilon_value)
             actions_train, actions_test = self.split_actions(actions)
@@ -223,27 +216,14 @@ class TrainMixin:
                 batch_terminations=batch_terminations,
             )
         else:
-            with torch.no_grad():
-                with torch.autocast(device_type=self.device.type, dtype=torch.float16):
-                    next_float_observations = observation.float()
-                    next_features = self._network.phi(next_float_observations)
-                    next_tau, next_tau_hat, next_q_probs, _ = (
-                        self._network.fraction_proposal(next_features)
-                    )
-                    next_quantiles_all = self._network.quantile_value(
-                        next_features, next_tau_hat
-                    )
-                    next_q_values = (
-                        next_q_probs.unsqueeze(-1) * next_quantiles_all
-                    ).sum(dim=1)
-
-                    next_action = next_q_values.argmax(dim=-1, keepdim=True)
-                    next_action_idx = next_action.unsqueeze(1).expand(
-                        -1, self.number_quantiles, -1
-                    )
-                    next_quantiles = next_quantiles_all.gather(
-                        2, next_action_idx
-                    ).squeeze(-1)
+            next_q_values, next_quantiles_all = self.get_q_and_quantiles(
+                float_observations=observation.float()
+            )
+            next_action = next_q_values.argmax(dim=-1, keepdim=True)
+            next_action_idx = next_action.unsqueeze(1).expand(
+                -1, self.number_quantiles, -1
+            )
+            next_quantiles = next_quantiles_all.gather(2, next_action_idx).squeeze(-1)
 
             q_seq_for_lambda = torch.cat(
                 [batch_quantiles[1:], next_quantiles.unsqueeze(0)], dim=0
