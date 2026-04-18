@@ -81,9 +81,7 @@ class Aftab(
         params = locals()
         params.pop("self")
         self._init_hyperparameters(**params)
-
         super().__init__()
-
         self._calculate_derived_attributes()
 
     def _init_hyperparameters(self, **hyperparameters):
