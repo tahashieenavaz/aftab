@@ -1,5 +1,4 @@
 import torch
-import math
 from .Stream import Stream
 from .CosineEmbeddingModule import CosineEmbeddingModule
 
