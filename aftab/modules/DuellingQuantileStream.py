@@ -3,7 +3,7 @@ from .QuantileStream import QuantileStream
 
 
 class DuellingQuantileStream(torch.nn.Module):
-    def __init__(self, action_dimension: int, embedding_dimension: int):
+    def __init__(self, *, action_dimension: int, embedding_dimension: int):
         super().__init__()
         self.value_stream = QuantileStream(
             action_dimension=1,
