@@ -1,5 +1,7 @@
 import torch
 import math
+import os
+from baloot import acceleration_device
 from typing import Type, Literal
 from .mixins import (
     EncoderRefinementMixin,
@@ -81,15 +83,16 @@ class Aftab(
     ):
         params = locals()
         params.pop("self")
-        self._init_hyperparameters(**params)
-        self._calculate_derived_attributes()
+        self.__init_hyperparameters(**params)
+        self.__calculate_derived_attributes()
+        self.__set_constants()
         super().__init__()
 
-    def _init_hyperparameters(self, **hyperparameters):
+    def __init_hyperparameters(self, **hyperparameters):
         for key, value in hyperparameters.items():
             setattr(self, key, value)
 
-    def _calculate_derived_attributes(self):
+    def __calculate_derived_attributes(self):
         self.total_environments = int(
             self.num_train_environments + self.num_test_environments
         )
@@ -97,6 +100,10 @@ class Aftab(
         self.minibatch_size = int(self.batch_size // self.num_minibatches)
         self.actual_frames = int(self.frames / self.frame_skip)
         self.total_updates = math.ceil(self.actual_frames / self.batch_size)
+
+    def __set_constants(self):
+        self.device = acceleration_device()
+        self.cpu_count = os.cpu_count() or 1
 
     def train(self, environment: str, seed: int = 42):
         self._train_loop(environment=environment, seed=seed)
