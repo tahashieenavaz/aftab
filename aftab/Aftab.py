@@ -5,7 +5,6 @@ from baloot import acceleration_device
 from typing import Type, Literal
 from .mixins import (
     EncoderRefinementMixin,
-    ConstantsMixin,
     TrainingResultsMixin,
     MatrixPrecisionMixin,
     ReproducibilityMixin,
@@ -25,7 +24,6 @@ from .mixins import (
 
 class Aftab(
     EncoderRefinementMixin,
-    ConstantsMixin,
     TrainingResultsMixin,
     EnvironmentSetupMixin,
     ReproducibilityMixin,

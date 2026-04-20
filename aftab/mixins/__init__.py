@@ -2,7 +2,6 @@ from .TrainingResultsMixin import TrainingResultsMixin
 from .MatrixPrecisionMixin import MatrixPrecisionMixin
 from .ReproducibilityMixin import ReproducibilityMixin
 from .EnvironmentSetupMixin import EnvironmentSetupMixin
-from .ConstantsMixin import ConstantsMixin
 from .ActionsMixin import ActionsMixin
 from .EncoderRefinementMixin import EncoderRefinementMixin
 from .BatchMixin import BatchMixin
