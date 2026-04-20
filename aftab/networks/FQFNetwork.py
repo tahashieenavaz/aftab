@@ -1,4 +1,5 @@
 import torch
+from typing import Dict
 from .BaseNetwork import BaseNetwork
 from ..modules import QuantileStream, FractionProposalStream
 
@@ -20,7 +21,7 @@ class FQFNetwork(BaseNetwork):
             embedding_dimension=quantile_embedding_dimension,
         )
 
-    def forward(self, x: torch.Tensor):
+    def forward(self, x: torch.Tensor) -> Dict:
         features = self.get_features(x)
         taus, tau_hats, q_probs, entropy = self.fraction_proposal(features)
         quantiles = self.quantile_value(features, tau_hats)
