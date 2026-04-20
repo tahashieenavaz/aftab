@@ -8,8 +8,6 @@ class FQFNetwork(BaseNetwork):
         self,
         quantile_embedding_dimension: int,
         number_quantiles: int,
-        entropy_coefficient: float = 1e-3,
-        fraction_proposal_coefficient: float = 1.0,
         **kwargs,
     ):
         super().__init__(**kwargs)

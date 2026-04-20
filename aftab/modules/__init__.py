@@ -3,5 +3,6 @@ from .Stream import Stream
 from .HadamaxBlock import HadamaxBlock
 from .EncoderBlock import EncoderBlock
 from .FractionProposalStream import FractionProposalStream
-from .QuantileStream import QuantileStream
 from .CosineEmbeddingModule import CosineEmbeddingModule
+from .QuantileStream import QuantileStream
+from .DuellingQuantileStream import DuellingQuantileStream
