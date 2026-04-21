@@ -23,10 +23,17 @@ class TrainMixin:
         optimizer = self.make_optimizer()
         scaler = torch.amp.GradScaler(enabled=self.device.type == "cuda")
 
-        observation_train, _ = train_environment.reset()
-        observation_test, _ = test_environment.reset()
-        observation = numpy.concatenate([observation_train, observation_test], axis=0)
-        observation = torch.from_numpy(observation).to(torch.uint8).to(self.device)
+        train_observation, _ = train_environment.reset()
+        train_observation = (
+            torch.from_numpy(train_observation).to(torch.uint8).to(self.device)
+        )
+
+        test_observation, _ = test_environment.reset()
+        test_observation = (
+            torch.from_numpy(test_observation).to(torch.uint8).to(self.device)
+        )
+        # observation = numpy.concatenate([train_observation, test_observation], axis=0)
+        # observation = torch.from_numpy(observation).to(torch.uint8).to(self.device)
 
         episode_returns = numpy.zeros(self.total_environments, dtype=numpy.float32)
 
@@ -37,14 +44,20 @@ class TrainMixin:
             observation_shape,
             optimizer,
             scaler,
-            observation,
+            train_observation,
+            test_observation,
             episode_returns,
         )
 
     def __allocate_buffers(
         self, *, observation_shape, action_dimension, is_distributional
     ):
-        batch_observations = torch.empty(
+        batch_train_observations = torch.empty(
+            (self.steps_per_update, self.total_environments) + observation_shape,
+            dtype=torch.uint8,
+            device=self.device,
+        )
+        batch_test_observations = torch.empty(
             (self.steps_per_update, self.total_environments) + observation_shape,
             dtype=torch.uint8,
             device=self.device,
@@ -81,7 +94,8 @@ class TrainMixin:
             )
 
         return (
-            batch_observations,
+            batch_train_observations,
+            batch_test_observations,
             batch_actions,
             batch_rewards,
             batch_terminations,
@@ -94,7 +108,8 @@ class TrainMixin:
         *,
         is_distributional,
         frame_count,
-        observation,
+        train_observation,
+        test_observation,
         train_environment,
         test_environment,
         episode_returns,
@@ -106,7 +121,8 @@ class TrainMixin:
         batch_quantiles,
     ):
         for step in range(self.steps_per_update):
-            float_observations = observation.float()
+            float_train_observations = train_observation.float()
+            float_test_observations = test_observation.float()
             epsilon_value = self._network.epsilon.get(
                 frame_count,
                 self.actual_frames,
@@ -114,19 +130,20 @@ class TrainMixin:
 
             if not is_distributional:
                 q_values = self.get_q_values(
-                    float_observations=float_observations, gradient=False
+                    float_train_observations=float_train_observations,
+                    float_test_observations=float_test_observations,
+                    gradient=False,
                 )
             else:
                 q_values, quantiles = self.get_q_and_quantiles(
-                    float_observations=float_observations, gradient=False
+                    float_train_observations=float_train_observations,
+                    float_test_observations=float_test_observations,
+                    gradient=False,
                 )
 
-            q_values_train = q_values[: self.num_train_environments]
-            q_values_test = q_values[self.num_train_environments :]
-
             actions_train, actions_test = self.get_actions(
-                q_values_train=q_values_train,
-                q_values_test=q_values_test,
+                q_values_train=q_values["train"],
+                q_values_test=q_values["test"],
                 epsilon_value=epsilon_value,
             )
             actions = numpy.concatenate([actions_train, actions_test], axis=0)
@@ -191,7 +208,7 @@ class TrainMixin:
             batch_terminations[step] = torch.from_numpy(terminations).to(self.device)
 
             if not is_distributional:
-                batch_q[step] = q_values
+                batch_q[step] = torch.cat([q_values["train"], q_values["test"]], dim=0)
             else:
                 action_idx = (
                     batch_actions[step]

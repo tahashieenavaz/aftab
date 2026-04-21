@@ -10,18 +10,19 @@ class BaseNetwork(torch.nn.Module):
     ):
         super().__init__()
 
+        self.phi = encoder()
         self.epsilon_greedy = True
-        self.action_dimension = action_dimension
         self.epsilon = LinearEpsilon()
+        self.action_dimension = action_dimension
 
         if augmentation == "all":
-            self.phi = torch.nn.Sequential(RandomShift(), ColorIntensity(), encoder())
+            self.chi = torch.nn.Sequential(RandomShift(), ColorIntensity())
         elif augmentation == "intensity":
-            self.phi = torch.nn.Sequential(ColorIntensity(), encoder())
+            self.chi = ColorIntensity()
         elif augmentation == "shift":
-            self.phi = torch.nn.Sequential(RandomShift(), encoder())
+            self.chi = RandomShift()
         elif augmentation in ["none", "off"]:
-            self.phi = encoder()
+            self.chi = torch.nn.Identity()
         else:
             raise ValueError(
                 f"Augmentation pipeline expected among all, intensity, shift, none, off. Got {augmentation}."
@@ -33,10 +34,14 @@ class BaseNetwork(torch.nn.Module):
     def normalize_observations(self, x: torch.Tensor) -> torch.Tensor:
         return x / 255.0
 
-    def get_features(self, x: torch.Tensor) -> torch.Tensor:
+    def get_features(self, x: torch.Tensor, augment: bool = True) -> torch.Tensor:
         x = self.normalize_observations(x)
+
+        if augment:
+            x = self.chi(x)
+
         features = self.phi(x)
         return features
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.get_q(x)
+        raise NotImplementedError
