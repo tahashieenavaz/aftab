@@ -14,7 +14,7 @@ class DuellingNetwork(BaseNetwork):
 
     def get_advantage(self, features):
         advantage = self.advantage(features)
-        advantage = advantage - advantage.mean(dim=1)
+        advantage = advantage - advantage.mean(dim=1, keepdim=True)
         return advantage
 
     def get_q(self, states: torch.Tensor) -> torch.Tensor:

@@ -20,5 +20,5 @@ class DuellingQuantileStream(torch.nn.Module):
         return (
             value_quantiles
             + advantage_quantiles
-            - advantage_quantiles.mean(dim=2, keepdim=True)
+            - advantage_quantiles.mean(dim=(1, 2), keepdim=True)
         )
