@@ -28,7 +28,7 @@ for environment in environments:
   agent = Aftab(encoder="gamma", frames="pilot")
   for seed in seeds:
     agent.train(environment=environment, seed=seed)
-    agent.save(environment=environment, seed=seed, name="MyCustomAftabTests")
+    agent.log()
 ```
 
 ## Defining Custom Encoder
