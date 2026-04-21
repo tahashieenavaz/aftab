@@ -95,8 +95,7 @@ class Aftab(
 
     def __initialize_augmentation_pipeline(self):
         try:
-            augmentation_instance = augmentation_map[self.augmentation]
-            self.augmentation_pipeline = augmentation_instance()
+            self.augmentation_pipeline = augmentation_map[self.augmentation]
         except KeyError as exc:
             raise ValueError(
                 f"Invalid value for `augmentation`: {self.augmentation!r}. "
