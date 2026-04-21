@@ -1,7 +1,9 @@
 import torch
 import numpy
 import time
-from ..functions import flush, lambda_returns_quantile
+from ..functions import flush
+from ..functions import random_shifts
+from ..functions import lambda_returns_quantile
 
 
 class TrainMixin:
@@ -111,10 +113,33 @@ class TrainMixin:
         batch_q,
         batch_quantiles,
     ):
+        if self.random_shift:
+            train_h_shifts = torch.randint(
+                0,
+                2 * self.random_shift_padding + 1,
+                size=(self.num_train_environments,),
+                device=self.device,
+            )
+            train_w_shifts = torch.randint(
+                0,
+                2 * self.random_shift_padding + 1,
+                size=(self.num_train_environments,),
+                device=self.device,
+            )
         for step in range(self.steps_per_update):
             train_observation = observation[: self.num_train_environments]
             test_observation = observation[self.num_train_environments :]
-            float_train_observations = train_observation.float()
+
+            if self.random_shift:
+                float_train_observations = random_shifts(
+                    train_observation.float(),
+                    train_h_shifts,
+                    train_w_shifts,
+                    padding=self.random_shift_padding,
+                )
+            else:
+                float_train_observations = train_observation.float()
+
             float_test_observations = test_observation.float()
             epsilon_value = self._network.epsilon.get(
                 frame_count,
@@ -250,15 +275,17 @@ class TrainMixin:
                 [batch_quantiles[1:], next_quantiles.unsqueeze(0)], dim=0
             )
 
-            with torch.no_grad():
-                with torch.autocast(device_type=self.device.type, dtype=torch.float16):
-                    targets = lambda_returns_quantile(
-                        batch_rewards,
-                        batch_terminations,
-                        q_seq_for_lambda,
-                        self.gamma,
-                        self.lmbda,
-                    )
+            with (
+                torch.no_grad(),
+                torch.autocast(device_type=self.device.type, dtype=torch.float16),
+            ):
+                targets = lambda_returns_quantile(
+                    batch_rewards,
+                    batch_terminations,
+                    q_seq_for_lambda,
+                    self.gamma,
+                    self.lmbda,
+                )
         return targets
 
     def __flatten_batches(
