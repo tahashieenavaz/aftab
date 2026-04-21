@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aftab"
-version = "0.0.54"
+version = "0.0.55"
 authors = [
   { name="Taha Shieenavaz", email="tahashieenavaz@gmail.com" },
 ]
