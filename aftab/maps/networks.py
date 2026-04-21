@@ -4,7 +4,6 @@ networks_map = {
     "q": PQNNetwork,
     "duelling": DuellingNetwork,
     "fqf": FQFNetwork,
-    "fqf-duelling": DuellingFQFNetwork,
-    "duelling-fqf": DuellingFQFNetwork,
+    "dfqf": DuellingFQFNetwork,
 }
 network_map = networks_map

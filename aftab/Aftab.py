@@ -1,16 +1,14 @@
 import torch
 import math
 import os
-from baloot import acceleration_device
+from baloot import acceleration_device, seed_everything
 from typing import Type, Literal
+from types import SimpleNamespace
 from .maps import encoders_map, acceptable_frames_map
 from .mixins import (
     TrainingResultsMixin,
-    MatrixPrecisionMixin,
-    ReproducibilityMixin,
     EnvironmentMixin,
     ActionsMixin,
-    BatchMixin,
     EpsilonMixin,
     NetworkMixin,
     OptimizerMixin,
@@ -24,10 +22,7 @@ from .mixins import (
 class Aftab(
     TrainingResultsMixin,
     EnvironmentMixin,
-    ReproducibilityMixin,
-    MatrixPrecisionMixin,
     ActionsMixin,
-    BatchMixin,
     EpsilonMixin,
     NetworkMixin,
     OptimizerMixin,
@@ -40,7 +35,7 @@ class Aftab(
         self,
         *,
         encoder: str | Type[torch.nn.Module] = "gamma",
-        network: Literal["q", "duelling", "fqf", "duelling-fqf", "fqf-duelling"] = "q",
+        network: Literal["q", "duelling", "fqf", "dfqf"] = "q",
         frames: int | Literal["pilot", "full", "ablation"] = "pilot",
         augmentation: Literal["all", "intensity", "shift", "none"] = "all",
         augmentation_iterations: int = 4,
@@ -78,18 +73,20 @@ class Aftab(
     ):
         params = locals()
         params.pop("self")
-        self.__init_hyperparameters(**params)
-        self.__calculate_derived_attributes()
-        self.__set_constants()
-        self.__refine_encoder()
-        self.__check_frames()
+        self.__initialize_hyperparameters(**params)
+        self.__initialize_derived_attributes()
+        self.__initialize_constants()
+        self.__initialize__encoder()
+        self.__initialize_frames()
         super().__init__()
 
-    def __init_hyperparameters(self, **hyperparameters):
+        self.buffer = SimpleNamespace()
+
+    def __initialize_hyperparameters(self, **hyperparameters):
         for key, value in hyperparameters.items():
             setattr(self, key, value)
 
-    def __check_frames(self):
+    def __initialize_frames(self):
         if not isinstance(self.frames, str):
             return
 
@@ -101,7 +98,7 @@ class Aftab(
                 f"Expected one of {tuple(acceptable_frames_map)}."
             ) from exc
 
-    def __calculate_derived_attributes(self):
+    def __initialize_derived_attributes(self):
         self.total_environments = int(
             self.num_train_environments + self.num_test_environments
         )
@@ -110,7 +107,7 @@ class Aftab(
         self.actual_frames = int(self.frames / self.frame_skip)
         self.total_updates = math.ceil(self.actual_frames / self.batch_size)
 
-    def __refine_encoder(self):
+    def __initialize__encoder(self):
         if not isinstance(self.encoder, str):
             return
 
@@ -122,9 +119,28 @@ class Aftab(
                 f"Expected one of: {tuple(encoders_map.keys())}"
             ) from exc
 
-    def __set_constants(self):
+    def __initialize_constants(self):
         self.device = acceleration_device()
         self.cpu_count = os.cpu_count() or 1
 
+    def set_precision(self):
+        torch.set_float32_matmul_precision("high")
+
+    def set_seed(self, seed: int):
+        seed_everything(seed)
+
+    def set_buffer(self, key, value):
+        setattr(self.buffer, key, value)
+
+    def flush_results(self):
+        self.results = SimpleNamespace()
+        self.results.rewards = SimpleNamespace()
+        self.results.rewards.train = []
+        self.results.rewards.test = []
+        self.results.loss = []
+        self.results.duration = 0.0
+
     def train(self, environment: str, seed: int = 42):
-        self._train_loop(environment=environment, seed=seed)
+        self.set_buffer("seed", seed)
+        self.set_buffer("environment", environment)
+        self.__train_loop(environment=environment, seed=seed)
