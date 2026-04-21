@@ -3,7 +3,6 @@ from .MatrixPrecisionMixin import MatrixPrecisionMixin
 from .ReproducibilityMixin import ReproducibilityMixin
 from .EnvironmentSetupMixin import EnvironmentSetupMixin
 from .ActionsMixin import ActionsMixin
-from .EncoderRefinementMixin import EncoderRefinementMixin
 from .BatchMixin import BatchMixin
 from .EpsilonMixin import EpsilonMixin
 from .NetworkMixin import NetworkMixin

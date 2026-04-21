@@ -2,9 +2,9 @@ import torch
 import math
 import os
 from baloot import acceleration_device
+from maps import encoders_map
 from typing import Type, Literal
 from .mixins import (
-    EncoderRefinementMixin,
     TrainingResultsMixin,
     MatrixPrecisionMixin,
     ReproducibilityMixin,
@@ -23,7 +23,6 @@ from .mixins import (
 
 
 class Aftab(
-    EncoderRefinementMixin,
     TrainingResultsMixin,
     EnvironmentSetupMixin,
     ReproducibilityMixin,
@@ -84,6 +83,7 @@ class Aftab(
         self.__init_hyperparameters(**params)
         self.__calculate_derived_attributes()
         self.__set_constants()
+        self.__refine_encoder()
         super().__init__()
 
     def __init_hyperparameters(self, **hyperparameters):
@@ -98,6 +98,18 @@ class Aftab(
         self.minibatch_size = int(self.batch_size // self.num_minibatches)
         self.actual_frames = int(self.frames / self.frame_skip)
         self.total_updates = math.ceil(self.actual_frames / self.batch_size)
+
+    def __refine_encoder(self):
+        if not isinstance(self.encoder, str):
+            return
+
+        try:
+            self.encoder = encoders_map[self.encoder]
+        except KeyError as exc:
+            raise ValueError(
+                f"Unknown encoder key: {self.encoder!r}. "
+                f"Expected one of: {tuple(encoders_map.keys())}"
+            ) from exc
 
     def __set_constants(self):
         self.device = acceleration_device()
