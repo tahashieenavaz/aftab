@@ -20,8 +20,12 @@ class BaseNetwork(torch.nn.Module):
             self.phi = torch.nn.Sequential(ColorIntensity(), encoder())
         elif augmentation == "shift":
             self.phi = torch.nn.Sequential(RandomShift(), encoder())
-        else:
+        elif augmentation in ["none", "off"]:
             self.phi = encoder()
+        else:
+            raise ValueError(
+                f"Augmentation pipeline expected among all, intensity, shift, none, off. Got {augmentation}."
+            )
 
     def no_epsilon_greedy(self):
         self.epsilon_greedy = False
