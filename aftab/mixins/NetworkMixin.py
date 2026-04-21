@@ -77,7 +77,11 @@ class NetworkMixin:
 
         self._network = torch.compile(self._network)
 
+    def __move_network_on_device(self):
+        self._network.to(self.device)
+
     def prepare_network(self, action_dimension: int):
         self.__build_network(action_dimension=action_dimension)
+        self.__move_network_on_device()
         self.__perform_dummy_pass()
         self.__compile_network()
