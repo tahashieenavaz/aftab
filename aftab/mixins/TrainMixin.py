@@ -113,33 +113,10 @@ class TrainMixin:
         batch_q,
         batch_quantiles,
     ):
-        if self.random_shift:
-            train_h_shifts = torch.randint(
-                0,
-                2 * self.random_shift_padding + 1,
-                size=(self.num_train_environments,),
-                device=self.device,
-            )
-            train_w_shifts = torch.randint(
-                0,
-                2 * self.random_shift_padding + 1,
-                size=(self.num_train_environments,),
-                device=self.device,
-            )
         for step in range(self.steps_per_update):
             train_observation = observation[: self.num_train_environments]
             test_observation = observation[self.num_train_environments :]
-
-            if self.random_shift:
-                float_train_observations = random_shifts(
-                    train_observation.float(),
-                    train_h_shifts,
-                    train_w_shifts,
-                    padding=self.random_shift_padding,
-                )
-            else:
-                float_train_observations = train_observation.float()
-
+            float_train_observations = train_observation.float()
             float_test_observations = test_observation.float()
             epsilon_value = self._network.epsilon.get(
                 frame_count,
@@ -328,9 +305,31 @@ class TrainMixin:
             for range_start in range(0, self.batch_size, self.minibatch_size):
                 range_end = range_start + self.minibatch_size
                 mini_batch_idx = indices[range_start:range_end]
+
                 mini_batch_observations = flattened_observations[mini_batch_idx]
                 mini_batch_actions = flattened_actions[mini_batch_idx]
                 mini_batch_targets = flattened_targets[mini_batch_idx]
+
+                if getattr(self, "random_shift"):
+                    current_mini_batch_size = mini_batch_observations.shape[0]
+                    height_shifts = torch.randint(
+                        0,
+                        2 * self.random_shift_padding + 1,
+                        size=(current_mini_batch_size,),
+                        device=self.device,
+                    )
+                    width_shifts = torch.randint(
+                        0,
+                        2 * self.random_shift_padding + 1,
+                        size=(current_mini_batch_size,),
+                        device=self.device,
+                    )
+                    mini_batch_observations = random_shifts(
+                        mini_batch_observations.float(),
+                        width_shifts=width_shifts,
+                        height_shifts=height_shifts,
+                        padding=self.random_shift_padding,
+                    )
 
                 if not is_distributional:
                     optimizer.zero_grad(set_to_none=True)
