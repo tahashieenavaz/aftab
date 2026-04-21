@@ -41,7 +41,7 @@ class Aftab(
         encoder: str | Type[torch.nn.Module] = "gamma",
         network: Literal["q", "duelling", "fqf", "dfqf"] = "q",
         frames: int | Literal["pilot", "full", "ablation"] = "pilot",
-        augmentation: Literal["all", "intensity", "shift", "none"] = "all",
+        augmentation: Literal["all", "intensity", "shift", "none", "off"] = "all",
         augmentation_iterations: int = 4,
         frame_skip: int = 4,
         num_minibatches: int = 32,
