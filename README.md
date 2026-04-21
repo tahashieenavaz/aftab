@@ -47,7 +47,6 @@ class CustomImageEncoder(torch.nn.Module):
     pass
 
 agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
-# ...
 ```
 
 
