@@ -8,7 +8,7 @@ from .mixins import (
     TrainingResultsMixin,
     MatrixPrecisionMixin,
     ReproducibilityMixin,
-    EnvironmentSetupMixin,
+    EnvironmentMixin,
     ActionsMixin,
     BatchMixin,
     EpsilonMixin,
@@ -23,7 +23,7 @@ from .mixins import (
 
 class Aftab(
     TrainingResultsMixin,
-    EnvironmentSetupMixin,
+    EnvironmentMixin,
     ReproducibilityMixin,
     MatrixPrecisionMixin,
     ActionsMixin,
