@@ -12,7 +12,6 @@ from baloot import acceleration_device
 from baloot import seed_everything
 from .maps import encoders_map
 from .maps import acceptable_frames_map
-from .maps import augmentation_map
 from .mixins import TrainingResultsMixin
 from .mixins import EnvironmentMixin
 from .mixins import ActionsMixin
@@ -43,8 +42,6 @@ class Aftab(
         encoder: str | Type[torch.nn.Module] = "gamma",
         network: Literal["q", "duelling", "fqf", "dfqf"] = "q",
         frames: int | Literal["pilot", "full", "ablation"] = "pilot",
-        augmentation: Literal["all", "intensity", "shift", "none", "off"] = "shift",
-        augmentation_iterations: int = 2,
         frame_skip: int = 4,
         num_minibatches: int = 32,
         epochs: int = 2,
@@ -84,7 +81,6 @@ class Aftab(
         self.__initialize_derived_attributes()
         self.__initialize_constants()
         self.__initialize__encoder()
-        self.__initialize_augmentation_pipeline()
         super().__init__()
 
         self.buffer = SimpleNamespace()
@@ -92,14 +88,6 @@ class Aftab(
     def __initialize_hyperparameters(self, **hyperparameters):
         for key, value in hyperparameters.items():
             setattr(self, key, value)
-
-    def __initialize_augmentation_pipeline(self):
-        try:
-            self.augmentation_pipeline = augmentation_map[self.augmentation]
-        except KeyError as exc:
-            raise ValueError(
-                f"Invalid value for `augmentation`: {self.augmentation!r}. "
-            ) from exc
 
     def __initialize_frames(self):
         if not isinstance(self.frames, str):

@@ -30,18 +30,7 @@ class QValueMixin:
                 return self._network(float_observations)
 
             test_q_values = self._network(float_test_observations)
-
-            if getattr(self, "augmentation", "none") in ["none", "off"]:
-                train_q_values = self._network(float_train_observations)
-            else:
-                augmentation_iterations = getattr(self, "augmentation_iterations")
-                q_values_list = []
-                for _ in range(augmentation_iterations):
-                    augmented_train_observations = self.augmentation_pipeline(
-                        float_train_observations
-                    )
-                    q_values_list.append(self._network(augmented_train_observations))
-                train_q_values = torch.stack(q_values_list).mean(dim=0)
+            train_q_values = self._network(float_train_observations)
 
             return {"test": test_q_values, "train": train_q_values}
 
@@ -59,28 +48,11 @@ class QValueMixin:
         test_res = self.__get_q_value_and_quantiles(float_test_observations, gradient)
         test_q_values = test_res["q_values"]
         test_quantiles = test_res["quantiles"]
-
-        if getattr(self, "augmentation", "none") in ["none", "off"]:
-            train_res = self.__get_q_value_and_quantiles(
-                float_train_observations, gradient
-            )
-            train_q_values = train_res["q_values"]
-            train_quantiles = train_res["quantiles"]
-        else:
-            augmentation_iterations = getattr(self, "augmentation_iterations")
-            q_values_list = []
-            quantiles_list = []
-            for _ in range(augmentation_iterations):
-                augmented_train_observations = self.augmentation_pipeline(
-                    float_train_observations
-                )
-                res = self.__get_q_value_and_quantiles(
-                    float_observations=augmented_train_observations, gradient=gradient
-                )
-                q_values_list.append(res["q_values"])
-                quantiles_list.append(res["quantiles"])
-            train_q_values = torch.stack(q_values_list).mean(dim=0)
-            train_quantiles = torch.stack(quantiles_list).mean(dim=0)
+        train_res = self.__get_q_value_and_quantiles(
+            float_train_observations, gradient
+        )
+        train_q_values = train_res["q_values"]
+        train_quantiles = train_res["quantiles"]
 
         q_values = {"train": train_q_values, "test": test_q_values}
         quantiles = torch.cat([train_quantiles, test_quantiles], dim=0)
