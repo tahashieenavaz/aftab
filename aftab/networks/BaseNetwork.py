@@ -1,7 +1,6 @@
 import torch
 from ..constants import ModuleType
 from ..common import LinearEpsilon
-from ..modules.augmentation import RandomShift, ColorIntensity
 
 
 class BaseNetwork(torch.nn.Module):
@@ -14,19 +13,6 @@ class BaseNetwork(torch.nn.Module):
         self.epsilon_greedy = True
         self.epsilon = LinearEpsilon()
         self.action_dimension = action_dimension
-
-        if augmentation == "all":
-            self.chi = torch.nn.Sequential(RandomShift(), ColorIntensity())
-        elif augmentation == "intensity":
-            self.chi = ColorIntensity()
-        elif augmentation == "shift":
-            self.chi = RandomShift()
-        elif augmentation in ["none", "off"]:
-            self.chi = torch.nn.Identity()
-        else:
-            raise ValueError(
-                f"Augmentation pipeline expected among all, intensity, shift, none, off. Got {augmentation}."
-            )
 
     def no_epsilon_greedy(self):
         self.epsilon_greedy = False
