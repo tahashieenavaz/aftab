@@ -4,9 +4,7 @@ from ..common import LinearEpsilon
 
 
 class BaseNetwork(torch.nn.Module):
-    def __init__(
-        self, *, action_dimension: int, augmentation: str, encoder: ModuleType
-    ):
+    def __init__(self, *, action_dimension: int, encoder: ModuleType):
         super().__init__()
 
         self.phi = encoder()

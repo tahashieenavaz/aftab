@@ -38,7 +38,6 @@ class NetworkMixin:
         self._network = network_instance(
             action_dimension=action_dimension,
             encoder=self.encoder,
-            augmentation=self.augmentation,
         )
 
     def __build_categorical_network(
@@ -47,7 +46,6 @@ class NetworkMixin:
         self._network = network_instance(
             action_dimension=action_dimension,
             encoder=self.encoder,
-            augmentation=self.augmentation,
             number_quantiles=self.number_quantiles,
             quantile_embedding_dimension=self.quantile_embedding_dimension,
         )
