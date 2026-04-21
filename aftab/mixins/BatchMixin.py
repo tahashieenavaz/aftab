@@ -1,11 +1,12 @@
 import torch
+from typing import Tuple
 
 
 class BatchMixin:
     def __init__(self):
         super().__init__()
 
-    def make_batches(self, observation_shape, action_dimension):
+    def make_batches(self, observation_shape: Tuple, action_dimension: int):
         batch_observations = torch.empty(
             (self.steps_per_update, self.total_environments) + observation_shape,
             dtype=torch.uint8,
