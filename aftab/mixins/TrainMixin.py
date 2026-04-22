@@ -100,8 +100,8 @@ class TrainMixin:
     def __collect_trajectories(
         self,
         *,
-        is_distributional,
-        frame_count,
+        is_distributional: bool,
+        frame_count: int,
         observation,
         train_environment,
         test_environment,
@@ -224,24 +224,78 @@ class TrainMixin:
     def __compute_targets(
         self,
         *,
-        is_distributional,
+        is_distributional: bool,
         observation,
         batch_q,
         batch_rewards,
         batch_terminations,
         batch_quantiles,
     ):
+        float_obs = observation.float()
+
+        random_shift_k = getattr(self, "random_shift_k")
         if not is_distributional:
+            if getattr(self, "random_shift", False) and random_shift_k > 0:
+                B = float_obs.shape[0]
+                q_sum = 0
+                for _ in range(random_shift_k):
+                    shifts = torch.randint(
+                        0,
+                        2 * self.random_shift_padding + 1,
+                        size=(2, B),
+                        device=self.device,
+                    )
+                    observation_k = random_shifts(
+                        observation=float_obs,
+                        width_shifts=shifts[0],
+                        height_shifts=shifts[1],
+                        padding=self.random_shift_padding,
+                    )
+                    q_sum += self.get_q_values(
+                        float_observations=observation_k, gradient=False
+                    )
+                next_q_values = q_sum / random_shift_k
+            else:
+                next_q_values = self.get_q_values(
+                    float_observations=float_obs, gradient=False
+                )
+
             targets = self.get_returns(
-                float_observations=observation.float(),
+                float_observations=float_obs,
                 batch_q=batch_q,
+                next_q_values=next_q_values,
                 batch_rewards=batch_rewards,
                 batch_terminations=batch_terminations,
             )
         else:
-            next_q_values, next_quantiles_all = self.get_q_and_quantiles(
-                float_observations=observation.float()
-            )
+            if getattr(self, "random_shift") and random_shift_k > 0:
+                B = float_obs.shape[0]
+                q_sum = 0
+                quantiles_sum = 0
+                for _ in range(random_shift_k):
+                    shifts = torch.randint(
+                        0,
+                        2 * self.random_shift_padding + 1,
+                        size=(2, B),
+                        device=self.device,
+                    )
+                    obs_k = random_shifts(
+                        observation=float_obs,
+                        width_shifts=shifts[0],
+                        height_shifts=shifts[1],
+                        padding=self.random_shift_padding,
+                    )
+                    q, quantiles = self.get_q_and_quantiles(float_observations=obs_k)
+                    q_sum += q
+                    quantiles_sum += quantiles
+
+                next_q_values = q_sum / random_shift_k
+                next_quantiles_all = quantiles_sum / random_shift_k
+            else:
+                next_q_values, next_quantiles_all = self.get_q_and_quantiles(
+                    float_observations=float_obs
+                )
+
             next_action = next_q_values.argmax(dim=-1, keepdim=True)
             next_action_idx = next_action.unsqueeze(1).expand(
                 -1, self.number_quantiles, -1
@@ -268,7 +322,7 @@ class TrainMixin:
     def __flatten_batches(
         self,
         *,
-        is_distributional,
+        is_distributional: bool,
         batch_observations,
         batch_actions,
         targets,
@@ -291,7 +345,7 @@ class TrainMixin:
     def __update_network(
         self,
         *,
-        is_distributional,
+        is_distributional: bool,
         optimizer,
         scaler,
         flattened_observations,
@@ -310,15 +364,23 @@ class TrainMixin:
                 mini_batch_actions = flattened_actions[mini_batch_idx]
                 mini_batch_targets = flattened_targets[mini_batch_idx]
 
-                if getattr(self, "random_shift"):
+                random_shift_m = getattr(self, "random_shift_m")
+                if getattr(self, "random_shift") and random_shift_m > 0:
+                    mini_batch_observations = mini_batch_observations.repeat(
+                        random_shift_m, 1, 1, 1
+                    )
+                    mini_batch_actions = mini_batch_actions.repeat(random_shift_m)
+                    mini_batch_targets = (
+                        mini_batch_targets.repeat(random_shift_m, 1)
+                        if is_distributional
+                        else mini_batch_targets.repeat(random_shift_m)
+                    )
+
                     current_mini_batch_size = mini_batch_observations.shape[0]
                     shifts = torch.randint(
                         0,
                         2 * self.random_shift_padding + 1,
-                        size=(
-                            2,
-                            current_mini_batch_size,
-                        ),
+                        size=(2, current_mini_batch_size),
                         device=self.device,
                     )
                     mini_batch_observations = random_shifts(
@@ -374,7 +436,7 @@ class TrainMixin:
 
                     self.results.loss.append(quantile_loss.item())
 
-    def __log_progress(self, *, update, frame_count):
+    def __log_progress(self, *, update: int, frame_count: int):
         verbose_window = self.verbose_window
         test_score = (
             0.0

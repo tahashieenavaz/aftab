@@ -42,8 +42,6 @@ class Aftab(
         encoder: str | Type[torch.nn.Module] = "gamma",
         network: Literal["q", "duelling", "fqf", "dfqf"] = "dfqf",
         frames: int | Literal["pilot", "full", "ablation"] = "pilot",
-        random_shift: bool = True,
-        random_shift_padding: int = 4,
         frame_skip: int = 4,
         num_minibatches: int = 32,
         epochs: int = 4,
@@ -75,6 +73,10 @@ class Aftab(
         test_reward_clip: bool = True,
         reward_centering: bool = True,
         reward_centering_beta: float = 0.01,
+        random_shift: bool = True,
+        random_shift_padding: int = 4,
+        random_shift_k: int = 2,
+        random_shift_m: int = 2,
     ):
         params = locals()
         params.pop("self")
