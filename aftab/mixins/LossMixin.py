@@ -14,7 +14,7 @@ class LossMixin:
                 float_observations=mini_batch_observations.float(),
                 gradient=True,
             )
-            q_taken = q_values.gather(1, mini_batch_actions.unsqueeze(1)).squeeze()
+            q_taken = q_values.gather(1, mini_batch_actions.unsqueeze(1)).squeeze(1)
             return mse_loss(q_taken, mini_batch_targets)
 
     def get_distributional_loss(
@@ -37,15 +37,13 @@ class LossMixin:
 
             u = mini_batch_targets.unsqueeze(1) - current_quantiles.unsqueeze(2)
             huber_loss = torch.nn.functional.huber_loss(
-                u, torch.zeros_like(u), reduction="none", delta=1.0
+                mini_batch_targets.unsqueeze(1),
+                current_quantiles.unsqueeze(2),
+                reduction="none",
+                delta=1.0,
             )
-
-            tau_hat_expanded = tau_hat.unsqueeze(2).expand(
-                -1, -1, self.number_quantiles
-            )
-            asym_weights = torch.abs(tau_hat_expanded - (u < 0).float())
+            asym_weights = torch.abs(tau_hat.unsqueeze(2) - (u < 0).float())
             quantile_loss = (asym_weights * huber_loss).sum(dim=1).mean(dim=1).mean()
-
             with torch.no_grad():
                 quantiles_tau = self._network.quantile_value(
                     features.detach(), tau[:, 1:-1]

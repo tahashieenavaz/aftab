@@ -312,22 +312,19 @@ class TrainMixin:
 
                 if getattr(self, "random_shift"):
                     current_mini_batch_size = mini_batch_observations.shape[0]
-                    height_shifts = torch.randint(
+                    shifts = torch.randint(
                         0,
                         2 * self.random_shift_padding + 1,
-                        size=(current_mini_batch_size,),
-                        device=self.device,
-                    )
-                    width_shifts = torch.randint(
-                        0,
-                        2 * self.random_shift_padding + 1,
-                        size=(current_mini_batch_size,),
+                        size=(
+                            2,
+                            current_mini_batch_size,
+                        ),
                         device=self.device,
                     )
                     mini_batch_observations = random_shifts(
                         observation=mini_batch_observations.float(),
-                        width_shifts=width_shifts,
-                        height_shifts=height_shifts,
+                        width_shifts=shifts[0],
+                        height_shifts=shifts[1],
                         padding=self.random_shift_padding,
                     )
 
