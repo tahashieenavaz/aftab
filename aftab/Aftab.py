@@ -44,13 +44,13 @@ class Aftab(
         frames: int | Literal["pilot", "full", "ablation"] = "pilot",
         frame_skip: int = 4,
         num_minibatches: int = 32,
-        epochs: int = 4,
+        epochs: int = 2,
         gamma: float = 0.999,
         lmbda: float = 0.65,
         lr: float = 2.5e-4,
         fraction_proposal_lr: float = 2.5e-9,
-        num_train_environments: int = 128,
-        num_test_environments: int = 8,
+        train_environments: int = 128,
+        test_environments: int = 8,
         steps_per_update: int = 32,
         min_test_cpu_count: int = 4,
         noop: int = 30,
@@ -106,10 +106,8 @@ class Aftab(
             ) from exc
 
     def __initialize_derived_attributes(self):
-        self.total_environments = int(
-            self.num_train_environments + self.num_test_environments
-        )
-        self.batch_size = int(self.num_train_environments * self.steps_per_update)
+        self.total_environments = int(self.train_environments + self.test_environments)
+        self.batch_size = int(self.train_environments * self.steps_per_update)
         self.minibatch_size = int(self.batch_size // self.num_minibatches)
         self.actual_frames = int(self.frames / self.frame_skip)
         self.total_updates = math.ceil(self.actual_frames / self.batch_size)

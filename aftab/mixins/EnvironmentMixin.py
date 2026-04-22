@@ -9,7 +9,7 @@ class EnvironmentMixin:
         train_environment = envpool.make(
             environment,
             env_type="gymnasium",
-            num_envs=self.num_train_environments,
+            num_envs=self.train_environments,
             seed=seed,
             num_threads=self.cpu_count,
             thread_affinity_offset=0,
@@ -23,7 +23,7 @@ class EnvironmentMixin:
         test_environment = envpool.make(
             environment,
             env_type="gymnasium",
-            num_envs=self.num_test_environments,
+            num_envs=self.test_environments,
             seed=seed + 1000,
             num_threads=min(self.min_test_cpu_count, self.cpu_count),
             thread_affinity_offset=0,

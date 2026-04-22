@@ -114,8 +114,8 @@ class TrainMixin:
         batch_quantiles,
     ):
         for step in range(self.steps_per_update):
-            train_observation = observation[: self.num_train_environments]
-            test_observation = observation[self.num_train_environments :]
+            train_observation = observation[: self.train_environments]
+            test_observation = observation[self.train_environments :]
             float_train_observations = train_observation.float()
             float_test_observations = test_observation.float()
             epsilon_value = self._network.epsilon.get(
@@ -192,7 +192,7 @@ class TrainMixin:
             if numpy.any(done_mask):
                 idx = numpy.nonzero(done_mask)[0]
                 scores = episode_returns[done_mask]
-                split = idx < self.num_train_environments
+                split = idx < self.train_environments
                 self.results.rewards.train.extend(scores[split].tolist())
                 self.results.rewards.test.extend(scores[~split].tolist())
                 episode_returns[done_mask] = 0
@@ -217,7 +217,7 @@ class TrainMixin:
             observation = (
                 torch.from_numpy(next_observation).to(torch.uint8).to(self.device)
             )
-            frame_count += self.num_train_environments
+            frame_count += self.train_environments
 
         return observation, frame_count
 
@@ -328,9 +328,9 @@ class TrainMixin:
         targets,
         observation_shape,
     ):
-        train_slice = slice(0, self.num_train_environments)
+        train_slice = slice(0, self.train_environments)
         flattened_observations = batch_observations[
-            :, : self.num_train_environments
+            :, : self.train_environments
         ].reshape((-1,) + observation_shape)
         flattened_actions = batch_actions[:, train_slice].reshape(-1)
 
