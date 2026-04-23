@@ -2,7 +2,7 @@
 
 | IQM HNS | IQM HNS (Last 50M Frames) |
 | :---: | :---: |
-| ![Global Performance](figures/global.png) | ![Last 50M Frames](figures/global_zoomed.png) |
+| ![Global Performance](figures/base_experiments/global.png) | ![Last 50M Frames](figures/base_experiments/global_zoomed.png) |
 
 </div>
 
@@ -12,7 +12,7 @@
 
 | IQM HNS | IQM HNS (Last 50M Frames) |
 | :---: | :---: |
-| ![Hadamax Global Performance](figures/hadamax_global.png) | ![Last 50M Frames](figures/hadamax_global_zoomed.png) |
+| ![Hadamax Global Performance](figures/hadamax_experiments/global.png) | ![Last 50M Frames](figures/hadamax_experiments/global_zoomed.png) |
 
 </div>
 
@@ -66,9 +66,11 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 
 ## Results
 
-**Note:** In interpreting the results bear in mind that the Eta version has significantly more parameters compared to other variants, principally due to the the encoder yielding a large number of features. (<a href="#parameter-count">see</a>)
+- Encoders Experiments: [HNS](results/base_experiments/human_normalized_scores.md) | [Scores](results/base_experiments/scores.md)
 
-- [Hadamax Experiments](results/hadamax_experiments.md)
+- Hadamax Experiments: [HNS](results/hadamax_experiments/human_normalized_scores.md) | [Scores](results/hadamax_experiments/scores.md)
+
+**Note:** In interpreting the results bear in mind that the Eta version has significantly more parameters compared to other variants, principally due to the the encoder yielding a large number of features. (<a href="#parameter-count">see</a>)
 
 ## Parameter Count
 
