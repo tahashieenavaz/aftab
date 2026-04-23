@@ -18,7 +18,7 @@ class DuellingQuantileStream(torch.nn.Module):
             action_dimension=action_dimension,
         )
 
-    def forward(self, features: torch.Tensor, tau_hats: torch.Tensor):
+    def forward(self, features: torch.Tensor, tau_hats: torch.Tensor) -> torch.Tensor:
         value_quantiles = self.value_stream(features, tau_hats)
         advantage_quantiles = self.advantage_stream(features, tau_hats)
         return (
