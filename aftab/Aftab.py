@@ -130,6 +130,9 @@ class Aftab(
     def __initialize_constants(self):
         self.device = acceleration_device()
         self.cpu_count = os.cpu_count() or 1
+        self.flush_verbose(
+            f"Acceleration device: {self.device} | CPU Count: {self.cpu_count}"
+        )
 
     def set_precision(self):
         torch.set_float32_matmul_precision("high")
