@@ -17,7 +17,9 @@ class QuantileStream(torch.nn.Module):
         )
         self.xi = torch.nn.Linear(embedding_dimension, feature_dimension)
 
-    def forward(self, state_features, fractions):
+    def forward(
+        self, state_features: torch.Tensor, fractions: torch.Tensor
+    ) -> torch.Tensor:
         chi = self.mu(fractions)
         chi = self.xi(chi)
         psi = state_features.unsqueeze(1)
