@@ -11,14 +11,12 @@
   <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b" />
 </p>
 
----
 
 ## Overview
 
 **Aftab** is a benchmarking framework for evaluating CNN-based encoders in PQN across Atari environments.  
 It provides standardized training, evaluation, and reproducibility tools for deep reinforcement learning research.
 
----
 
 ## Base Encoder Performance
 
@@ -32,7 +30,6 @@ It provides standardized training, evaluation, and reproducibility tools for dee
 
 <p align="center"><em>Global performance of base encoders.</em></p>
 
----
 
 ## Hadamax Encoder Performance
 
@@ -53,7 +50,6 @@ It provides standardized training, evaluation, and reproducibility tools for dee
   </em>
 </p>
 
----
 
 ## Installation
 
@@ -63,7 +59,6 @@ Install via pip:
 pip install aftab
 ```
 
----
 
 ## Usage
 
@@ -80,7 +75,6 @@ for environment in aftab_environments:
         agent.log()
 ```
 
----
 
 ## Defining a Custom Encoder
 
@@ -100,7 +94,6 @@ class CustomImageEncoder(torch.nn.Module):
 agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 ```
 
----
 
 ## Results
 
@@ -114,7 +107,6 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 
 > **Note:** The Eta variant has significantly more parameters than other variants, primarily due to the encoder producing a large number of features.
 
----
 
 ## Parameter Count
 
@@ -144,7 +136,6 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 
 </div>
 
----
 
 ## Training Hyperparameters
 
@@ -171,8 +162,6 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 
 </div>
 
----
-
 ## Statistical Significance
 
 <div align="center">
@@ -182,8 +171,6 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 <div align="center">
   <img src="./figures/hadamax_experiments/statistical_significance.png" />
 </div>
-
----
 
 ## Reproducibility
 
@@ -210,14 +197,10 @@ for environment in aftab_environments:
         agent.log()
 ```
 
----
-
 ## Available Atari Environments
 
 A comprehensive set of Atari environments is available via EnvPool:  
 https://envpool.readthedocs.io/en/latest/env/atari.html#available-tasks
-
----
 
 ## Citation
 
@@ -229,8 +212,6 @@ https://envpool.readthedocs.io/en/latest/env/atari.html#available-tasks
   year={2026}
 }
 ```
-
----
 
 ## License
 
