@@ -9,12 +9,14 @@ class FQFNetwork(BaseNetwork):
         self,
         quantile_embedding_dimension: int,
         number_quantiles: int,
+        fraction_probability_cap: float = 0.98,
         **kwargs,
     ):
         super().__init__(**kwargs)
         self.fraction_proposal = FractionProposalStream(
             number_quantiles=number_quantiles,
             embedding_dimension=quantile_embedding_dimension,
+            probability_cap=fraction_probability_cap,
         )
         self.quantile_value = QuantileStream(
             action_dimension=self.action_dimension,

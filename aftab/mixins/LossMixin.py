@@ -6,6 +6,11 @@ class LossMixin:
     def __init__(self):
         super().__init__()
 
+    def _ensure_finite(self, tensor: torch.Tensor, name: str):
+        if torch.isfinite(tensor).all():
+            return
+        raise FloatingPointError(f"Detected non-finite values in `{name}`.")
+
     def get_loss(
         self, mini_batch_observations, mini_batch_actions, mini_batch_targets
     ) -> torch.Tensor:
@@ -24,6 +29,8 @@ class LossMixin:
         tau, tau_hat, q_probs, entropy = self._network.fraction_proposal(
             features.detach()
         )
+        self._ensure_finite(tau, "tau")
+        self._ensure_finite(tau_hat, "tau_hat")
         tau_hat_detached = tau_hat.detach()
         quantiles = self._network.quantile_value(features, tau_hat_detached)
         action_idx = (
@@ -32,6 +39,7 @@ class LossMixin:
             .expand(-1, self.number_quantiles, -1)
         )
         current_quantiles = quantiles.gather(2, action_idx).squeeze(-1)
+        self._ensure_finite(current_quantiles, "current_quantiles")
         target_expanded = mini_batch_targets.unsqueeze(1).expand(
             -1, self.number_quantiles, self.number_quantiles
         )
@@ -61,6 +69,7 @@ class LossMixin:
 
         Z_tau_hat = current_quantiles.detach()
         gradients_tau = 2 * Z_tau - Z_tau_hat[:, :-1] - Z_tau_hat[:, 1:]
+        self._ensure_finite(gradients_tau, "gradients_tau")
 
         entropy_coefficient = getattr(self, "entropy_coefficient")
         fraction_loss = (tau[:, 1:-1] * gradients_tau.detach()).sum(

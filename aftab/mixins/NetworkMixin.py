@@ -52,12 +52,19 @@ class NetworkMixin:
         embedding_dimension: int,
         network_instance: ModuleType,
     ):
+        network_kwargs = {
+            "action_dimension": action_dimension,
+            "embedding_dimension": embedding_dimension,
+            "encoder": self.encoder,
+            "number_quantiles": self.number_quantiles,
+            "quantile_embedding_dimension": self.quantile_embedding_dimension,
+        }
+        if self.network in ["fqf", "dfqf"]:
+            network_kwargs["fraction_probability_cap"] = getattr(
+                self, "fraction_probability_cap", 0.98
+            )
         self._network = network_instance(
-            action_dimension=action_dimension,
-            embedding_dimension=embedding_dimension,
-            encoder=self.encoder,
-            number_quantiles=self.number_quantiles,
-            quantile_embedding_dimension=self.quantile_embedding_dimension,
+            **network_kwargs,
         )
 
     def __build_network(self, action_dimension: int):

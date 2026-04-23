@@ -45,7 +45,7 @@ class Aftab(
         gamma: float = 0.999,
         lmbda: float = 0.65,
         lr: float = 25e-5,
-        fraction_proposal_lr: float = 1e-5,
+        fraction_proposal_lr: float = 1e-8,
         train_environments: int = 128,
         test_environments: int = 8,
         steps_per_update: int = 32,
@@ -76,6 +76,8 @@ class Aftab(
         random_shift_k: int = 1,
         random_shift_m: int = 1,
         entropy_coefficient: float = 0.001,
+        fqf_use_lambda_returns: bool = True,
+        fraction_probability_cap: float = 0.98,
     ):
         params = locals()
         params.pop("self")

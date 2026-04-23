@@ -10,6 +10,22 @@ class TrainMixin:
     def __init__(self):
         super().__init__()
 
+    def _gather_action_quantiles(
+        self, quantiles: torch.Tensor, actions: torch.Tensor
+    ) -> torch.Tensor:
+        action_idx = (
+            actions.unsqueeze(1)
+            .unsqueeze(2)
+            .expand(-1, self.number_quantiles, -1)
+        )
+        return quantiles.gather(2, action_idx).squeeze(-1)
+
+    def _get_greedy_quantiles(
+        self, q_values: torch.Tensor, quantiles: torch.Tensor
+    ) -> torch.Tensor:
+        greedy_actions = q_values.argmax(dim=-1)
+        return self._gather_action_quantiles(quantiles=quantiles, actions=greedy_actions)
+
     def __initialize_training(self, environment: str, seed: int):
         self.flush_results()
         self.set_precision()
@@ -209,14 +225,14 @@ class TrainMixin:
             if not is_distributional:
                 batch_q[step] = torch.cat([q_values["train"], q_values["test"]], dim=0)
             else:
-                action_idx = (
-                    batch_actions[step]
-                    .unsqueeze(1)
-                    .unsqueeze(2)
-                    .expand(-1, self.number_quantiles, -1)
+                q_values_all = torch.cat(
+                    [q_values["train"], q_values["test"]],
+                    dim=0,
                 )
-                chosen_quantiles = quantiles.gather(2, action_idx).squeeze(-1)
-                batch_quantiles[step] = chosen_quantiles
+                batch_quantiles[step] = self._get_greedy_quantiles(
+                    q_values=q_values_all,
+                    quantiles=quantiles,
+                )
 
             observation = (
                 torch.from_numpy(next_observation).to(torch.uint8).to(self.device)
@@ -302,24 +318,30 @@ class TrainMixin:
                     float_observations=float_obs
                 )
 
-            next_action = next_q_values.argmax(dim=-1, keepdim=True)
-            next_action_idx = next_action.unsqueeze(1).expand(
-                -1, self.number_quantiles, -1
+            next_quantiles = self._get_greedy_quantiles(
+                q_values=next_q_values,
+                quantiles=next_quantiles_all,
             )
-            next_quantiles = next_quantiles_all.gather(2, next_action_idx).squeeze(-1)
 
-            q_seq_for_lambda = torch.cat(
+            q_seq_for_bootstrap = torch.cat(
                 [batch_quantiles[1:], next_quantiles.unsqueeze(0)], dim=0
             )
 
             with torch.no_grad():
-                targets = lambda_returns_quantile(
-                    batch_rewards,
-                    batch_terminations,
-                    q_seq_for_lambda,
-                    self.gamma,
-                    self.lmbda,
-                )
+                if getattr(self, "fqf_use_lambda_returns", True):
+                    targets = lambda_returns_quantile(
+                        batch_rewards,
+                        batch_terminations,
+                        q_seq_for_bootstrap,
+                        self.gamma,
+                        self.lmbda,
+                    )
+                else:
+                    not_done = (1.0 - batch_terminations).unsqueeze(-1)
+                    targets = (
+                        batch_rewards.unsqueeze(-1)
+                        + self.gamma * not_done * q_seq_for_bootstrap
+                    )
         return targets
 
     def __flatten_batches(
