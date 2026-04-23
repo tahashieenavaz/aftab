@@ -19,7 +19,7 @@ class QuantileStream(torch.nn.Module):
 
     def forward(self, state_features, fractions):
         chi = self.mu(fractions)
-        chi = self.phi_proj(chi)
+        chi = self.xi(chi)
         psi = state_features.unsqueeze(1)
         merged = psi * chi
         quantiles = self.nu(merged)
