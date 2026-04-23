@@ -5,10 +5,7 @@ from .CosineEmbeddingModule import CosineEmbeddingModule
 
 class QuantileStream(torch.nn.Module):
     def __init__(
-        self,
-        *,
-        action_dimension: int,
-        embedding_dimension: int,
+        self, *, action_dimension: int, embedding_dimension: int, feature_dimension: int
     ):
         super().__init__()
         self.embedding_dimension = embedding_dimension
@@ -18,16 +15,12 @@ class QuantileStream(torch.nn.Module):
             hidden_dimension=embedding_dimension,
             output_dimension=action_dimension,
         )
-        self.xi = torch.nn.Sequential(
-            torch.nn.LazyLinear(embedding_dimension),
-            torch.nn.ReLU(),
-        )
+        self.xi = torch.nn.Linear(embedding_dimension, feature_dimension)
 
     def forward(self, state_features, fractions):
-        psi = self.xi(state_features)
-        phi = self.mu(fractions)
-        B, N, D = phi.shape
-        psi = psi.view(B, 1, D)
-        merged = psi * phi
+        chi = self.mu(fractions)
+        chi = self.phi_proj(chi)
+        psi = state_features.unsqueeze(1)
+        merged = psi * chi
         quantiles = self.nu(merged)
         return quantiles
