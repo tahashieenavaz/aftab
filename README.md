@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/python-3.9%2B-blue" />
+  <img src="https://img.shields.io/badge/python-3.11%2B-blue" />
   <img src="https://img.shields.io/badge/license-CC--BY--NC--4.0-lightgrey" />
   <img src="https://img.shields.io/badge/status-active-success" />
   <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b" />
@@ -18,8 +18,6 @@
 It provides standardized training, evaluation, and reproducibility tools for deep reinforcement learning research.
 
 
-## Base Encoder Performance
-
 <div align="center">
 
 | IQM HNS | IQM HNS (Last 50M Frames) |
@@ -29,9 +27,6 @@ It provides standardized training, evaluation, and reproducibility tools for dee
 </div>
 
 <p align="center"><em>Global performance of base encoders.</em></p>
-
-
-## Hadamax Encoder Performance
 
 <div align="center">
 
