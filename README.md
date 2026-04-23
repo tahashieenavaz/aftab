@@ -158,6 +158,7 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 ## Statistical Significance
 
 <div align="center">
+
 |         |   PQN |   Alpha |   Beta |   Gamma |   Delta |   Epsilon |   Zeta |   Eta |   Theta |
 |:--------|------:|--------:|-------:|--------:|--------:|----------:|-------:|------:|--------:|
 | PQN     | -     |   -     |  -     |   -     |   -     |     -     |  -     | -     |   -     |
