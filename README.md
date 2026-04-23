@@ -209,8 +209,6 @@ for environment in aftab_environments:
         agent.log()
 ```
 
-## Available Atari Environments
-
 A comprehensive set of Atari environments is available via EnvPool:  
 https://envpool.readthedocs.io/en/latest/env/atari.html#available-tasks
 
