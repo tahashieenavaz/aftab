@@ -57,6 +57,7 @@ class Aftab(
         verbose_interval: int = 10,
         verbose_window: int = 10,
         number_quantiles: int = 32,
+        embedding_dimension: int = 512,
         quantile_embedding_dimension: int = 512,
         optimizer_instance: Type[torch.nn.Module] = torch.optim.RAdam,
         optimizer_epsilon: float = 1e-5,

@@ -17,7 +17,7 @@ class FQFNetwork(BaseNetwork):
             embedding_dimension=quantile_embedding_dimension,
         )
         self.quantile_value = QuantileStream(
-            action_dimension=kwargs["action_dimension"],
+            action_dimension=self.action_dimension,
             embedding_dimension=quantile_embedding_dimension,
             feature_dimension=self.feature_dimension,
         )

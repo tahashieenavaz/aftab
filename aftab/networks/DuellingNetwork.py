@@ -6,8 +6,16 @@ from .BaseNetwork import BaseNetwork
 class DuellingNetwork(BaseNetwork):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.advantage = Stream(output_dimension=kwargs["action_dimension"])
-        self.value = Stream(output_dimension=1)
+        self.advantage = Stream(
+            input_dimension=self.feature_dimension,
+            hidden_dimension=self.hidden_dimension,
+            output_dimension=self.action_dimension,
+        )
+        self.value = Stream(
+            input_dimension=self.feature_dimension,
+            hidden_dimension=self.hidden_dimension,
+            output_dimension=1,
+        )
 
     def get_value(self, features):
         return self.value(features)

@@ -8,8 +8,8 @@ class PQNNetwork(BaseNetwork):
         super().__init__(**kwargs)
         self.q = Stream(
             input_dimension=self.feature_dimension,
-            hidden_dimension=512,
-            output_dimension=kwargs["action_dimension"],
+            hidden_dimension=self.hidden_dimension,
+            output_dimension=self.action_dimension,
         )
 
     def get_q(self, states: torch.Tensor) -> torch.Tensor:

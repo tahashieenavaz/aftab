@@ -8,14 +8,14 @@ class DuellingQuantileStream(torch.nn.Module):
     ):
         super().__init__()
         self.value_stream = QuantileStream(
-            action_dimension=1,
             embedding_dimension=embedding_dimension,
             feature_dimension=feature_dimension,
+            action_dimension=1,
         )
         self.advantage_stream = QuantileStream(
-            action_dimension=action_dimension,
             embedding_dimension=embedding_dimension,
             feature_dimension=feature_dimension,
+            action_dimension=action_dimension,
         )
 
     def forward(self, features: torch.Tensor, tau_hats: torch.Tensor):

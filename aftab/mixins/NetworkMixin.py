@@ -34,17 +34,21 @@ class NetworkMixin:
         dummy_input = self.__get_dummy_sample()
         self._network(dummy_input)
 
-    def __build_pqn_network(self, action_dimension: int, network_instance: ModuleType):
+    def __build_pqn_network(
+        self, action_dimension: int, hidden_dimension: int, network_instance: ModuleType
+    ):
         self._network = network_instance(
             action_dimension=action_dimension,
+            hidden_dimension=hidden_dimension,
             encoder=self.encoder,
         )
 
     def __build_categorical_network(
-        self, action_dimension: int, network_instance: ModuleType
+        self, action_dimension: int, hidden_dimension: int, network_instance: ModuleType
     ):
         self._network = network_instance(
             action_dimension=action_dimension,
+            hidden_dimension=hidden_dimension,
             encoder=self.encoder,
             number_quantiles=self.number_quantiles,
             quantile_embedding_dimension=self.quantile_embedding_dimension,
@@ -54,8 +58,9 @@ class NetworkMixin:
         try:
             network_instance = networks_map[self.network]
             args = {
-                "action_dimension": action_dimension,
                 "network_instance": network_instance,
+                "action_dimension": action_dimension,
+                "hidden_dimension": self.hidden_dimension,
             }
             if network_instance == PQNNetwork:
                 self.__build_pqn_network(**args)

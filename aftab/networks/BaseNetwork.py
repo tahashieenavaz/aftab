@@ -4,17 +4,20 @@ from ..common import LinearEpsilon
 
 
 class BaseNetwork(torch.nn.Module):
-    def __init__(self, *, action_dimension: int, encoder: ModuleType):
+    def __init__(
+        self, *, action_dimension: int, hidden_dimension: int, encoder: ModuleType
+    ):
         super().__init__()
         self.phi = encoder()
 
+        self.epsilon_greedy = True
+        self.epsilon = LinearEpsilon()
+
+        self.action_dimension = action_dimension
+        self.hidden_dimension = hidden_dimension
         dummy_input = torch.randn(1, 4, 84, 84)
         with torch.no_grad():
             self.feature_dimension = self.phi(dummy_input).flatten(1).size(1)
-
-        self.epsilon_greedy = True
-        self.epsilon = LinearEpsilon()
-        self.action_dimension = action_dimension
 
     def no_epsilon_greedy(self):
         self.epsilon_greedy = False
