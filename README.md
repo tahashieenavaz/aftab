@@ -195,7 +195,7 @@ from aftab import aftab_seeds
 print(aftab_seeds)
 ```
 
-Full experiment:
+Full experiment replication:
 
 ```python
 from aftab import Aftab
