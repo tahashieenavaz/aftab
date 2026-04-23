@@ -1,8 +1,6 @@
-<h1 align="center">Aftab</h1>
-
-<p align="center">
-  Benchmarking CNN Encoders in PQN for Atari Environments
-</p>
+<div align="center">
+  <img src="./figures/header.svg" />
+</div>
 
 <p align="center">
   <img src="https://img.shields.io/badge/python-3.11%2B-blue" />
