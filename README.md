@@ -1,10 +1,12 @@
-<p align="center">
+<div align="center">
 
 | IQM HNS | IQM HNS (Last 50M Frames) |
 | :---: | :---: |
 | ![Global Performance](figures/global.png) | ![Last 50M Frames](figures/global_zoomed.png) |
 
-</p>
+</div>
+
+<em align="center">Global Performance of base encoders proposed in this work.</em>
 
 <p>
 
@@ -13,6 +15,9 @@
 | ![Hadamax Global Performance](figures/hadamax_global.png) | ![Last 50M Frames](figures/hadamax_global_zoomed.png) |
 
 </p>
+
+<em align="center">Comparing two distinct variants of Gamma encoder based on the findings in [Hadamax Encoding: Elevating Performance in Model-Free Atari
+](https://arxiv.org/abs/2505.15345)</em>
 
 ## Installation
 
