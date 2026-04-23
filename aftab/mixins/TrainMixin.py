@@ -312,10 +312,7 @@ class TrainMixin:
                 [batch_quantiles[1:], next_quantiles.unsqueeze(0)], dim=0
             )
 
-            with (
-                torch.no_grad(),
-                torch.autocast(device_type=self.device.type, dtype=torch.float16),
-            ):
+            with torch.no_grad():
                 targets = lambda_returns_quantile(
                     batch_rewards,
                     batch_terminations,

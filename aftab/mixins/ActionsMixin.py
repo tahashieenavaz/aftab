@@ -15,13 +15,9 @@ class ActionsMixin:
         q_values_test: torch.Tensor,
         epsilon_value: float,
     ) -> Tuple[numpy.ndarray, numpy.ndarray]:
-        device_type = getattr(self.device, "type", "cpu")
-        with torch.autocast(device_type=device_type, dtype=torch.float16):
-            if self._network.epsilon_greedy:
-                actions_train = epsilon_greedy_vectorized(q_values_train, epsilon_value)
-            else:
-                actions_train = q_values_train.argmax(dim=-1)
-
-            actions_test = q_values_test.argmax(dim=-1)
-
+        if self._network.epsilon_greedy:
+            actions_train = epsilon_greedy_vectorized(q_values_train, epsilon_value)
+        else:
+            actions_train = q_values_train.argmax(dim=-1)
+        actions_test = q_values_test.argmax(dim=-1)
         return actions_train.cpu().numpy(), actions_test.cpu().numpy()

@@ -14,10 +14,7 @@ class LambdaReturnsMixin:
         batch_terminations,
         next_q_values=None,
     ):
-        with (
-            torch.no_grad(),
-            torch.autocast(device_type=self.device.type, dtype=torch.float16),
-        ):
+        with torch.no_grad():
             if next_q_values is not None:
                 next_q = next_q_values.max(dim=-1).values
             else:

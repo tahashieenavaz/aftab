@@ -8,10 +8,7 @@ class QValueMixin:
     def __get_q_value_and_quantiles(
         self, float_observations: torch.Tensor, gradient: bool
     ):
-        with (
-            torch.set_grad_enabled(gradient),
-            torch.autocast(device_type=self.device.type, dtype=torch.float16),
-        ):
+        with torch.set_grad_enabled(gradient):
             features = self._network.get_features(float_observations)
             _, tau_hat, q_probs, _ = self._network.fraction_proposal(features)
             quantiles = self._network.quantile_value(features, tau_hat)
@@ -28,10 +25,8 @@ class QValueMixin:
         with torch.set_grad_enabled(gradient):
             if float_observations is not None:
                 return self._network(float_observations)
-
             test_q_values = self._network(float_test_observations)
             train_q_values = self._network(float_train_observations)
-
             return {"test": test_q_values, "train": train_q_values}
 
     def get_q_and_quantiles(
