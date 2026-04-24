@@ -46,7 +46,7 @@ class NetworkMixin:
             encoder=self.encoder,
         )
 
-    def __build_categorical_network(
+    def __build_distributional_network(
         self,
         action_dimension: int,
         embedding_dimension: int,
@@ -78,7 +78,7 @@ class NetworkMixin:
             if network_instance == PQNNetwork:
                 self.__build_pqn_network(**args)
             else:
-                self.__build_categorical_network(**args)
+                self.__build_distributional_network(**args)
         except Exception as e:
             raise ValueError("Wrong network id detected.", e)
 
