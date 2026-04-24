@@ -1,7 +1,28 @@
 import torch
 from typing import Type
+from typing import Literal
+
 
 ModuleType = Type[torch.nn.Module]
+
+EncoderStringType = Literal[
+    "alpha",
+    "beta",
+    "gamma",
+    "epsilon",
+    "eta",
+    "zeta",
+    "delta",
+    "theta",
+    "hadamaxgammav1",
+    "gammahadamaxv1",
+    "hadamaxgammav2",
+    "gammahadamaxv2",
+    "nature",
+]
+
+OptimizerStringType = Literal["adam", "adamw" "radam", "nadam"]
+
 
 seeds = [475284, 219842, 525975, 909314]
 
@@ -62,6 +83,5 @@ environments = [
     "VideoPinball-v5",
     "WizardOfWor-v5",
     "YarsRevenge-v5",
-    "Zaxxon-v5"
+    "Zaxxon-v5",
 ]
-

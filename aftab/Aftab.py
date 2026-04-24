@@ -6,6 +6,8 @@ from types import SimpleNamespace
 from baloot import acceleration_device
 from baloot import seed_everything
 from .constants import ModuleType
+from .constants import EncoderStringType
+from .constants import OptimizerStringType
 from .maps import encoders_map
 from .maps import acceptable_frames_map
 from .functions import flush
@@ -36,7 +38,7 @@ class Aftab(
     def __init__(
         self,
         *,
-        encoder: str | ModuleType = "gammahadamaxv1",
+        encoder: ModuleType | EncoderStringType = "gammahadamaxv1",
         network: Literal["q", "duelling", "fqf", "dfqf"] = "dfqf",
         frames: int | Literal["pilot", "full", "ablation"] = "full",
         frame_skip: int = 4,
@@ -60,7 +62,7 @@ class Aftab(
         number_quantiles: int = 32,
         embedding_dimension: int = 512,
         quantile_embedding_dimension: int = 512,
-        optimizer_instance: ModuleType = torch.optim.RAdam,
+        optimizer_instance: ModuleType | OptimizerStringType = torch.optim.RAdam,
         optimizer_epsilon: float = 1e-5,
         optimizer_weight_decay: float = 0.0,
         optimizer_first_beta: float = 0.9,
@@ -93,6 +95,10 @@ class Aftab(
             setattr(self, key, value)
 
         self.flush_verbose("Aftab hyper-parameters initialized.")
+
+    # TODO
+    def __initialize_optimizer(self):
+        pass
 
     def __initialize_frames(self):
         if not isinstance(self.frames, str):
@@ -155,7 +161,7 @@ class Aftab(
         if self.verbose:
             flush(message=message)
 
-    def train(self, *, environment: str, seed: int = 42):
+    def train(self, *, environment: str, seed: int):
         self.set_buffer("seed", seed)
         self.set_buffer("environment", environment)
         self.train_loop(environment=environment, seed=seed)
