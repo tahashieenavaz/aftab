@@ -10,7 +10,7 @@ def main():
         help="Aftab running seed"
     )
     parser.add_argument(
-        "--env",
+        "--environment",
         type=str,
         required=True,
         help="Environment name"
