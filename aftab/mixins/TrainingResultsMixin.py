@@ -13,6 +13,7 @@ class TrainingResultsMixin:
         filename += f"network-{self.network}__"
         filename += f"gamma-{self.gamma}__"
         filename += f"lr-{self.lr}__"
+        filename += f"epochs-{self.epochs}__"
 
         if self.network in ["fqf", "dfqf"]:
             filename += f"quantiles-{self.number_quantiles}__"
