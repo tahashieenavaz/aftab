@@ -7,16 +7,12 @@
   <img src="https://img.shields.io/github/stars/tahashieenavaz/aftab?style=social" />
   <img src="https://img.shields.io/badge/python-3.11%2B-blue" />
   <img src="https://img.shields.io/badge/license-CC--BY--NC--4.0-lightgrey" />
-  <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b" />
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/reinforcement%20learning-supported-blueviolet" />
-  <img src="https://img.shields.io/badge/environments-Atari-ff69b4" />
   <img src="https://img.shields.io/badge/backend-PyTorch-ee4c2c" />
-  <img src="https://img.shields.io/badge/vectorized%20envs-EnvPool-green" />
-  <img src="https://img.shields.io/badge/GPU-ready-brightgreen" />
-  <img src="https://img.shields.io/badge/AMP-mixed%20precision-blue" />
+  <img src="https://img.shields.io/badge/citable-yes-success" />
+  <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b" />
 </p>
 
 
