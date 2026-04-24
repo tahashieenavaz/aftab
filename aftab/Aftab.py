@@ -66,6 +66,7 @@ class Aftab(
         quantile_embedding_dimension: int = 64,
         optimizer_instance: ModuleType | OptimizerStringType = torch.optim.RAdam,
         optimizer_epsilon: float = 1e-5,
+        fraction_proposal_optimizer_epsilon: float = 0.0003125,
         optimizer_weight_decay: float = 0.0,
         optimizer_first_beta: float = 0.9,
         optimizer_second_beta: float = 0.999,

@@ -10,12 +10,14 @@ class OptimizerMixin:
         optimizer_name = getattr(self.optimizer_instance, "__name__", "")
         return "adam" in optimizer_name.lower()
 
-    def __build_fraction_proposal_optimizer(self, fraction_proposal_parameters):
+    def __build_fraction_proposal_optimizer(
+        self, fraction_proposal_parameters: list
+    ) -> torch.optim.Optimizer:
         if self.__uses_adam_fraction_optimizer():
             return torch.optim.Adam(
                 fraction_proposal_parameters,
                 lr=self.fraction_proposal_lr,
-                eps=0.0003125,
+                eps=self.fraction_proposal_optimizer_epsilon,
             )
 
         return torch.optim.RMSprop(
