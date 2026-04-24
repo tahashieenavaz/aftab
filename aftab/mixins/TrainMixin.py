@@ -327,7 +327,7 @@ class TrainMixin:
             )
 
             with torch.no_grad():
-                if getattr(self, "fqf_use_lambda_returns", True):
+                if getattr(self, "fqf_use_lambda_returns"):
                     targets = lambda_returns_quantile(
                         batch_rewards,
                         batch_terminations,

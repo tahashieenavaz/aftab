@@ -87,7 +87,6 @@ class Aftab(
         self.__initialize_constants()
         self.__initialize__encoder()
         super().__init__()
-
         self.buffer = SimpleNamespace()
 
     def __initialize_hyperparameters(self, **hyperparameters):

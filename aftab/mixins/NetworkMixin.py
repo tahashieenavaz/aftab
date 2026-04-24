@@ -61,7 +61,7 @@ class NetworkMixin:
         }
         if self.network in ["fqf", "dfqf"]:
             network_kwargs["fraction_probability_cap"] = getattr(
-                self, "fraction_probability_cap", 0.98
+                self, "fraction_probability_cap"
             )
         self._network = network_instance(
             **network_kwargs,
@@ -83,7 +83,7 @@ class NetworkMixin:
             raise ValueError("Wrong network id detected.", e)
 
     def __compile_network(self):
-        if not getattr(self, "should_compile", False):
+        if not getattr(self, "should_compile"):
             return
 
         if not hasattr(self, "_network"):
