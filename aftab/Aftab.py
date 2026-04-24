@@ -1,11 +1,11 @@
 import torch
 import math
 import os
-from typing import Type
 from typing import Literal
 from types import SimpleNamespace
 from baloot import acceleration_device
 from baloot import seed_everything
+from .constants import ModuleType
 from .maps import encoders_map
 from .maps import acceptable_frames_map
 from .functions import flush
@@ -36,7 +36,7 @@ class Aftab(
     def __init__(
         self,
         *,
-        encoder: str | Type[torch.nn.Module] = "gammahadamaxv1",
+        encoder: str | ModuleType = "gammahadamaxv1",
         network: Literal["q", "duelling", "fqf", "dfqf"] = "dfqf",
         frames: int | Literal["pilot", "full", "ablation"] = "full",
         frame_skip: int = 4,
@@ -60,7 +60,7 @@ class Aftab(
         number_quantiles: int = 32,
         embedding_dimension: int = 512,
         quantile_embedding_dimension: int = 512,
-        optimizer_instance: Type[torch.nn.Module] = torch.optim.RAdam,
+        optimizer_instance: ModuleType = torch.optim.RAdam,
         optimizer_epsilon: float = 1e-5,
         optimizer_weight_decay: float = 0.0,
         optimizer_first_beta: float = 0.9,
