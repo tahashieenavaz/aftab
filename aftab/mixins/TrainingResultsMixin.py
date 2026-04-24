@@ -7,11 +7,31 @@ class TrainingResultsMixin:
         super().__init__()
 
     def __make_log_filename(self) -> str:
-        filename = f"seed-{self.buffer.seed}_"
-        filename += f"network-{self.network}_"
-        filename += f"environment-{self.buffer.environment}_"
-        filename += f"network-{self.network}_"
-        filename += f"encoder-{self.encoder.__name__}"
+        filename = f"seed-{self.buffer.seed}__"
+        filename += f"environment-{self.buffer.environment}__"
+        filename += f"encoder-{self.encoder.__name__}__"
+        filename += f"network-{self.network}__"
+        filename += f"gamma-{self.gamma}__"
+        filename += f"lr-{self.lr}__"
+
+        if self.network in ["fqf", "dfqf"]:
+            filename += f"quantiles-{self.number_quantiles}__"
+            filename += f"quantile-dimension-{self.quantile_embedding_dimension}__"
+            filename += f"return-steps-{self.steps}__"
+        else:
+            filename += f"lambda-{self.lmbda}__"
+
+        if self.reward_centering:
+            filename += f"reward-centering-beta-{self.reward_centering}__"
+
+        if self.random_shift:
+            filename += f"random-shift-padding_{self.random_shift_padding}__"
+            filename += f"random-shift-m-{self.random_shift_m}__"
+            filename += f"random-shift-k-{self.random_shift_k}__"
+
+        # removes trailing __
+        filename = filename.strip("__")
+
         return f"{filename}.pkl"
 
     def __build_log_payload(self) -> dict:
