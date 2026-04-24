@@ -3,9 +3,10 @@
 </div>
 
 <p align="center">
+  <img src="https://img.shields.io/pypi/v/aftab" />
+  <img src="https://img.shields.io/github/stars/tahashieenavaz/aftab?style=social" />
   <img src="https://img.shields.io/badge/python-3.11%2B-blue" />
   <img src="https://img.shields.io/badge/license-CC--BY--NC--4.0-lightgrey" />
-  <img src="https://img.shields.io/badge/status-active-success" />
   <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b" />
 </p>
 
