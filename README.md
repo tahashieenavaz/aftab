@@ -9,6 +9,11 @@
   <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b" />
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/GPU-ready-brightgreen" />
+  <img src="https://img.shields.io/badge/AMP-mixed%20precision-blue" />
+</p>
+
 
 ## Overview
 
