@@ -77,7 +77,6 @@ class Aftab(
         random_shift_m: int = 1,
         entropy_coefficient: float = 0.001,
         fqf_use_lambda_returns: bool = True,
-        fraction_probability_cap: float = 0.98,
     ):
         params = locals()
         params.pop("self")

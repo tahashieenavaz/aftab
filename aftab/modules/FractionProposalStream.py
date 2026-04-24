@@ -1,11 +1,7 @@
 import torch
 
 class FractionProposalStream(torch.nn.Module):
-    def __init__(
-        self,
-        *,
-        number_quantiles: int,
-    ):
+    def __init__(self, *, number_quantiles: int):
         super().__init__()
         self.number_quantiles = number_quantiles
         self.linear = torch.nn.LazyLinear(number_quantiles)

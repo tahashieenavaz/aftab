@@ -59,10 +59,6 @@ class NetworkMixin:
             "number_quantiles": self.number_quantiles,
             "quantile_embedding_dimension": self.quantile_embedding_dimension,
         }
-        if self.network in ["fqf", "dfqf"]:
-            network_kwargs["fraction_probability_cap"] = getattr(
-                self, "fraction_probability_cap"
-            )
         self._network = network_instance(
             **network_kwargs,
         )
