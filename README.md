@@ -136,7 +136,7 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 </div>
 
 
-## Training Hyperparameters
+## Hyperparameters
 
 <div align="center">
 
@@ -160,6 +160,8 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 | Batch size | 4096 |
 
 </div>
+
+<p align="center"><em>Used in encoder and Hadamax experiments.</em></p>
 
 ## Statistical Significance
 
