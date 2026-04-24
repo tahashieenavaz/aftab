@@ -175,12 +175,12 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 
 <div align="center">
 
-|                  |   Gamma |   Hadamax Gamma V1 |   Hadamax Gamma V2 |   Hadamax |
-|:-----------------|--------:|-------------------:|-------------------:|----------:|
-| Gamma            |       - |              -     |              -     |     -     |
-| Hadamax Gamma V1 |       0 |              -     |              -     |     -     |
-| Hadamax Gamma V2 |       0 |              0.72  |              -     |     -     |
-| Hadamax          |       0 |              0.078 |              0.151 |     -     |
+|                    |   Gamma |   Hadamax Gamma V1 |   Hadamax Gamma V2 |   Hadamax |
+|:-------------------|--------:|-------------------:|-------------------:|----------:|
+| Gamma              |       - |              -     |              -     |     -     |
+| Hadamax Gamma V1   |       0 |              -     |              -     |     -     |
+| Hadamax Gamma V2   |       0 |              0.72  |              -     |     -     |
+| Hadamax Nature DQN |       0 |              0.078 |              0.151 |     -     |
 
 </div>
 
