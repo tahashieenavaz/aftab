@@ -9,9 +9,12 @@ from ..encoders import ThetaEncoder
 from ..encoders import HadamaxGammaEncoderV1
 from ..encoders import HadamaxGammaEncoderV2
 from ..encoders import HadamaxNatureDQNEncoder
+from ..encoders import NatureDQNEncoder
 
 
 encoders_map = {
+    "nature": NatureDQNEncoder,
+    "dqn": NatureDQNEncoder,
     "alpha": AlphaEncoder,
     "beta": BetaEncoder,
     "gamma": GammaEncoder,

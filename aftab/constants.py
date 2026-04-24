@@ -6,6 +6,7 @@ from typing import Literal
 ModuleType = Type[torch.nn.Module]
 
 EncoderStringType = Literal[
+    "nature",
     "alpha",
     "beta",
     "gamma",
@@ -14,11 +15,13 @@ EncoderStringType = Literal[
     "zeta",
     "delta",
     "theta",
+    "hadamax",
+    "dqnhadamax",
+    "pqnhadamax",
     "hadamaxgammav1",
     "gammahadamaxv1",
     "hadamaxgammav2",
     "gammahadamaxv2",
-    "nature",
 ]
 
 OptimizerStringType = Literal["adam", "adamw" "radam", "nadam"]
