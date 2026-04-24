@@ -48,7 +48,8 @@ class Aftab(
         lmbda: float = 0.65,
         lr: float = 25e-5,
         steps: int = 5,
-        fraction_proposal_lr: float = 1e-8,
+        fqf_factor: float = 0.000001,
+        fraction_proposal_lr: float | None = None,
         train_environments: int = 128,
         test_environments: int = 8,
         steps_per_update: int = 32,
@@ -59,9 +60,10 @@ class Aftab(
         verbose: bool = False,
         verbose_interval: int = 10,
         verbose_window: int = 10,
+        kappa: float = 1.0,
         number_quantiles: int = 32,
         embedding_dimension: int = 512,
-        quantile_embedding_dimension: int = 512,
+        quantile_embedding_dimension: int = 64,
         optimizer_instance: ModuleType | OptimizerStringType = torch.optim.RAdam,
         optimizer_epsilon: float = 1e-5,
         optimizer_weight_decay: float = 0.0,
@@ -79,6 +81,7 @@ class Aftab(
         random_shift_k: int = 1,
         random_shift_m: int = 1,
         entropy_coefficient: float = 0.001,
+        fqf_entropy_loss_scale: float = 0.001,
     ):
         params = locals()
         params.pop("self")
@@ -91,6 +94,11 @@ class Aftab(
         self.buffer = SimpleNamespace()
 
     def __initialize_hyperparameters(self, **hyperparameters):
+        if hyperparameters["fraction_proposal_lr"] is None:
+            hyperparameters["fraction_proposal_lr"] = (
+                0.00005 * hyperparameters["fqf_factor"]
+            )
+
         for key, value in hyperparameters.items():
             setattr(self, key, value)
 

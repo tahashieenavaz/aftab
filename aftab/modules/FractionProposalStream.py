@@ -1,5 +1,6 @@
 import torch
 
+
 class FractionProposalStream(torch.nn.Module):
     def __init__(self, *, number_quantiles: int):
         super().__init__()
@@ -13,10 +14,6 @@ class FractionProposalStream(torch.nn.Module):
         tau_1_to_N = torch.cumsum(q_probs, dim=-1)
         tau = torch.cat([tau_0, tau_1_to_N], dim=-1)
         tau_hat = (tau[:, :-1] + tau[:, 1:]) / 2.0
-        inner_tau = tau[:, 1:-1] 
-        entropy = -torch.sum(
-            inner_tau * torch.log(inner_tau.clamp(min=1e-8)),
-            dim=-1,
-            keepdim=True,
-        )
+        inner_tau = tau[:, 1:-1]
+        entropy = -torch.sum(inner_tau * torch.log(inner_tau), dim=-1)
         return tau, tau_hat, q_probs, entropy

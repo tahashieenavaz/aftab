@@ -37,22 +37,33 @@ class LossMixin:
             quantiles=quantiles, actions=mini_batch_actions
         )
         self._ensure_finite(current_quantiles, "current_quantiles")
-        target_expanded = mini_batch_targets.unsqueeze(1).expand(
-            -1, self.number_quantiles, self.number_quantiles
-        )
-        current_expanded = current_quantiles.unsqueeze(2).expand(
-            -1, self.number_quantiles, self.number_quantiles
-        )
 
-        u = target_expanded - current_expanded
+        kappa = float(getattr(self, "kappa"))
+        target_quantile_values = mini_batch_targets.detach().unsqueeze(-1)
+        chosen_action_quantile_values = current_quantiles.unsqueeze(-1)
+        target_expanded = target_quantile_values[:, :, None, :].expand(
+            -1, -1, chosen_action_quantile_values.shape[1], -1
+        )
+        chosen_expanded = chosen_action_quantile_values[:, None, :, :].expand(
+            -1, target_quantile_values.shape[1], -1, -1
+        )
+        bellman_errors = target_expanded - chosen_expanded
         huber_loss = torch.nn.functional.huber_loss(
-            current_expanded,
+            chosen_expanded,
             target_expanded,
             reduction="none",
-            delta=1.0,
+            delta=kappa,
         )
-        asym_weights = torch.abs(tau_hat_detached.unsqueeze(2) - (u < 0).float())
-        quantile_loss = (asym_weights * huber_loss).sum(dim=1).mean(dim=1).mean()
+
+        replay_quantiles = tau_hat_detached[:, None, :, None].expand(
+            -1, target_quantile_values.shape[1], -1, -1
+        )
+        asym_weights = torch.abs(
+            replay_quantiles.detach() - (bellman_errors.detach() < 0).float()
+        )
+        quantile_huber_loss = (asym_weights * huber_loss) / kappa
+        quantile_loss = quantile_huber_loss.sum(dim=2).mean(dim=1).mean()
+
         with torch.no_grad():
             quantiles_tau = self._network.quantile_value(
                 features.detach(), tau[:, 1:-1]
@@ -66,8 +77,8 @@ class LossMixin:
         self._ensure_finite(gradients_tau, "gradients_tau")
 
         entropy_coefficient = getattr(self, "entropy_coefficient")
-        fraction_loss = (tau[:, 1:-1] * gradients_tau.detach()).sum(
-            dim=1
-        ).mean() - entropy_coefficient * entropy.mean()
+        entropy_loss_scale = getattr(self, "fqf_entropy_loss_scale")
+        fraction_loss = (tau[:, 1:-1] * gradients_tau.detach()).sum(dim=1).mean()
+        entropy_loss = entropy_coefficient * torch.mean(-entropy_loss_scale * entropy)
 
-        return quantile_loss, fraction_loss
+        return quantile_loss, fraction_loss, entropy_loss

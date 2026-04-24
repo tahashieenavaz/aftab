@@ -408,33 +408,68 @@ class TrainMixin:
                     scaler.update()
                     self.results.loss.append(loss.item())
                 else:
+                    quantile_value_parameters = (
+                        list(self._network.phi.parameters())
+                        + list(self._network.quantile_value.parameters())
+                    )
+                    fraction_proposal_parameters = list(
+                        self._network.fraction_proposal.parameters()
+                    )
                     optimizer.quantile_value.zero_grad(set_to_none=True)
                     optimizer.fraction_proposal.zero_grad(set_to_none=True)
 
-                    quantile_loss, fraction_loss = self.get_distributional_loss(
-                        mini_batch_observations=mini_batch_observations,
-                        mini_batch_actions=mini_batch_actions,
-                        mini_batch_targets=mini_batch_targets,
+                    quantile_loss, fraction_loss, entropy_loss = (
+                        self.get_distributional_loss(
+                            mini_batch_observations=mini_batch_observations,
+                            mini_batch_actions=mini_batch_actions,
+                            mini_batch_targets=mini_batch_targets,
+                        )
                     )
 
-                    total_loss = quantile_loss + fraction_loss
-                    scaler.scale(total_loss).backward()
-
-                    scaler.unscale_(optimizer.quantile_value)
-                    scaler.unscale_(optimizer.fraction_proposal)
-
+                    quantile_loss.backward()
                     torch.nn.utils.clip_grad_norm_(
-                        list(self._network.phi.parameters())
-                        + list(self._network.quantile_value.parameters()),
-                        self.gradient_norm,
+                        quantile_value_parameters, self.gradient_norm
                     )
-                    torch.nn.utils.clip_grad_norm_(
-                        self._network.fraction_proposal.parameters(), self.gradient_norm
-                    )
+                    optimizer.quantile_value.step()
 
-                    scaler.step(optimizer.quantile_value)
-                    scaler.step(optimizer.fraction_proposal)
-                    scaler.update()
+                    optimizer.fraction_proposal.zero_grad(set_to_none=True)
+                    fraction_loss.backward(retain_graph=True)
+                    torch.nn.utils.clip_grad_norm_(
+                        fraction_proposal_parameters, self.gradient_norm
+                    )
+                    fraction_grads = [
+                        None
+                        if parameter.grad is None
+                        else parameter.grad.detach().clone()
+                        for parameter in fraction_proposal_parameters
+                    ]
+
+                    optimizer.fraction_proposal.zero_grad(set_to_none=True)
+                    entropy_loss.backward()
+                    torch.nn.utils.clip_grad_norm_(
+                        fraction_proposal_parameters, self.gradient_norm
+                    )
+                    entropy_grads = [
+                        None
+                        if parameter.grad is None
+                        else parameter.grad.detach().clone()
+                        for parameter in fraction_proposal_parameters
+                    ]
+
+                    optimizer.fraction_proposal.zero_grad(set_to_none=True)
+                    for parameter, grad in zip(
+                        fraction_proposal_parameters, fraction_grads
+                    ):
+                        parameter.grad = grad
+                    optimizer.fraction_proposal.step()
+
+                    optimizer.fraction_proposal.zero_grad(set_to_none=True)
+                    for parameter, grad in zip(
+                        fraction_proposal_parameters, entropy_grads
+                    ):
+                        parameter.grad = grad
+                    optimizer.fraction_proposal.step()
+                    optimizer.fraction_proposal.zero_grad(set_to_none=True)
 
                     self.results.loss.append(quantile_loss.item())
 

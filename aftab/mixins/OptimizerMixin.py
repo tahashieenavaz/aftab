@@ -1,9 +1,31 @@
+import torch
 from types import SimpleNamespace
 
 
 class OptimizerMixin:
     def __init__(self):
         super().__init__()
+
+    def __uses_adam_fraction_optimizer(self):
+        optimizer_name = getattr(self.optimizer_instance, "__name__", "")
+        return "adam" in optimizer_name.lower()
+
+    def __build_fraction_proposal_optimizer(self, fraction_proposal_parameters):
+        if self.__uses_adam_fraction_optimizer():
+            return torch.optim.Adam(
+                fraction_proposal_parameters,
+                lr=self.fraction_proposal_lr,
+                eps=0.0003125,
+            )
+
+        return torch.optim.RMSprop(
+            fraction_proposal_parameters,
+            lr=self.fraction_proposal_lr,
+            alpha=0.95,
+            momentum=0.0,
+            eps=0.00001,
+            centered=True,
+        )
 
     def __build_categorical_optimizers(self):
         image_encoder_parameters = list(self._network.phi.parameters())
@@ -18,10 +40,8 @@ class OptimizerMixin:
             lr=self.lr,
             eps=self.optimizer_epsilon,
         )
-        fraction_proposal_optimizer = self.optimizer_instance(
-            fraction_proposal_parameters,
-            lr=self.fraction_proposal_lr,
-            eps=self.optimizer_epsilon,
+        fraction_proposal_optimizer = self.__build_fraction_proposal_optimizer(
+            fraction_proposal_parameters
         )
 
         return SimpleNamespace(
