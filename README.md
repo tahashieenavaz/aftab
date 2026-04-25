@@ -26,7 +26,7 @@ It provides standardized training, evaluation, and reproducibility tools for dee
 
 | IQM HNS | IQM HNS (Last 50M Frames) |
 | :---: | :---: |
-| ![Global Performance](figures/base_experiments/global.png) | ![Last 50M Frames](figures/base_experiments/global_zoomed.png) |
+| ![Global Performance](figures/encoder_experiments/global.png) | ![Last 50M Frames](figures/encoder_experiments/global_zoomed.png) |
 
 </div>
 
@@ -97,8 +97,8 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 ## Results
 
 **Base Encoder Experiments**
-- [HNS](results/base_experiments/human_normalized_scores.md)
-- [Scores](results/base_experiments/scores.md)
+- [HNS](results/encoder_experiments/human_normalized_scores.md)
+- [Scores](results/encoder_experiments/scores.md)
 
 **Hadamax Experiments**
 - [HNS](results/hadamax_experiments/human_normalized_scores.md)

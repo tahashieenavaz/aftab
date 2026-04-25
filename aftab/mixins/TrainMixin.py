@@ -90,10 +90,10 @@ class TrainMixin:
         self,
         *,
         frame_count: int,
-        observation,
         train_environment,
         test_environment,
         episode_returns,
+        observation: torch.Tensor,
         batch_observations: torch.Tensor,
         batch_actions: torch.Tensor,
         batch_rewards: torch.Tensor,
@@ -221,10 +221,12 @@ class TrainMixin:
                 float_observations=flat_next_observations,
                 gradient=False,
             )
+
         next_q = q_values.max(dim=-1).values.reshape(
             sequence_length,
             environment_count,
         )
+
         return self.get_returns(
             batch_rewards=batch_rewards,
             batch_terminations=batch_terminations,
