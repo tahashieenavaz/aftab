@@ -10,7 +10,7 @@ class RandomShift(torch.nn.Module):
         n, c, h, w = x.size()
         assert h == w
         padding = tuple([self.padding] * 4)
-        x = torch.nn.functional.padding(x, padding, "replicate")
+        x = torch.nn.functional.pad(x, padding, "replicate")
         eps = 1.0 / (h + 2 * self.padding)
         arange = torch.linspace(
             -1.0 + eps, 1.0 - eps, h + 2 * self.padding, device=x.device, dtype=x.dtype
