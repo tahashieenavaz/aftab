@@ -47,7 +47,7 @@ class Aftab(
             "duelling",
             "distributional",
             "distributional-duelling",
-        ] = "duelling",
+        ] = "distributional-duelling",
         frames: int | Literal["pilot", "full", "ablation"] = "full",
         frame_skip: int = 4,
         mini_batches: int = 32,
