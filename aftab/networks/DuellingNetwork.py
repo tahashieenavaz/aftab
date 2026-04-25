@@ -8,13 +8,15 @@ class DuellingNetwork(BaseNetwork):
         super().__init__(**kwargs)
         self.advantage = Stream(
             input_dimension=self.feature_dimension,
-            embedding_dimension=self.embedding_dimension,
+            hidden_dimension=self.embedding_dimension,
             output_dimension=self.action_dimension,
+            normalization=True,
         )
         self.value = Stream(
             input_dimension=self.feature_dimension,
-            embedding_dimension=self.embedding_dimension,
+            hidden_dimension=self.embedding_dimension,
             output_dimension=1,
+            normalization=True,
         )
 
     def get_value(self, features):
