@@ -87,6 +87,7 @@ class Aftab(
         self.__initialize_derived_attributes()
         self.__initialize_constants()
         self.__initialize__encoder()
+        self.__initialize_optimizer()
         self.__initialize_augmentation_pipeline()
         super().__init__()
 
@@ -97,7 +98,6 @@ class Aftab(
     def __initialize_augmentation_pipeline(self):
         self.augmentation_pipeline = RandomShift(padding=self.random_shift_padding)
 
-    # TODO
     def __initialize_optimizer(self):
         if not isinstance(self.optimizer, str):
             return
