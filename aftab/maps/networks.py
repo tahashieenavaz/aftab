@@ -1,9 +1,7 @@
-from ..networks import PQNNetwork, DuellingNetwork, FQFNetwork, DuellingFQFNetwork
+from ..networks import PQNNetwork, DuellingNetwork
 
 networks_map = {
     "q": PQNNetwork,
     "duelling": DuellingNetwork,
-    "fqf": FQFNetwork,
-    "dfqf": DuellingFQFNetwork,
 }
 network_map = networks_map
