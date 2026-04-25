@@ -12,6 +12,7 @@ from .constants import EncoderStringType
 from .constants import OptimizerStringType
 from .maps import encoders_map
 from .maps import acceptable_frames_map
+from .maps import optimizer_map
 from .functions import flush
 from .modules import RandomShift
 from .mixins import TrainingResultsMixin
@@ -42,12 +43,7 @@ class Aftab(
         self,
         *,
         encoder: ModuleType | EncoderStringType = "gammahadamaxv1",
-        network: Literal[
-            "q",
-            "duelling",
-            "distributional",
-            "distributional-duelling",
-        ] = "distributional-duelling",
+        network: Literal["q", "duelling"] = "duelling",
         frames: int | Literal["pilot", "full", "ablation"] = "full",
         frame_skip: int = 4,
         mini_batches: int = 32,
@@ -66,7 +62,7 @@ class Aftab(
         verbose_interval: int = 10,
         verbose_window: int = 10,
         embedding_dimension: int = 512,
-        optimizer_instance: ModuleType | OptimizerStringType = torch.optim.RAdam,
+        optimizer: ModuleType | OptimizerStringType = "radam",
         optimizer_epsilon: float = 1e-5,
         optimizer_weight_decay: float = 0.0,
         optimizer_first_beta: float = 0.9,
@@ -81,11 +77,9 @@ class Aftab(
         reward_centering_beta: float = 0.01,
         random_shift: bool = True,
         random_shift_padding: int = 4,
-        v_min: float = -10.0,
-        v_max: float = 10.0,
-        bins: int = 51,
-        hl_gauss_smoothing_ratio: float = 0.75,
     ):
+        self.buffer = SimpleNamespace()
+
         params = locals()
         params.pop("self")
         self.__initialize_hyperparameters(**params)
@@ -95,7 +89,6 @@ class Aftab(
         self.__initialize__encoder()
         self.__initialize_augmentation_pipeline()
         super().__init__()
-        self.buffer = SimpleNamespace()
 
     def __initialize_hyperparameters(self, **hyperparameters):
         for key, value in hyperparameters.items():
@@ -106,7 +99,16 @@ class Aftab(
 
     # TODO
     def __initialize_optimizer(self):
-        pass
+        if not isinstance(self.optimizer, str):
+            return
+
+        try:
+            self.optimizer = optimizer_map[self.optimizer]
+        except KeyError as exc:
+            raise ValueError(
+                f"Invalid value for `optimizer`: {self.optimizer!r}. "
+                f"Expected one of {tuple(optimizer_map)}."
+            ) from exc
 
     def __initialize_frames(self):
         if not isinstance(self.frames, str):

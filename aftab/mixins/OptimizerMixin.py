@@ -3,7 +3,7 @@ class OptimizerMixin:
         super().__init__()
 
     def make_optimizer(self):
-        return self.optimizer_instance(
+        return self.optimizer(
             self._network.parameters(),
             lr=self.lr,
             eps=self.optimizer_epsilon,

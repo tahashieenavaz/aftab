@@ -5,12 +5,7 @@ class QValueMixin:
     def __init__(self):
         super().__init__()
 
-    def __uses_hl_gauss(self):
-        return self.network in {"distributional", "distributional-duelling"}
-
     def __get_q_values_from_observations(self, observations: torch.Tensor):
-        if self.__uses_hl_gauss():
-            return self.hl_gauss(self._network.get_q_logits(observations))
         return self._network.get_q(observations)
 
     def get_q_values(
