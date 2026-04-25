@@ -40,6 +40,7 @@ class NetworkMixin:
         network_instance: ModuleType,
         **network_kwargs,
     ):
+        self.flush_verbose(f"Network: {network_instance.__name__}")
         self._network = network_instance(
             action_dimension=action_dimension,
             embedding_dimension=embedding_dimension,

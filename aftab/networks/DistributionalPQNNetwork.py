@@ -1,4 +1,5 @@
 import torch
+from hl_gauss_pytorch import HLGaussLoss
 from ..modules import Stream
 from .BaseNetwork import BaseNetwork
 
@@ -14,7 +15,6 @@ class DistributionalPQNNetwork(BaseNetwork):
         **kwargs,
     ):
         super().__init__(**kwargs)
-        from hl_gauss_pytorch import HLGaussLoss
 
         self.distributional = True
         self.distributional_bins = distributional_bins
