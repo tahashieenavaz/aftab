@@ -1,7 +1,6 @@
 import torch
 import numpy
 import time
-from ..functions import n_step_returns
 
 
 class TrainMixin:
@@ -188,7 +187,7 @@ class TrainMixin:
         self,
         *,
         batch_observations: torch.Tensor,
-        observation,
+        observation: torch.Tensor,
         batch_rewards: torch.Tensor,
         batch_terminations: torch.Tensor,
     ):
