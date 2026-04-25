@@ -6,3 +6,4 @@ from .FractionProposalStream import FractionProposalStream
 from .CosineEmbeddingModule import CosineEmbeddingModule
 from .QuantileStream import QuantileStream
 from .DuellingQuantileStream import DuellingQuantileStream
+from .RandomShift import RandomShift

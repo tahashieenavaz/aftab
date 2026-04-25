@@ -197,7 +197,7 @@ class TrainMixin:
         observations = observations.float()
         if not getattr(self, "random_shift"):
             return observations
-        return self.aug(observations)
+        return self.augmentation_pipeline(observations)
 
     def __compute_targets(
         self,
@@ -323,10 +323,9 @@ class TrainMixin:
                     scaler.update()
                     self.results.loss.append(loss.item())
                 else:
-                    quantile_value_parameters = (
-                        list(self._network.phi.parameters())
-                        + list(self._network.quantile_value.parameters())
-                    )
+                    quantile_value_parameters = list(
+                        self._network.phi.parameters()
+                    ) + list(self._network.quantile_value.parameters())
                     fraction_proposal_parameters = list(
                         self._network.fraction_proposal.parameters()
                     )
@@ -353,9 +352,11 @@ class TrainMixin:
                         fraction_proposal_parameters, self.gradient_norm
                     )
                     fraction_grads = [
-                        None
-                        if parameter.grad is None
-                        else parameter.grad.detach().clone()
+                        (
+                            None
+                            if parameter.grad is None
+                            else parameter.grad.detach().clone()
+                        )
                         for parameter in fraction_proposal_parameters
                     ]
 
@@ -365,9 +366,11 @@ class TrainMixin:
                         fraction_proposal_parameters, self.gradient_norm
                     )
                     entropy_grads = [
-                        None
-                        if parameter.grad is None
-                        else parameter.grad.detach().clone()
+                        (
+                            None
+                            if parameter.grad is None
+                            else parameter.grad.detach().clone()
+                        )
                         for parameter in fraction_proposal_parameters
                     ]
 

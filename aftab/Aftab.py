@@ -11,7 +11,7 @@ from .constants import OptimizerStringType
 from .maps import encoders_map
 from .maps import acceptable_frames_map
 from .functions import flush
-from .functions import RandomShiftsAug
+from .modules import RandomShift
 from .mixins import TrainingResultsMixin
 from .mixins import EnvironmentMixin
 from .mixins import ActionsMixin
@@ -90,7 +90,7 @@ class Aftab(
         self.__initialize_derived_attributes()
         self.__initialize_constants()
         self.__initialize__encoder()
-        self.aug = RandomShiftsAug(pad=self.random_shift_padding)
+        self.augmentation_pipeline = RandomShift(padding=self.random_shift_padding)
         super().__init__()
         self.buffer = SimpleNamespace()
 
