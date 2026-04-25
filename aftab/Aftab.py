@@ -14,7 +14,6 @@ from .maps import encoders_map
 from .maps import acceptable_frames_map
 from .maps import optimizer_map
 from .functions import flush
-from .modules import RandomShift
 from .mixins import TrainingResultsMixin
 from .mixins import EnvironmentMixin
 from .mixins import ActionsMixin
@@ -43,7 +42,12 @@ class Aftab(
         self,
         *,
         encoder: ModuleType | EncoderStringType = "gammahadamaxv1",
-        network: Literal["q", "duelling"] = "duelling",
+        network: Literal[
+            "q",
+            "duelling",
+            "distributional",
+            "distributional-duelling",
+        ] = "distributional-duelling",
         frames: int | Literal["pilot", "full", "ablation"] = "full",
         frame_skip: int = 4,
         mini_batches: int = 32,
@@ -75,8 +79,12 @@ class Aftab(
         test_reward_clip: bool = True,
         reward_centering: bool = True,
         reward_centering_beta: float = 0.01,
-        random_shift: bool = True,
-        random_shift_padding: int = 4,
+        distributional_bins: int = 51,
+        distributional_min_value: float = -10.0,
+        distributional_max_value: float = 10.0,
+        distributional_sigma: float | None = None,
+        distributional_sigma_ratio: float = 0.75,
+        distributional_value_clip: float = 0.0,
     ):
         self.buffer = SimpleNamespace()
 
@@ -88,15 +96,11 @@ class Aftab(
         self.__initialize_constants()
         self.__initialize__encoder()
         self.__initialize_optimizer()
-        self.__initialize_augmentation_pipeline()
         super().__init__()
 
     def __initialize_hyperparameters(self, **hyperparameters):
         for key, value in hyperparameters.items():
             setattr(self, key, value)
-
-    def __initialize_augmentation_pipeline(self):
-        self.augmentation_pipeline = RandomShift(padding=self.random_shift_padding)
 
     def __initialize_optimizer(self):
         if not isinstance(self.optimizer, str):

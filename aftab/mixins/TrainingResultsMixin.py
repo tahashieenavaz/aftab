@@ -19,12 +19,8 @@ class TrainingResultsMixin:
         if self.reward_centering:
             filename += f"reward-centering-beta-{self.reward_centering}__"
 
-        if self.random_shift:
-            filename += f"random-shift-padding_{self.random_shift_padding}__"
-
         # removes trailing __
         filename = filename.strip("__")
-
         return f"{filename}.pkl"
 
     def __build_log_payload(self) -> dict:

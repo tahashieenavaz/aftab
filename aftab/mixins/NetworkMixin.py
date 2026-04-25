@@ -38,24 +38,68 @@ class NetworkMixin:
         action_dimension: int,
         embedding_dimension: int,
         network_instance: ModuleType,
+        **network_kwargs,
     ):
         self._network = network_instance(
             action_dimension=action_dimension,
             embedding_dimension=embedding_dimension,
             encoder=self.encoder,
+            **network_kwargs,
         )
+
+    def __get_distributional_sigma(self) -> float:
+        sigma = getattr(self, "distributional_sigma", None)
+        if sigma is not None:
+            sigma = float(sigma)
+            if sigma <= 0.0:
+                raise ValueError("Expected `distributional_sigma` to be positive.")
+            return sigma
+
+        bins = int(getattr(self, "distributional_bins"))
+        min_value = float(getattr(self, "distributional_min_value"))
+        max_value = float(getattr(self, "distributional_max_value"))
+        if bins <= 0:
+            raise ValueError("Expected `distributional_bins` to be positive.")
+        if max_value <= min_value:
+            raise ValueError(
+                "Expected `distributional_max_value` to be greater than "
+                "`distributional_min_value`."
+            )
+        bin_width = (max_value - min_value) / bins
+        sigma = bin_width * float(getattr(self, "distributional_sigma_ratio"))
+        if sigma <= 0.0:
+            raise ValueError("Expected `distributional_sigma_ratio` to be positive.")
+        return sigma
+
+    def __get_distributional_network_args(self):
+        return {
+            "distributional_bins": int(getattr(self, "distributional_bins")),
+            "distributional_min_value": float(
+                getattr(self, "distributional_min_value")
+            ),
+            "distributional_max_value": float(
+                getattr(self, "distributional_max_value")
+            ),
+            "distributional_sigma": self.__get_distributional_sigma(),
+        }
 
     def __build_network(self, action_dimension: int):
         try:
             network_instance = networks_map[self.network]
-            args = {
-                "network_instance": network_instance,
-                "action_dimension": action_dimension,
-                "embedding_dimension": self.embedding_dimension,
-            }
-            self.__build_pqn_network(**args)
-        except Exception as e:
-            raise ValueError("Wrong network id detected.", e)
+        except KeyError as exc:
+            raise ValueError(
+                f"Invalid value for `network`: {self.network!r}. "
+                f"Expected one of {tuple(networks_map)}."
+            ) from exc
+
+        args = {
+            "network_instance": network_instance,
+            "action_dimension": action_dimension,
+            "embedding_dimension": self.embedding_dimension,
+        }
+        if self.network in {"distributional", "distributional-duelling"}:
+            args.update(self.__get_distributional_network_args())
+        self.__build_pqn_network(**args)
 
     def __compile_network(self):
         if not getattr(self, "should_compile"):
