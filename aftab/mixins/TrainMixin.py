@@ -2,6 +2,7 @@ import torch
 import numpy
 import time
 from typing import Optional
+from ..modules import RandomShift
 
 
 class TrainMixin:
@@ -27,10 +28,27 @@ class TrainMixin:
             float(getattr(self, "distributional_value_clip")) > 0.0
         )
 
+    def __initialize_random_shift(self):
+        self._random_shift = None
+        if not bool(getattr(self, "random_shift", False)):
+            return
+
+        self._random_shift = RandomShift(
+            padding=int(getattr(self, "random_shift_padding"))
+        ).to(self.device)
+
+    def __augment_observations(self, observations: torch.Tensor) -> torch.Tensor:
+        random_shift = getattr(self, "_random_shift", None)
+        if random_shift is None:
+            return observations
+
+        return random_shift(observations.float())
+
     def __initialize_training(self, environment: str, seed: int):
         self.flush_results()
         self.set_precision()
         self.set_seed(seed)
+        self.__initialize_random_shift()
 
         train_environment, test_environment, action_dimension, observation_shape = (
             self.make_environments(environment=environment, seed=seed)
@@ -227,6 +245,7 @@ class TrainMixin:
         flat_next_observations = next_observations.reshape(
             (-1,) + next_observations.shape[2:]
         )
+        flat_next_observations = self.__augment_observations(flat_next_observations)
 
         with self.__autocast_float16():
             next_q_values = self.get_q_values(
@@ -294,6 +313,9 @@ class TrainMixin:
                 if flattened_old_q_values is not None:
                     mini_batch_old_q_values = flattened_old_q_values[mini_batch_idx]
                 mini_batch_targets = flattened_targets[mini_batch_idx]
+                mini_batch_observations = self.__augment_observations(
+                    mini_batch_observations
+                )
 
                 optimizer.zero_grad(set_to_none=True)
                 with self.__autocast_float16():

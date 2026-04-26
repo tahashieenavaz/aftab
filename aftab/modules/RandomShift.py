@@ -4,6 +4,9 @@ import torch
 class RandomShift(torch.nn.Module):
     def __init__(self, *, padding: int):
         super().__init__()
+        if padding < 0:
+            raise ValueError("Expected `padding` to be non-negative.")
+
         self.padding = padding
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
