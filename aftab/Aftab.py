@@ -78,7 +78,9 @@ class Aftab(
         train_reward_clip: bool = True,
         test_reward_clip: bool = True,
         reward_centering: bool = True,
-        reward_centering_beta: float = 0.01,
+        reward_centering_eta: float = 40.0,
+        reward_centering_beta: float | None = None,
+        reward_centering_bias_correction: bool = True,
         distributional_bins: int = 51,
         distributional_min_value: float = -10.0,
         distributional_max_value: float = 10.0,
@@ -96,11 +98,15 @@ class Aftab(
         self.__initialize_constants()
         self.__initialize__encoder()
         self.__initialize_optimizer()
+        self.__initialize_reward_centering()
         super().__init__()
 
     def __initialize_hyperparameters(self, **hyperparameters):
         for key, value in hyperparameters.items():
             setattr(self, key, value)
+
+    def __initialize_reward_centering(self):
+        self.reward_centering_beta = self.lr * self.reward_centering_eta
 
     def __initialize_optimizer(self):
         if not isinstance(self.optimizer, str):
