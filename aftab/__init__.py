@@ -8,4 +8,4 @@ from .constants import environments
 from .constants import environments as ENVS
 from .constants import environments as aftab_environments
 
-__version__ = "0.1.1"
+__version__ = "0.1.11"
