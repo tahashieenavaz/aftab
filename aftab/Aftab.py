@@ -83,6 +83,8 @@ class Aftab(
         distributional_sigma: float | None = None,
         distributional_sigma_ratio: float = 0.75,
         distributional_value_clip: float = 0.0,
+        random_shift: bool = True,
+        random_shift_padding: int = 4,
     ):
         self.buffer = SimpleNamespace()
 
