@@ -27,41 +27,10 @@ class TrainMixin:
             float(getattr(self, "distributional_value_clip", 0.0)) > 0.0
         )
 
-    def __reward_centering_enabled(self):
-        return bool(getattr(self, "reward_centering", False))
-
-    def __reward_centering_step_size(self) -> float:
-        reward_centering_beta = getattr(self, "reward_centering_beta", None)
-        if reward_centering_beta is not None:
-            step_size = float(reward_centering_beta)
-        else:
-            step_size = float(getattr(self, "lr")) * float(
-                getattr(self, "reward_centering_eta", 40.0)
-            )
-
-        if not 0.0 < step_size <= 1.0:
-            raise ValueError(
-                "Expected reward-centering step size to be in the interval (0, 1]."
-            )
-        return step_size
-
-    def __update_average_reward(self, mean_td_error: float) -> None:
-        step_size = self.__reward_centering_step_size()
-        if bool(getattr(self, "reward_centering_bias_correction", True)):
-            self._reward_centering_trace += step_size * (
-                1.0 - self._reward_centering_trace
-            )
-            step_size = step_size / self._reward_centering_trace
-        self._average_reward += step_size * mean_td_error
-
     def __initialize_training(self, environment: str, seed: int):
         self.flush_results()
         self.set_precision()
         self.set_seed(seed)
-
-        if self.__reward_centering_enabled():
-            self._average_reward = 0.0
-            self._reward_centering_trace = 0.0
 
         train_environment, test_environment, action_dimension, observation_shape = (
             self.make_environments(environment=environment, seed=seed)
@@ -272,39 +241,8 @@ class TrainMixin:
             environment_count,
         )
 
-        rewards = batch_rewards
-        if self.__reward_centering_enabled():
-            flat_observations = batch_observations.reshape(
-                (-1,) + batch_observations.shape[2:]
-            )
-            with self.__autocast_float16():
-                q_values = self.get_q_values(
-                    float_observations=flat_observations,
-                    gradient=False,
-                )
-            q_values = q_values.float().reshape(
-                sequence_length,
-                environment_count,
-                -1,
-            )
-            q_taken = q_values.gather(2, batch_actions.unsqueeze(-1)).squeeze(-1)
-
-            train_slice = slice(0, self.train_environments)
-            # Value-based reward centering: update the reward-rate estimate from
-            # the Bellman TD error, then build targets with the updated center.
-            train_td_errors = (
-                batch_rewards[:, train_slice]
-                - self._average_reward
-                + float(getattr(self, "gamma"))
-                * (1.0 - batch_terminations[:, train_slice])
-                * next_q[:, train_slice]
-                - q_taken[:, train_slice]
-            )
-            self.__update_average_reward(float(train_td_errors.mean().item()))
-            rewards = batch_rewards - float(self._average_reward)
-
         return self.get_returns(
-            batch_rewards=rewards,
+            batch_rewards=batch_rewards,
             batch_terminations=batch_terminations,
             next_q=next_q,
         )

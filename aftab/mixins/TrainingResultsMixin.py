@@ -16,10 +16,6 @@ class TrainingResultsMixin:
         filename += f"epochs-{self.epochs}__"
         filename += f"lambda-{self.lmbda}__"
 
-        if self.reward_centering:
-            filename += f"reward-centering-beta-{self.reward_centering_beta}__"
-            filename += f"reward-centering-eta-{self.reward_centering_eta}__"
-
         # removes trailing __
         filename = filename.strip("__")
         return f"{filename}.pkl"
