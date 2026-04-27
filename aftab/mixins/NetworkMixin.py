@@ -7,6 +7,9 @@ class NetworkMixin:
     def __init__(self):
         super().__init__()
 
+    def __channels_last_enabled(self) -> bool:
+        return bool(getattr(self, "channels_last"))
+
     def __as_channels_last(self, tensor: torch.Tensor) -> torch.Tensor:
         if not self.__channels_last_enabled() or tensor.ndim != 4:
             return tensor
@@ -46,13 +49,12 @@ class NetworkMixin:
         network_instance: ModuleType,
         **network_kwargs,
     ):
-        is_channel_last = bool(getattr(self, "channels_last"))
         self.flush_verbose(f"Network: {network_instance.__name__}")
         self._network = network_instance(
             action_dimension=action_dimension,
             embedding_dimension=embedding_dimension,
             encoder=self.encoder,
-            channels_last=is_channel_last,
+            channels_last=self.__channels_last_enabled(),
             **network_kwargs,
         )
 
