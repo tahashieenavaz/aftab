@@ -1,5 +1,4 @@
 import torch
-from timm.layers import LayerNorm2d
 from ..constants import ModuleType
 
 
@@ -27,8 +26,8 @@ class HadamaxBlock(torch.nn.Module):
             padding=padding,
         )
 
-        self.alpha = LayerNorm2d(out_channels)
-        self.beta = LayerNorm2d(out_channels)
+        self.alpha = torch.nn.GroupNorm(1, out_channels)
+        self.beta = torch.nn.GroupNorm(1, out_channels)
 
         self.chi = chi()
         self.psi = psi()

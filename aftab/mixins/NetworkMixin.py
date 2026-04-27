@@ -103,7 +103,7 @@ class NetworkMixin:
         self.__build_pqn_network(**args)
 
     def __compile_network(self):
-        if not getattr(self, "should_compile"):
+        if not bool(getattr(self, "should_compile")):
             return
 
         if not hasattr(self, "_network"):
