@@ -7,6 +7,11 @@ class NetworkMixin:
     def __init__(self):
         super().__init__()
 
+    def __as_channels_last(self, tensor: torch.Tensor) -> torch.Tensor:
+        if not self.__channels_last_enabled() or tensor.ndim != 4:
+            return tensor
+        return tensor.contiguous(memory_format=torch.channels_last)
+
     def __get_dummy_sample(self):
         if not hasattr(self, "frame_stack"):
             raise AttributeError("Expected `frame_stack` to be defined.")
@@ -17,13 +22,14 @@ class NetworkMixin:
         batch_size = 1
         picture_size = 84
 
-        return torch.randn(
+        sample = torch.randn(
             batch_size,
             self.frame_stack,
             picture_size,
             picture_size,
             device=self.device,
         )
+        return self.__as_channels_last(sample)
 
     @torch.no_grad()
     def __perform_dummy_pass(self):
@@ -40,11 +46,13 @@ class NetworkMixin:
         network_instance: ModuleType,
         **network_kwargs,
     ):
+        is_channel_last = bool(getattr(self, "channels_last"))
         self.flush_verbose(f"Network: {network_instance.__name__}")
         self._network = network_instance(
             action_dimension=action_dimension,
             embedding_dimension=embedding_dimension,
             encoder=self.encoder,
+            channels_last=is_channel_last,
             **network_kwargs,
         )
 
@@ -114,6 +122,10 @@ class NetworkMixin:
         self._network = torch.compile(self._network)
 
     def __move_network_on_device(self):
+        if self.__channels_last_enabled():
+            self._network.to(device=self.device, memory_format=torch.channels_last)
+            return
+
         self._network.to(self.device)
 
     def prepare_network(self, action_dimension: int):

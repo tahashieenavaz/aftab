@@ -74,6 +74,7 @@ class Aftab(
         optimizer_second_beta: float = 0.999,
         should_compile: bool = True,
         autocast_float16: bool = True,
+        channels_last: bool = True,
         train_episodic_life: bool = True,
         test_episodic_life: bool = False,
         train_reward_clip: bool = True,

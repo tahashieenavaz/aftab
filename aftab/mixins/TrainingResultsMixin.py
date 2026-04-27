@@ -16,6 +16,7 @@ class TrainingResultsMixin:
         filename += f"epochs-{self.epochs}__"
         filename += f"lambda-{self.lmbda}__"
         filename += f"autocast-float16-{self.autocast_float16}__"
+        filename += f"channels-last-{self.channels_last}__"
         filename += f"compiled-{self.should_compile}__"
         filename += f"optimizer-{self.optimizer.__name__}__"
 

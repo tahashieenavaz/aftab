@@ -1,6 +1,6 @@
 import torch
 from ..constants import ModuleType
-from ..modules import LayerNorm2d
+from .LayerNorm2d import LayerNorm2d
 
 
 class EncoderBlock(torch.nn.Module):
