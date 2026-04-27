@@ -40,9 +40,15 @@ class HadamaxBlock(torch.nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x_fused = self.fused(x)
         a, b = torch.chunk(x_fused, 2, dim=1)
-        a = self.psi(self.alpha(a))
-        b = self.chi(self.beta(b))
+
+        a = self.alpha(a)
+        a = self.psi(a)
+
+        b = self.beta(b)
+        b = self.chi(b)
+
         x = a * b
+
         return torch.nn.functional.max_pool2d(
             x,
             kernel_size=self.pool_kernel,
