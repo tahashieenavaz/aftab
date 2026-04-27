@@ -1,5 +1,6 @@
 import torch
 from ..constants import ModuleType
+from timm.layers import LayerNorm2d
 
 
 class EncoderBlock(torch.nn.Module):
@@ -22,7 +23,7 @@ class EncoderBlock(torch.nn.Module):
             padding=padding,
         )
         self.activation = activation()
-        self.normalization = torch.nn.GroupNorm(1, out_channels)
+        self.normalization = LayerNorm2d(out_channels)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.convolutional(x)
