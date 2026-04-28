@@ -331,7 +331,9 @@ class TrainMixin:
         )
 
         if update % self.verbose_interval == 0:
-            self.flush_verbose(f"Update {update} | Frames: {frame_count:,}")
+            self.flush_verbose(
+                f"Update {update} | Frames: {frame_count * self.frame_skip:,}"
+            )
             self.flush_verbose(f"Test Score: {test_score:.4f}")
 
     def train_loop(self, *, environment: str, seed: int):
