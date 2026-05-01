@@ -269,6 +269,15 @@ https://envpool.readthedocs.io/en/latest/env/atari.html#available-tasks
 }
 ```
 
+```bibtex
+@misc{1602.04621,
+  Title = {Deep Exploration via Bootstrapped DQN},
+  Author = {Ian Osband and Charles Blundell and Alexander Pritzel and Benjamin Van Roy},
+  Year = {2016},
+  Eprint = {arXiv:1602.04621},
+}
+```
+
 ## License
 
 © 2025 Taha Shieenavaz.  

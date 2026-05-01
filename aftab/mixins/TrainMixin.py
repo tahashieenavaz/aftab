@@ -3,6 +3,8 @@ import numpy
 import time
 from typing import Optional
 
+from ..common import RolloutBuffer
+
 
 class TrainMixin:
     def __init__(self):
@@ -151,59 +153,14 @@ class TrainMixin:
         )
 
     def __allocate_buffers(self, *, observation_shape: tuple):
-        rollout_shape = (self.steps_per_update, self.train_environments)
-        bootstrapped = self.__bootstrapped_enabled()
-        state_q_shape = rollout_shape
-        if bootstrapped:
-            state_q_shape = rollout_shape + (self.__get_bootstrap_heads(),)
-
-        batch_observations = torch.empty(
-            rollout_shape + observation_shape,
-            dtype=torch.uint8,
+        return RolloutBuffer(
+            observation_shape=observation_shape,
+            steps_per_update=self.steps_per_update,
+            train_environments=self.train_environments,
             device=self.device,
-        )
-        batch_actions = torch.empty(
-            rollout_shape,
-            dtype=torch.int64,
-            device=self.device,
-        )
-        batch_rewards = torch.empty(
-            rollout_shape,
-            dtype=torch.float32,
-            device=self.device,
-        )
-        batch_terminations = torch.empty(
-            rollout_shape,
-            dtype=torch.float32,
-            device=self.device,
-        )
-        batch_state_q_values = torch.empty(
-            state_q_shape,
-            dtype=torch.float32,
-            device=self.device,
-        )
-        batch_old_q_values = None
-        if self.__distributional_value_clip_enabled():
-            batch_old_q_values = torch.empty(
-                rollout_shape,
-                dtype=torch.float32,
-                device=self.device,
-            )
-        batch_bootstrap_masks = None
-        if bootstrapped:
-            batch_bootstrap_masks = torch.empty(
-                state_q_shape,
-                dtype=torch.float32,
-                device=self.device,
-            )
-        return (
-            batch_observations,
-            batch_actions,
-            batch_rewards,
-            batch_terminations,
-            batch_state_q_values,
-            batch_old_q_values,
-            batch_bootstrap_masks,
+            bootstrapped=self.__bootstrapped_enabled(),
+            bootstrap_heads=self.__get_bootstrap_heads(),
+            store_old_q_values=self.__distributional_value_clip_enabled(),
         )
 
     def __get_score_rewards(self, *, rewards, info_train, info_test):
@@ -242,13 +199,7 @@ class TrainMixin:
         test_environment,
         episode_returns,
         observation: torch.Tensor,
-        batch_observations: torch.Tensor,
-        batch_actions: torch.Tensor,
-        batch_rewards: torch.Tensor,
-        batch_terminations: torch.Tensor,
-        batch_state_q_values: torch.Tensor,
-        batch_old_q_values: Optional[torch.Tensor],
-        batch_bootstrap_masks: Optional[torch.Tensor],
+        rollout_buffer: RolloutBuffer,
         active_heads: Optional[torch.Tensor],
     ):
         for step in range(self.steps_per_update):
@@ -266,8 +217,6 @@ class TrainMixin:
                         active_heads=active_heads,
                     )
                 )
-            batch_state_q_values[step] = state_q_values
-
             actions_train_tensor, actions_test_tensor = self.get_action_tensors(
                 q_values_train=q_values_train,
                 q_values_test=q_values_test,
@@ -275,8 +224,9 @@ class TrainMixin:
             )
             actions_train = actions_train_tensor.cpu().numpy()
             actions_test = actions_test_tensor.cpu().numpy()
-            if batch_old_q_values is not None:
-                batch_old_q_values[step] = q_values_train.gather(
+            old_q_values = None
+            if rollout_buffer.old_q_values is not None:
+                old_q_values = q_values_train.gather(
                     1,
                     actions_train_tensor.unsqueeze(1),
                 ).squeeze(1)
@@ -325,20 +275,28 @@ class TrainMixin:
                 terminations=terminations,
             )
 
-            batch_observations[step] = train_observation
-            batch_actions[step] = actions_train_tensor
-            batch_rewards[step] = torch.as_tensor(
-                reward_train,
-                dtype=torch.float32,
-                device=self.device,
+            bootstrap_masks = None
+            if rollout_buffer.bootstrap_masks is not None:
+                bootstrap_masks = self.__sample_bootstrap_masks()
+
+            rollout_buffer.insert(
+                step=step,
+                observation=train_observation,
+                action=actions_train_tensor,
+                reward=torch.as_tensor(
+                    reward_train,
+                    dtype=torch.float32,
+                    device=self.device,
+                ),
+                termination=torch.as_tensor(
+                    termination_train,
+                    dtype=torch.float32,
+                    device=self.device,
+                ),
+                state_q_values=state_q_values,
+                old_q_values=old_q_values,
+                bootstrap_masks=bootstrap_masks,
             )
-            batch_terminations[step] = torch.as_tensor(
-                termination_train,
-                dtype=torch.float32,
-                device=self.device,
-            )
-            if batch_bootstrap_masks is not None:
-                batch_bootstrap_masks[step] = self.__sample_bootstrap_masks()
 
             observation = torch.as_tensor(
                 next_observation,
@@ -354,13 +312,11 @@ class TrainMixin:
         self,
         *,
         observation: torch.Tensor,
-        batch_rewards: torch.Tensor,
-        batch_terminations: torch.Tensor,
-        batch_state_q_values: torch.Tensor,
+        rollout_buffer: RolloutBuffer,
     ):
         last_train_observation = observation[: self.train_environments]
-        returns_rewards = batch_rewards
-        returns_terminations = batch_terminations
+        returns_rewards = rollout_buffer.rewards
+        returns_terminations = rollout_buffer.terminations
 
         if self.__bootstrapped_enabled():
             with self.__autocast_float16():
@@ -368,11 +324,11 @@ class TrainMixin:
                     last_train_observation.float()
                 )
             last_next_q = last_next_q_heads.float().max(dim=-1).values
-            returns_rewards = batch_rewards.unsqueeze(-1).expand_as(
-                batch_state_q_values
+            returns_rewards = rollout_buffer.rewards.unsqueeze(-1).expand_as(
+                rollout_buffer.state_q_values
             )
-            returns_terminations = batch_terminations.unsqueeze(-1).expand_as(
-                batch_state_q_values
+            returns_terminations = rollout_buffer.terminations.unsqueeze(-1).expand_as(
+                rollout_buffer.state_q_values
             )
         else:
             with self.__autocast_float16():
@@ -382,8 +338,8 @@ class TrainMixin:
                 )
             last_next_q = last_next_q_values.float().max(dim=-1).values
 
-        next_q = torch.empty_like(batch_state_q_values)
-        next_q[:-1] = batch_state_q_values[1:]
+        next_q = torch.empty_like(rollout_buffer.state_q_values)
+        next_q[:-1] = rollout_buffer.state_q_values[1:]
         next_q[-1] = last_next_q
 
         return self.get_returns(
@@ -395,28 +351,10 @@ class TrainMixin:
     def __flatten_batches(
         self,
         *,
-        batch_observations: torch.Tensor,
-        batch_actions: torch.Tensor,
-        batch_old_q_values: Optional[torch.Tensor],
-        batch_bootstrap_masks: Optional[torch.Tensor],
+        rollout_buffer: RolloutBuffer,
         targets: torch.Tensor,
     ):
-        flattened_observations = batch_observations.flatten(0, 1)
-        flattened_actions = batch_actions.reshape(-1)
-        flattened_old_q_values = None
-        if batch_old_q_values is not None:
-            flattened_old_q_values = batch_old_q_values.reshape(-1)
-        flattened_targets = targets.flatten(0, 1)
-        flattened_bootstrap_masks = None
-        if batch_bootstrap_masks is not None:
-            flattened_bootstrap_masks = batch_bootstrap_masks.flatten(0, 1)
-        return (
-            flattened_observations,
-            flattened_actions,
-            flattened_old_q_values,
-            flattened_targets,
-            flattened_bootstrap_masks,
-        )
+        return rollout_buffer.flatten(targets)
 
     def __get_bootstrapped_loss(
         self,
@@ -539,15 +477,7 @@ class TrainMixin:
             episode_returns,
         ) = self.__initialize_training(environment=environment, seed=seed)
 
-        (
-            batch_observations,
-            batch_actions,
-            batch_rewards,
-            batch_terminations,
-            batch_state_q_values,
-            batch_old_q_values,
-            batch_bootstrap_masks,
-        ) = self.__allocate_buffers(
+        rollout_buffer = self.__allocate_buffers(
             observation_shape=observation_shape,
         )
         active_heads = None
@@ -565,21 +495,13 @@ class TrainMixin:
                 train_environment=train_environment,
                 test_environment=test_environment,
                 episode_returns=episode_returns,
-                batch_observations=batch_observations,
-                batch_actions=batch_actions,
-                batch_rewards=batch_rewards,
-                batch_terminations=batch_terminations,
-                batch_state_q_values=batch_state_q_values,
-                batch_old_q_values=batch_old_q_values,
-                batch_bootstrap_masks=batch_bootstrap_masks,
+                rollout_buffer=rollout_buffer,
                 active_heads=active_heads,
             )
 
             targets = self.__compute_targets(
                 observation=observation,
-                batch_rewards=batch_rewards,
-                batch_terminations=batch_terminations,
-                batch_state_q_values=batch_state_q_values,
+                rollout_buffer=rollout_buffer,
             )
 
             (
@@ -589,10 +511,7 @@ class TrainMixin:
                 flattened_targets,
                 flattened_bootstrap_masks,
             ) = self.__flatten_batches(
-                batch_observations=batch_observations,
-                batch_actions=batch_actions,
-                batch_old_q_values=batch_old_q_values,
-                batch_bootstrap_masks=batch_bootstrap_masks,
+                rollout_buffer=rollout_buffer,
                 targets=targets,
             )
             flattened_target_probs = None
