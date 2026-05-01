@@ -1,1 +1,0 @@
-curl -Ls https://micro.mamba.pm/install.sh | bash
