@@ -181,3 +181,8 @@ class Aftab(
         self.flush_verbose(f"Environment: {environment}")
         self.flush_verbose(f"Seed: {seed}")
         self.train_loop(environment=environment, seed=seed)
+
+
+if __name__ == "__main__":
+    agent = Aftab()
+    print("Aftab can initialize successfully")
