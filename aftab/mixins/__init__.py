@@ -7,3 +7,4 @@ from .QValueMixin import QValueMixin
 from .LossMixin import LossMixin
 from .LambdaReturnsMixin import LambdaReturnsMixin
 from .TrainMixin import TrainMixin
+from .OptimizerMixin import OptimizerMixin
