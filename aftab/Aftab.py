@@ -171,8 +171,10 @@ class Aftab(
         self.results.duration = 0.0
 
     def flush_verbose(self, message: str):
-        if self.verbose:
-            flush(message=message)
+        if not self.verbose:
+            return
+
+        flush(message=message)
 
     def train(self, *, environment: str, seed: int):
         self.__set_precision()
