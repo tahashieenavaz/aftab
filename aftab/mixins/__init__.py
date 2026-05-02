@@ -3,7 +3,6 @@ from .EnvironmentMixin import EnvironmentMixin
 from .ActionsMixin import ActionsMixin
 from .EpsilonMixin import EpsilonMixin
 from .NetworkMixin import NetworkMixin
-from .OptimizerMixin import OptimizerMixin
 from .QValueMixin import QValueMixin
 from .LossMixin import LossMixin
 from .LambdaReturnsMixin import LambdaReturnsMixin

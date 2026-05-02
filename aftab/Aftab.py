@@ -19,7 +19,6 @@ from .mixins import EnvironmentMixin
 from .mixins import ActionsMixin
 from .mixins import EpsilonMixin
 from .mixins import NetworkMixin
-from .mixins import OptimizerMixin
 from .mixins import QValueMixin
 from .mixins import LossMixin
 from .mixins import LambdaReturnsMixin
@@ -32,7 +31,6 @@ class Aftab(
     ActionsMixin,
     EpsilonMixin,
     NetworkMixin,
-    OptimizerMixin,
     QValueMixin,
     LossMixin,
     LambdaReturnsMixin,
@@ -98,7 +96,6 @@ class Aftab(
         self.__initialize_derived_attributes()
         self.__initialize_constants()
         self.__initialize__encoder()
-        self.__initialize_optimizer()
         super().__init__()
 
     def __initialize_hyperparameters(self, **hyperparameters):
@@ -106,16 +103,16 @@ class Aftab(
             setattr(self, key, value)
 
     def __initialize_optimizer(self):
-        if not isinstance(self.optimizer, str):
-            return
+        if self.optimizer not in optimizer_map:
+            raise ValueError(f"Optimizer `{self.optimizer}` was not founded.")
 
-        try:
-            self.optimizer = optimizer_map[self.optimizer]
-        except KeyError as exc:
-            raise ValueError(
-                f"Invalid value for `optimizer`: {self.optimizer!r}. "
-                f"Expected one of {tuple(optimizer_map)}."
-            ) from exc
+        self._optimizer = optimizer_map[self.optimizer](
+            self._network.parameters(),
+            lr=self.lr,
+            eps=self.optimizer_epsilon,
+            betas=(self.optimizer_first_beta, self.optimizer_second_beta),
+            weight_decay=self.optimizer_weight_decay,
+        )
 
     def __initialize_frames(self):
         if not isinstance(self.frames, str):
@@ -183,6 +180,8 @@ class Aftab(
         self.__flush_results()
         self.__set_buffer("seed", seed)
         self.__set_buffer("environment", environment)
+
+        self.__initialize_optimizer()
 
         self.flush_verbose(f"Environment: {environment}")
         self.flush_verbose(f"Seed: {seed}")
