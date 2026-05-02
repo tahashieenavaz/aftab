@@ -1,8 +1,9 @@
 from baloot import funnel
 from pathlib import Path
+from .AftabBaseMixin import AftabBaseMixin
 
 
-class TrainingResultsMixin:
+class AftabTrainingResultsMixin(AftabBaseMixin):
     def __init__(self):
         super().__init__()
 

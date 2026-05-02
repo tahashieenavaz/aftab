@@ -1,7 +1,8 @@
+from .AftabBaseMixin import AftabBaseMixin
 from ..maps import optimizer_map
 
 
-class OptimizerMixin:
+class AftabOptimizerMixin(AftabBaseMixin):
     def __init__(self):
         super().__init__()
 

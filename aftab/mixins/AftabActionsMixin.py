@@ -1,10 +1,11 @@
 import torch
 import numpy
 from typing import Tuple
+from .AftabBaseMixin import AftabBaseMixin
 from ..functions import epsilon_greedy_vectorized
 
 
-class ActionsMixin:
+class AftabActionsMixin(AftabBaseMixin):
     def __init__(self):
         super().__init__()
 

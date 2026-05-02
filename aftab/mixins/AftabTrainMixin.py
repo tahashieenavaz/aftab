@@ -2,10 +2,11 @@ import torch
 import numpy
 import time
 from typing import Optional
+from .AftabBaseMixin import AftabBaseMixin
 from ..common import RolloutBuffer
 
 
-class TrainMixin:
+class AftabTrainMixin(AftabBaseMixin):
     def __init__(self):
         super().__init__()
 

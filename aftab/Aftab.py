@@ -12,32 +12,21 @@ from .constants import EncoderStringType
 from .constants import OptimizerStringType
 from .maps import encoders_map
 from .maps import acceptable_frames_map
-from .maps import optimizer_map
-from .maps import network_map
 from .functions import flush
-from .mixins import TrainingResultsMixin
-from .mixins import EnvironmentMixin
-from .mixins import ActionsMixin
-from .mixins import EpsilonMixin
-from .mixins import NetworkMixin
-from .mixins import QValueMixin
-from .mixins import LossMixin
-from .mixins import LambdaReturnsMixin
-from .mixins import TrainMixin
-from .mixins import OptimizerMixin
+from .mixins import *
 
 
 class Aftab(
-    TrainingResultsMixin,
-    EnvironmentMixin,
-    ActionsMixin,
-    EpsilonMixin,
-    NetworkMixin,
-    QValueMixin,
-    LossMixin,
-    LambdaReturnsMixin,
-    TrainMixin,
-    OptimizerMixin,
+    AftabTrainingResultsMixin,
+    AftabEnvironmentMixin,
+    AftabActionsMixin,
+    AftabEpsilonMixin,
+    AftabNetworkMixin,
+    AftabQValueMixin,
+    AftabLossMixin,
+    AftabReturnsMixin,
+    AftabTrainMixin,
+    AftabOptimizerMixin,
 ):
     def __init__(
         self,

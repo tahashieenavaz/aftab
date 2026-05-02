@@ -1,7 +1,8 @@
 import envpool
+from .AftabBaseMixin import AftabBaseMixin
 
 
-class EnvironmentMixin:
+class AftabEnvironmentMixin(AftabBaseMixin):
     def __init__(self):
         super().__init__()
 

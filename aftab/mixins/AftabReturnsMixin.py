@@ -1,8 +1,9 @@
 import torch
+from .AftabBaseMixin import AftabBaseMixin
 from ..functions import lambda_returns
 
 
-class LambdaReturnsMixin:
+class AftabReturnsMixin(AftabBaseMixin):
     def __init__(self):
         super().__init__()
 

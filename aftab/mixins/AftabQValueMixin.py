@@ -1,7 +1,8 @@
 import torch
+from .AftabBaseMixin import AftabBaseMixin
 
 
-class QValueMixin:
+class AftabQValueMixin(AftabBaseMixin):
     def __init__(self):
         super().__init__()
 

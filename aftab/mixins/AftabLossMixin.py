@@ -4,7 +4,7 @@ from typing import Optional
 from ..functions import mse_loss
 
 
-class LossMixin:
+class AftabLossMixin:
     def __init__(self):
         super().__init__()
 

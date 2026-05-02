@@ -1,11 +1,12 @@
 import torch
 from ..maps import networks_map
+from .AftabBaseMixin import AftabBaseMixin
 
 _DISTRIBUTIONAL_NETWORKS = {"distributional", "distributional-duelling"}
 _BOOTSTRAPPED_NETWORKS = {"bootstrapped", "bootstrapped-duelling"}
 
 
-class NetworkMixin:
+class AftabNetworkMixin(AftabBaseMixin):
     def __init__(self):
         super().__init__()
 

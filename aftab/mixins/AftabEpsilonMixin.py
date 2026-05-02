@@ -1,7 +1,8 @@
 import torch
+from .AftabBaseMixin import AftabBaseMixin
 
 
-class EpsilonMixin:
+class AftabEpsilonMixin(AftabBaseMixin):
     def __init__(self):
         super().__init__()
 
