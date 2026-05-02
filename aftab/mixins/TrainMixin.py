@@ -136,7 +136,7 @@ class TrainMixin:
             episode_returns,
         )
 
-    def __allocate_buffers(self, *, observation_shape: tuple):
+    def __allocate_buffers(self, *, observation_shape: tuple) -> RolloutBuffer:
         return RolloutBuffer(
             observation_shape=observation_shape,
             steps_per_update=self.steps_per_update,
@@ -175,7 +175,7 @@ class TrainMixin:
         self.results.rewards.test.extend(scores[~split].tolist())
         episode_returns[terminations] = 0
 
-    @torch.no_grad()
+    @torch.inference_mode()
     def __collect_trajectories(
         self,
         *,
@@ -280,7 +280,7 @@ class TrainMixin:
 
         return observation, frame_count
 
-    @torch.no_grad()
+    @torch.inference_mode()
     def __compute_targets(
         self,
         *,
@@ -424,7 +424,9 @@ class TrainMixin:
             else numpy.mean(self.results.rewards.test[-verbose_window:])
         )
 
-        self.flush_verbose(f"Update {update} | Frames: {frame_count * self.frame_skip:,}")
+        self.flush_verbose(
+            f"Update {update} | Frames: {frame_count * self.frame_skip:,}"
+        )
         self.flush_verbose(f"Test Score: {test_score:.4f}")
 
     def train_loop(self, *, environment: str, seed: int):
