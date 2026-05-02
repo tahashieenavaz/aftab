@@ -4,7 +4,7 @@ from ..modules import Stream
 from .BaseNetwork import BaseNetwork
 
 
-class DistributionalPQNNetwork(BaseNetwork):
+class DistributionalNetwork(BaseNetwork):
     def __init__(
         self,
         *,

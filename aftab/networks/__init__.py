@@ -2,5 +2,5 @@ from .PQNNetwork import PQNNetwork
 from .DuellingNetwork import DuellingNetwork
 from .BootstrappedNetwork import BootstrappedNetwork
 from .BootstrappedDuellingNetwork import BootstrappedDuellingNetwork
-from .DistributionalPQNNetwork import DistributionalPQNNetwork
+from .DistributionalNetwork import DistributionalNetwork
 from .DistributionalDuellingNetwork import DistributionalDuellingNetwork
