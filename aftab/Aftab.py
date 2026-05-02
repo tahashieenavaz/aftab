@@ -156,16 +156,16 @@ class Aftab(
         self.flush_verbose(f"Acceleration device: {self.device}")
         self.flush_verbose(f"CPU Count: {self.cpu_count}")
 
-    def set_precision(self):
+    def __set_precision(self):
         torch.set_float32_matmul_precision("high")
 
-    def set_seed(self, seed: int):
+    def __set_seed(self, seed: int):
         seed_everything(seed)
 
-    def set_buffer(self, key, value):
+    def __set_buffer(self, key, value):
         setattr(self.buffer, key, value)
 
-    def flush_results(self):
+    def __flush_results(self):
         self.results = SimpleNamespace()
         self.results.rewards = SimpleNamespace()
         self.results.rewards.train = []
@@ -178,8 +178,12 @@ class Aftab(
             flush(message=message)
 
     def train(self, *, environment: str, seed: int):
+        self.__set_precision()
+        self.__set_seed(seed)
+        self.__flush_results()
+        self.__set_buffer("seed", seed)
+        self.__set_buffer("environment", environment)
+
         self.flush_verbose(f"Environment: {environment}")
         self.flush_verbose(f"Seed: {seed}")
-        self.set_buffer("seed", seed)
-        self.set_buffer("environment", environment)
         self.train_loop(environment=environment, seed=seed)

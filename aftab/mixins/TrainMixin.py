@@ -113,9 +113,6 @@ class TrainMixin:
         return q_values_train, q_values_test, state_q_values
 
     def __initialize_training(self, environment: str, seed: int):
-        self.flush_results()
-        self.set_precision()
-        self.set_seed(seed)
 
         train_environment, test_environment, action_dimension, observation_shape = (
             self.make_environments(environment=environment, seed=seed)

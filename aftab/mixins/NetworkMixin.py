@@ -124,11 +124,6 @@ class NetworkMixin:
         if not bool(getattr(self, "torch_compile")):
             return
 
-        if not hasattr(self, "_network"):
-            raise AttributeError(
-                "Expected `_network` to be defined before compilation."
-            )
-
         self._network = torch.compile(self._network)
 
     def __move_network_on_device(self):
