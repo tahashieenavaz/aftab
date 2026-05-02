@@ -13,4 +13,3 @@ networks_map = {
     "distributional": DistributionalNetwork,
     "distributional-duelling": DistributionalDuellingNetwork,
 }
-network_map = networks_map
