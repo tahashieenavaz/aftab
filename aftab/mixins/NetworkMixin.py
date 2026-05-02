@@ -77,15 +77,32 @@ class NetworkMixin:
 
         return kwargs
 
-    def prepare_network(self, action_dimension: int):
-        try:
-            network_instance = networks_map[self.network]
-        except KeyError as exc:
+    def __handle_channel_last(self):
+        if self.__channels_last_enabled():
+            self._network.to(device=self.device, memory_format=torch.channels_last)
+        else:
+            self._network.to(self.device)
+
+    @torch.inference_mode()
+    def __handle_dummy_pass(self):
+        self._network(self.__dummy_input())
+
+    def __handle_compilation(self):
+        if not bool(getattr(self, "torch_compile")):
+            return
+        self._network = torch.compile(self._network)
+
+    def __get_network_instance(self):
+        if self.network not in networks_map:
             raise ValueError(
                 f"Invalid value for `network`: {self.network!r}. "
                 f"Expected one of {tuple(networks_map)}."
-            ) from exc
+            )
 
+        return networks_map[self.network]
+
+    def _initialize_network(self, action_dimension: int):
+        network_instance = self.__get_network_instance()
         self.flush_verbose(f"Network: {network_instance.__name__}")
         self._network = network_instance(
             action_dimension=action_dimension,
@@ -94,13 +111,6 @@ class NetworkMixin:
             channels_last=self.__channels_last_enabled(),
             **self.__network_kwargs(),
         )
-        if self.__channels_last_enabled():
-            self._network.to(device=self.device, memory_format=torch.channels_last)
-        else:
-            self._network.to(self.device)
-
-        with torch.no_grad():
-            self._network(self.__dummy_input())
-
-        if bool(getattr(self, "torch_compile")):
-            self._network = torch.compile(self._network)
+        self.__handle_channel_last()
+        self.__handle_dummy_pass()
+        self.__handle_compilation()

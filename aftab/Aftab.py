@@ -103,11 +103,7 @@ class Aftab(
         for key, value in hyperparameters.items():
             setattr(self, key, value)
 
-    def __initialize_network(self):
-        if self.network not in network_map:
-            raise ValueError(f"Optimizer `{self.optimizer}` was not founded.")
-
-    def __initialize_optimizer(self):
+    def _initialize_optimizer(self):
         if self.optimizer not in optimizer_map:
             raise ValueError(f"Optimizer `{self.optimizer}` was not founded.")
 
@@ -120,16 +116,13 @@ class Aftab(
         )
 
     def __initialize_frames(self):
-        if not isinstance(self.frames, str):
+        if isinstance(self.frames, int):
             return
 
-        try:
-            self.frames = acceptable_frames_map[self.frames]
-        except KeyError as exc:
-            raise ValueError(
-                f"Invalid value for `frames`: {self.frames!r}. "
-                f"Expected one of {tuple(acceptable_frames_map)}."
-            ) from exc
+        if self.frames not in acceptable_frames_map:
+            raise ValueError(f"Frames was provided a wrong value `{self.frames}`")
+
+        self.frames = acceptable_frames_map[self.frames]
 
     def __initialize_derived_attributes(self):
         self.total_environments = int(self.train_environments + self.test_environments)
@@ -139,16 +132,10 @@ class Aftab(
         self.total_updates = math.ceil(self.actual_frames / self.batch_size)
 
     def __initialize__encoder(self):
-        if not isinstance(self.encoder, str):
-            return
-
-        try:
+        if isinstance(self.encoder, str):
+            if self.encoder not in encoders_map:
+                raise ValueError(f"Encoder was provided a wrong value `{self.encoder}`")
             self.encoder = encoders_map[self.encoder]
-        except KeyError as exc:
-            raise ValueError(
-                f"Unknown encoder key: {self.encoder!r}. "
-                f"Expected one of: {tuple(encoders_map.keys())}"
-            ) from exc
 
         self.flush_verbose(f"Encoder: {self.encoder.__name__}")
 
@@ -188,8 +175,8 @@ class Aftab(
         self.__set_buffer("seed", seed)
         self.__set_buffer("environment", environment)
 
-        self.__initialize_network()
-        self.__initialize_optimizer()
+        self._initialize_network()
+        self._initialize_optimizer()
 
         self.flush_verbose(f"Environment: {environment}")
         self.flush_verbose(f"Seed: {seed}")
