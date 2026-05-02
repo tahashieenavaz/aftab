@@ -155,7 +155,6 @@ class Aftab(
         self.__set_buffer("environment", environment)
 
         self._initialize_network()
-        self._initialize_optimizer()
 
         self.flush_verbose(f"Environment: {environment}")
         self.flush_verbose(f"Seed: {seed}")

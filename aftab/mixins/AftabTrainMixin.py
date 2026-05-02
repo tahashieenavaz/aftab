@@ -113,7 +113,7 @@ class AftabTrainMixin(AftabBaseMixin):
         train_environment, test_environment, action_dimension, observation_shape = (
             self.make_environments(environment=environment, seed=seed)
         )
-        self.prepare_network(action_dimension=action_dimension)
+        self._initialize_network(action_dimension=action_dimension)
         scaler = torch.amp.GradScaler(
             enabled=self.device.type == "cuda" and self.__autocast_float16_enabled()
         )
