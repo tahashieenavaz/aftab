@@ -22,7 +22,7 @@ class BaseNetwork(torch.nn.Module):
         self.action_dimension = action_dimension
         self.embedding_dimension = embedding_dimension
         dummy_input = self.__as_channels_last(torch.randn(1, 4, 84, 84))
-        with torch.no_grad():
+        with torch.inference_mode():
             self.feature_dimension = self.phi(dummy_input).flatten(1).size(1)
 
     def __as_channels_last(self, x: torch.Tensor) -> torch.Tensor:

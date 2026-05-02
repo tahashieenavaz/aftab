@@ -9,7 +9,7 @@ class AftabActionsMixin(AftabBaseMixin):
     def __init__(self):
         super().__init__()
 
-    @torch.no_grad()
+    @torch.inference_mode()
     def get_action_tensors(
         self,
         q_values_train: torch.Tensor,
@@ -23,7 +23,7 @@ class AftabActionsMixin(AftabBaseMixin):
         actions_test = q_values_test.argmax(dim=-1)
         return actions_train, actions_test
 
-    @torch.no_grad()
+    @torch.inference_mode()
     def get_actions(
         self,
         q_values_train: torch.Tensor,
