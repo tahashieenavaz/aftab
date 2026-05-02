@@ -23,6 +23,9 @@ class TrainMixin:
             enabled=self.__autocast_float16_enabled(),
         )
 
+    def __tensor(self, value, dtype: torch.dtype) -> torch.Tensor:
+        return torch.as_tensor(value, dtype=dtype, device=self.device)
+
     def __distributional_value_clip_enabled(self) -> bool:
         return bool(getattr(self._network, "distributional", False)) and (
             float(getattr(self, "distributional_value_clip")) > 0.0
@@ -34,23 +37,16 @@ class TrainMixin:
     def __get_bootstrap_heads(self) -> int:
         return int(getattr(self._network, "bootstrap_heads", 1))
 
-    def __get_bootstrap_probability(self) -> float:
+    def __sample_bootstrap_heads(self, size: int) -> torch.Tensor:
+        return torch.randint(self.__get_bootstrap_heads(), (size,), device=self.device)
+
+    def __sample_bootstrap_masks(self) -> torch.Tensor:
         probability = float(getattr(self, "bootstrap_probability", 1.0))
         if probability <= 0.0 or probability > 1.0:
             raise ValueError("Expected `bootstrap_probability` to be in (0, 1].")
-        return probability
 
-    def __sample_bootstrap_heads(self, size: int) -> torch.Tensor:
-        return torch.randint(
-            self.__get_bootstrap_heads(),
-            (size,),
-            device=self.device,
-        )
-
-    def __sample_bootstrap_masks(self) -> torch.Tensor:
         mask_shape = (self.train_environments, self.__get_bootstrap_heads())
-        probability = self.__get_bootstrap_probability()
-        if probability >= 1.0:
+        if probability == 1.0:
             return torch.ones(mask_shape, dtype=torch.float32, device=self.device)
         return (torch.rand(mask_shape, device=self.device) < probability).float()
 
@@ -117,31 +113,24 @@ class TrainMixin:
             self.make_environments(environment=environment, seed=seed)
         )
         self.prepare_network(action_dimension=action_dimension)
-        optimizer = self.make_optimizer()
         scaler = torch.amp.GradScaler(
             enabled=self.device.type == "cuda" and self.__autocast_float16_enabled()
         )
 
         train_observation, _ = train_environment.reset()
-        train_observation = torch.as_tensor(
-            train_observation,
-            dtype=torch.uint8,
-            device=self.device,
-        )
-
         test_observation, _ = test_environment.reset()
-        test_observation = torch.as_tensor(
-            test_observation,
-            dtype=torch.uint8,
-            device=self.device,
+        observation = torch.cat(
+            [
+                self.__tensor(train_observation, torch.uint8),
+                self.__tensor(test_observation, torch.uint8),
+            ],
+            dim=0,
         )
-        observation = torch.cat([train_observation, test_observation], dim=0)
         episode_returns = numpy.zeros(self.total_environments, dtype=numpy.float32)
         return (
             train_environment,
             test_environment,
             observation_shape,
-            optimizer,
             scaler,
             observation,
             episode_returns,
@@ -159,31 +148,32 @@ class TrainMixin:
         )
 
     def __get_score_rewards(self, *, rewards, info_train, info_test):
-        score_rewards = rewards
         score_reward_train = info_train.get("reward", None)
         score_reward_test = info_test.get("reward", None)
-        if score_reward_train is not None and score_reward_test is not None:
-            if isinstance(score_reward_train, numpy.ndarray) and isinstance(
-                score_reward_test, numpy.ndarray
-            ):
-                if score_reward_train.ndim == 0:
-                    score_rewards = numpy.stack([score_reward_train, score_reward_test])
-                else:
-                    score_rewards = numpy.concatenate(
-                        [score_reward_train, score_reward_test],
-                        axis=0,
-                    )
+        if not isinstance(score_reward_train, numpy.ndarray) or not isinstance(
+            score_reward_test, numpy.ndarray
+        ):
+            return rewards.astype(numpy.float32, copy=False)
+
+        if score_reward_train.ndim == 0:
+            score_rewards = numpy.stack([score_reward_train, score_reward_test])
+        else:
+            score_rewards = numpy.concatenate(
+                [score_reward_train, score_reward_test],
+                axis=0,
+            )
         return score_rewards.astype(numpy.float32, copy=False)
 
     def __record_completed_episodes(self, *, episode_returns, terminations):
-        done_mask = terminations
-        if numpy.any(done_mask):
-            idx = numpy.nonzero(done_mask)[0]
-            scores = episode_returns[done_mask]
-            split = idx < self.train_environments
-            self.results.rewards.train.extend(scores[split].tolist())
-            self.results.rewards.test.extend(scores[~split].tolist())
-            episode_returns[done_mask] = 0
+        if not numpy.any(terminations):
+            return
+
+        idx = numpy.nonzero(terminations)[0]
+        scores = episode_returns[terminations]
+        split = idx < self.train_environments
+        self.results.rewards.train.extend(scores[split].tolist())
+        self.results.rewards.test.extend(scores[~split].tolist())
+        episode_returns[terminations] = 0
 
     @torch.no_grad()
     def __collect_trajectories(
@@ -278,26 +268,14 @@ class TrainMixin:
                 step=step,
                 observation=train_observation,
                 action=actions_train_tensor,
-                reward=torch.as_tensor(
-                    reward_train,
-                    dtype=torch.float32,
-                    device=self.device,
-                ),
-                termination=torch.as_tensor(
-                    termination_train,
-                    dtype=torch.float32,
-                    device=self.device,
-                ),
+                reward=self.__tensor(reward_train, torch.float32),
+                termination=self.__tensor(termination_train, torch.float32),
                 state_q_values=state_q_values,
                 old_q_values=old_q_values,
                 bootstrap_masks=bootstrap_masks,
             )
 
-            observation = torch.as_tensor(
-                next_observation,
-                dtype=torch.uint8,
-                device=self.device,
-            )
+            observation = self.__tensor(next_observation, torch.uint8)
             frame_count += self.train_environments
 
         return observation, frame_count
@@ -343,14 +321,6 @@ class TrainMixin:
             next_q=next_q,
         )
 
-    def __flatten_batches(
-        self,
-        *,
-        rollout_buffer: RolloutBuffer,
-        targets: torch.Tensor,
-    ):
-        return rollout_buffer.flatten(targets)
-
     def __get_bootstrapped_loss(
         self,
         *,
@@ -376,14 +346,11 @@ class TrainMixin:
         tensor: Optional[torch.Tensor],
         indices: torch.Tensor,
     ) -> Optional[torch.Tensor]:
-        if tensor is None:
-            return None
-        return tensor[indices]
+        return None if tensor is None else tensor[indices]
 
     def __update_network(
         self,
         *,
-        optimizer: torch.optim.Optimizer,
         flattened_observations: torch.Tensor,
         flattened_actions: torch.Tensor,
         flattened_old_q_values: Optional[torch.Tensor],
@@ -415,7 +382,7 @@ class TrainMixin:
                     mini_batch_idx,
                 )
 
-                optimizer.zero_grad(set_to_none=True)
+                self._optimizer.zero_grad(set_to_none=True)
                 with self.__autocast_float16():
                     if mini_batch_bootstrap_masks is None:
                         loss = self.get_loss(
@@ -433,13 +400,13 @@ class TrainMixin:
                             mini_batch_bootstrap_masks=mini_batch_bootstrap_masks,
                         )
                 scaler.scale(loss).backward()
-                scaler.unscale_(optimizer)
+                scaler.unscale_(self._optimizer)
                 torch.nn.utils.clip_grad_norm_(
                     self._network.parameters(),
                     self.gradient_norm,
                     foreach=clip_grad_foreach,
                 )
-                scaler.step(optimizer)
+                scaler.step(self._optimizer)
                 scaler.update()
                 update_losses.append(loss.detach())
 
@@ -447,6 +414,9 @@ class TrainMixin:
             self.results.loss.extend(torch.stack(update_losses).float().cpu().tolist())
 
     def __log_progress(self, *, update: int, frame_count: int):
+        if update % self.verbose_interval != 0:
+            return
+
         verbose_window = self.verbose_window
         test_score = (
             0.0
@@ -454,11 +424,8 @@ class TrainMixin:
             else numpy.mean(self.results.rewards.test[-verbose_window:])
         )
 
-        if update % self.verbose_interval == 0:
-            self.flush_verbose(
-                f"Update {update} | Frames: {frame_count * self.frame_skip:,}"
-            )
-            self.flush_verbose(f"Test Score: {test_score:.4f}")
+        self.flush_verbose(f"Update {update} | Frames: {frame_count * self.frame_skip:,}")
+        self.flush_verbose(f"Test Score: {test_score:.4f}")
 
     def train_loop(self, *, environment: str, seed: int):
         frame_count = 0
@@ -466,7 +433,6 @@ class TrainMixin:
             train_environment,
             test_environment,
             observation_shape,
-            optimizer,
             scaler,
             observation,
             episode_returns,
@@ -475,9 +441,11 @@ class TrainMixin:
         rollout_buffer = self.__allocate_buffers(
             observation_shape=observation_shape,
         )
-        active_heads = None
-        if self.__bootstrapped_enabled():
-            active_heads = self.__sample_bootstrap_heads(self.total_environments)
+        active_heads = (
+            self.__sample_bootstrap_heads(self.total_environments)
+            if self.__bootstrapped_enabled()
+            else None
+        )
 
         training_start_time = time.time()
 
@@ -505,10 +473,7 @@ class TrainMixin:
                 flattened_old_q_values,
                 flattened_targets,
                 flattened_bootstrap_masks,
-            ) = self.__flatten_batches(
-                rollout_buffer=rollout_buffer,
-                targets=targets,
-            )
+            ) = rollout_buffer.flatten(targets)
             flattened_target_probs = None
             if bool(getattr(self._network, "distributional", False)):
                 flattened_target_probs = self._network.hl_gauss_loss.transform_to_probs(
@@ -516,7 +481,6 @@ class TrainMixin:
                 )
 
             self.__update_network(
-                optimizer=optimizer,
                 scaler=scaler,
                 flattened_observations=flattened_observations,
                 flattened_actions=flattened_actions,

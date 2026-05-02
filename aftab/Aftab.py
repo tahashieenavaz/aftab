@@ -13,6 +13,7 @@ from .constants import OptimizerStringType
 from .maps import encoders_map
 from .maps import acceptable_frames_map
 from .maps import optimizer_map
+from .maps import network_map
 from .functions import flush
 from .mixins import TrainingResultsMixin
 from .mixins import EnvironmentMixin
@@ -102,6 +103,10 @@ class Aftab(
         for key, value in hyperparameters.items():
             setattr(self, key, value)
 
+    def __initialize_network(self):
+        if self.network not in network_map:
+            raise ValueError(f"Optimizer `{self.optimizer}` was not founded.")
+
     def __initialize_optimizer(self):
         if self.optimizer not in optimizer_map:
             raise ValueError(f"Optimizer `{self.optimizer}` was not founded.")
@@ -183,6 +188,7 @@ class Aftab(
         self.__set_buffer("seed", seed)
         self.__set_buffer("environment", environment)
 
+        self.__initialize_network()
         self.__initialize_optimizer()
 
         self.flush_verbose(f"Environment: {environment}")

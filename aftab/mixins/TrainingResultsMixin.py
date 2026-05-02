@@ -18,7 +18,6 @@ class TrainingResultsMixin:
         filename += f"autocast-float16-{self.autocast_float16}__"
         filename += f"channels-last-{self.channels_last}__"
         filename += f"compiled-{self.torch_compile}__"
-        filename += f"optimizer-{self.optimizer.__name__}__"
         if self.network in ["bootstrapped", "bootstrapped-duelling"]:
             filename += f"heads-{self.bootstrap_heads}__"
             filename += f"bootstrap-p-{self.bootstrap_probability}__"
@@ -33,7 +32,7 @@ class TrainingResultsMixin:
             "environment": self.buffer.environment,
             "seed": self.buffer.seed,
             "encoder": self.encoder.__name__,
-            "optimizer": self.optimizer.__name__,
+            "optimizer": self.optimizer,
             "lambda": self.return_lambda,
             "network": self.network,
             "frames": self.frames,
