@@ -17,6 +17,7 @@ from .mixins import *
 
 
 class Aftab(
+    AftabOptimizerMixin,
     AftabTrainingResultsMixin,
     AftabEnvironmentMixin,
     AftabActionsMixin,
@@ -26,7 +27,6 @@ class Aftab(
     AftabLossMixin,
     AftabReturnsMixin,
     AftabTrainMixin,
-    AftabOptimizerMixin,
 ):
     def __init__(
         self,
@@ -153,8 +153,6 @@ class Aftab(
         self.__flush_results()
         self.__set_buffer("seed", seed)
         self.__set_buffer("environment", environment)
-
-        self._initialize_network()
 
         self.flush_verbose(f"Environment: {environment}")
         self.flush_verbose(f"Seed: {seed}")
