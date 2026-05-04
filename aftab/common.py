@@ -1,6 +1,13 @@
 from typing import Optional
+from pathlib import Path
 
 import torch
+
+
+def _make_sure_directory_exists(directory: str):
+    directory = directory.replace(".", "/")
+    Path(directory).mkdir(exist_ok=True, parents=True)
+    return directory
 
 
 class LinearEpsilon:

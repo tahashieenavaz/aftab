@@ -1,5 +1,5 @@
 from baloot import funnel
-from pathlib import Path
+from ..common import _make_sure_directory_exists
 from .AftabBaseMixin import AftabBaseMixin
 
 
@@ -67,13 +67,8 @@ class AftabTrainingResultsMixin(AftabBaseMixin):
 
         return data
 
-    def __create_directory(self, directory_path: str) -> str:
-        directory_path = directory_path.replace(".", "/")
-        Path(directory_path).mkdir(exist_ok=True, parents=True)
-        return directory_path
-
     def _log(self, *, directory: str) -> None:
-        directory_path = self.__create_directory(directory).strip("/").strip()
+        directory_path = _make_sure_directory_exists(directory).strip("/").strip()
         filename = self.__make_log_filename()
         payload = self.__build_log_payload()
         funnel(f"{directory_path}/{filename}", payload)

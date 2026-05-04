@@ -3,6 +3,7 @@ from __future__ import annotations
 import torch
 import math
 import os
+from .common import _make_sure_directory_exists
 from typing import Literal
 from types import SimpleNamespace
 from baloot import acceleration_device
@@ -146,6 +147,9 @@ class Aftab(
             return
 
         flush(message=message)
+
+    def save(self, directory: str = "models"):
+        directory_path = _make_sure_directory_exists(directory).strip("/").strip()
 
     def log(self, directory: str = "results") -> None:
         self._log(directory=directory)
