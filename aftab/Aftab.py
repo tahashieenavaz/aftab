@@ -3,6 +3,7 @@ from __future__ import annotations
 import torch
 import math
 import os
+import time
 from .common import _make_sure_directory_exists
 from typing import Literal
 from types import SimpleNamespace
@@ -32,6 +33,7 @@ class Aftab(
     def __init__(
         self,
         *,
+        experiment_name: str,
         encoder: ModuleType | EncoderStringType = "gammahadamaxv1",
         network: Literal[
             "q",
@@ -142,6 +144,13 @@ class Aftab(
         self.results.loss = []
         self.results.duration = 0.0
 
+    def __make_network_filename(self) -> str:
+        timestamp = time.time()
+        filename = (
+            f"{timestamp}__{self.experiment_name}__{self.encoder}__{self.network}.model"
+        )
+        return filename
+
     def flush_verbose(self, message: str):
         if not self.verbose:
             return
@@ -150,6 +159,7 @@ class Aftab(
 
     def save(self, directory: str = "models"):
         directory_path = _make_sure_directory_exists(directory).strip("/").strip()
+        torch.save(self._network, f"{directory_path}/{self.__make_network_filename()}")
 
     def log(self, directory: str = "results") -> None:
         self._log(directory=directory)
