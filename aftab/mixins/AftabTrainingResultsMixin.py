@@ -72,7 +72,7 @@ class AftabTrainingResultsMixin(AftabBaseMixin):
         Path(directory_path).mkdir(exist_ok=True, parents=True)
         return directory_path
 
-    def log(self, directory: str = "results") -> None:
+    def _log(self, *, directory: str) -> None:
         directory_path = self.__create_directory(directory).strip("/").strip()
         filename = self.__make_log_filename()
         payload = self.__build_log_payload()

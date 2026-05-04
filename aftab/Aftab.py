@@ -147,6 +147,9 @@ class Aftab(
 
         flush(message=message)
 
+    def log(self, directory: str = "results") -> None:
+        self._log(directory=directory)
+
     def train(self, *, environment: str, seed: int):
         self.__set_precision()
         self.__set_seed(seed)
