@@ -159,4 +159,4 @@ class Aftab(
 
         self.flush_verbose(f"Environment: {environment}")
         self.flush_verbose(f"Seed: {seed}")
-        self.train_loop(environment=environment, seed=seed)
+        self._train(environment=environment, seed=seed)

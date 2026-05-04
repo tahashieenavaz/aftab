@@ -433,7 +433,7 @@ class AftabTrainMixin(AftabBaseMixin):
         )
         self.flush_verbose(f"Test Score: {test_score:.4f}")
 
-    def train_loop(self, *, environment: str, seed: int):
+    def _train(self, *, environment: str, seed: int):
         frame_count = 0
         (
             train_environment,
