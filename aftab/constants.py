@@ -1,30 +1,10 @@
 import torch
 from typing import Type
-from typing import Literal
+from typing import Literal, Annotated
 
 ModuleType = Type[torch.nn.Module]
 
-EncoderStringType = Literal[
-    "nature",
-    "alpha",
-    "beta",
-    "gamma",
-    "epsilon",
-    "eta",
-    "zeta",
-    "delta",
-    "theta",
-    "hadamax",
-    "dqnhadamax",
-    "pqnhadamax",
-    "hadamaxgammav1",
-    "gammahadamaxv1",
-    "hadamaxgammav2",
-    "gammahadamaxv2",
-    "hadamaxepsilon",
-    "epsilonhadamax",
-]
-
+EncoderStringType = Annotated[str, "must be a valid encoder key"]
 OptimizerStringType = Literal["adam", "adamw" "radam", "nadam"]
 
 

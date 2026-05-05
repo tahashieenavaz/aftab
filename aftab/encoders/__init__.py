@@ -11,3 +11,4 @@ from .HadamaxNatureDQNEncoder import HadamaxNatureDQNEncoder
 from .HadamaxGammaEncoderV1 import HadamaxGammaEncoderV1
 from .HadamaxGammaEncoderV2 import HadamaxGammaEncoderV2
 from .HadamaxEpsilonEncoder import HadamaxEpsilonEncoder
+from .HadamaxZetaEncoder import HadamaxZetaEncoder

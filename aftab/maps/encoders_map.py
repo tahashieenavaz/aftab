@@ -11,6 +11,7 @@ from ..encoders import HadamaxNatureDQNEncoder
 from ..encoders import HadamaxGammaEncoderV1
 from ..encoders import HadamaxGammaEncoderV2
 from ..encoders import HadamaxEpsilonEncoder
+from ..encoders import HadamaxZetaEncoder
 
 encoders_map = {
     "nature": NatureDQNEncoder,
@@ -32,4 +33,6 @@ encoders_map = {
     "gammahadamaxv2": HadamaxGammaEncoderV2,
     "hadamaxepsilon": HadamaxEpsilonEncoder,
     "epsilonhadamax": HadamaxEpsilonEncoder,
+    "hadamaxzeta": HadamaxZetaEncoder,
+    "zetahadamax": HadamaxZetaEncoder,
 }
