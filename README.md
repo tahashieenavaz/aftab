@@ -100,14 +100,10 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 
 **Hadamax Experiments**: [HNS](results/hadamax_experiments/human_normalized_scores.md) | [Scores](results/hadamax_experiments/scores.md)
 
-> **Note:** The Eta variant has significantly more parameters than other variants, primarily due to the encoder producing a large number of features.
-
 
 ## Parameter Count
 
-<div align="center">
-
-### Base Encoder Variations
+### Encoder Variations
 
 | Variant  | Encoder Parameters | Q Regression Head | Total Parameters |
 |----------|------------------|------------------|------------------|
@@ -121,6 +117,9 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 | Eta      | 78,400           | 23,739,460       | 23,817,860       |
 | Theta    | 76,288           | 1,127,428        | 1,203,716        |
 
+**Note:** The Eta variant has significantly more parameters than other variants, primarily due to the encoder producing a large number of features.
+
+
 ### Hadamax Variants
 
 | Variant           | Encoder Parameters | Q Regression Head | Total Parameters |
@@ -128,8 +127,6 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 | PQN Hadamax       | 156,608            | 3,968,516         | 4,125,124        |
 | Gamma Hadamax V1  | 234,336            | 1,609,220         | 1,843,556        |
 | Gamma Hadamax V2  | 234,336            | 3,280,388         | 3,514,724        |
-
-</div>
 
 
 ## Hyperparameters
