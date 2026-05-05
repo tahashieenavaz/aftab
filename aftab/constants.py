@@ -1,7 +1,6 @@
 import torch
 from typing import Type
 from typing import Literal
-from collections import namedtuple
 
 ModuleType = Type[torch.nn.Module]
 
@@ -22,6 +21,8 @@ EncoderStringType = Literal[
     "gammahadamaxv1",
     "hadamaxgammav2",
     "gammahadamaxv2",
+    "hadamaxepsilon",
+    "epsilonhadamax",
 ]
 
 OptimizerStringType = Literal["adam", "adamw" "radam", "nadam"]
