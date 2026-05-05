@@ -96,13 +96,9 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 
 ## Results
 
-**Base Encoder Experiments**
-- [HNS](results/encoder_experiments/human_normalized_scores.md)
-- [Scores](results/encoder_experiments/scores.md)
+**Encoder Experiments**: [HNS](results/encoder_experiments/human_normalized_scores.md) | [Scores](results/encoder_experiments/scores.md)
 
-**Hadamax Experiments**
-- [HNS](results/hadamax_experiments/human_normalized_scores.md)
-- [Scores](results/hadamax_experiments/scores.md)
+**Hadamax Experiments**: [HNS](results/hadamax_experiments/human_normalized_scores.md) | [Scores](results/hadamax_experiments/scores.md)
 
 > **Note:** The Eta variant has significantly more parameters than other variants, primarily due to the encoder producing a large number of features.
 
