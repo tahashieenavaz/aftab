@@ -28,9 +28,6 @@ EncoderStringType = Literal[
 
 OptimizerStringType = Literal["adam", "adamw" "radam", "nadam"]
 
-FlashAttentionConfig = namedtuple(
-    "FlashAttentionConfig", ["enable_flash", "enable_math", "enable_mem_efficient"]
-)
 
 seeds = [475284, 219842, 525975, 909314]
 
