@@ -100,6 +100,8 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 
 **Hadamax Experiments**: [HNS](results/hadamax_experiments/human_normalized_scores.md) | [Scores](results/hadamax_experiments/scores.md)
 
+**Final Experiments**: (GPUs are working :D)
+
 
 ## Parameter Count
 
