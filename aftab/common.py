@@ -1,7 +1,6 @@
+import torch
 from typing import Optional
 from pathlib import Path
-
-import torch
 
 
 def _make_sure_directory_exists(directory: str):
