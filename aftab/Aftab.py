@@ -23,7 +23,6 @@ class Aftab(
     AftabTrainingResultsMixin,
     AftabEnvironmentMixin,
     AftabActionsMixin,
-    AftabEpsilonMixin,
     AftabNetworkMixin,
     AftabQValueMixin,
     AftabLossMixin,

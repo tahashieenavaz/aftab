@@ -1,7 +1,6 @@
 from .AftabTrainingResultsMixin import AftabTrainingResultsMixin
 from .AftabEnvironmentMixin import AftabEnvironmentMixin
 from .AftabActionsMixin import AftabActionsMixin
-from .AftabEpsilonMixin import AftabEpsilonMixin
 from .AftabNetworkMixin import AftabNetworkMixin
 from .AftabQValueMixin import AftabQValueMixin
 from .AftabLossMixin import AftabLossMixin
