@@ -239,6 +239,8 @@ https://envpool.readthedocs.io/en/latest/env/atari.html#available-tasks
 
 ## Hardware
 
+[Nvidia A40](https://www.nvidia.com/en-us/data-center/a40) GPUs were used to run all the experiments in this experiment.
+
 | Specification | Details |
 |--------------|----------|
 | GPU Memory | 48 GB GDDR6 with error-correcting code (ECC) |
