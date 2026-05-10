@@ -103,9 +103,11 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 **Final Experiments**: (GPUs are working :D)
 
 
-## Parameter Count
+## Model Complexity
 
-### Encoder Variations
+### Parameters
+
+Base variants:
 
 | Variant  | Encoder Parameters | Q Regression Head | Total Parameters |
 |----------|------------------|------------------|------------------|
@@ -122,7 +124,7 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 **Note:** The Eta variant has significantly more parameters than other variants, primarily due to the encoder producing a large number of features.
 
 
-### Hadamax Variants
+Hadamax variants: 
 
 | Variant           | Encoder Parameters | Q Regression Head | Total Parameters |
 |-------------------|--------------------|-------------------|------------------|
@@ -130,6 +132,19 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 | Gamma Hadamax V1  | 234,336            | 1,609,220         | 1,843,556        |
 | Gamma Hadamax V2  | 234,336            | 3,280,388         | 3,514,724        |
 
+### FLOPs
+
+| Variant  | Encoder          | Regression Head | Total             |
+|----------|------------------|-----------------------|-------------|
+| PQN      | 7.737344         | 1.6102399999999992    | 9.347584    |
+| Alpha    | 27.541504        | 1.610240000000001     | 29.151744   |
+| Beta     | 61.515776        | 1.6102399999999975    | 63.126016   |
+| Gamma    | 22.90176         | 1.610240000000001     | 24.512      |
+| Delta    | 6.143328         | 1.7740799999999997    | 7.917408    |
+| Epsilon  | 13.252608        | 2.1017599999999987    | 15.354368   |
+| Zeta     | 25.362432        | 2.4622080000000004    | 27.82464    |
+| Eta      | 28.422144        | 23.663104             | 52.085248   |
+| Theta    | 9.0656           | 1.053184              | 10.118784   |
 
 ## Hyperparameters
 
