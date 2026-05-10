@@ -237,6 +237,25 @@ for environment in aftab_environments:
 A comprehensive set of Atari environments is available via EnvPool:  
 https://envpool.readthedocs.io/en/latest/env/atari.html#available-tasks
 
+## Hardware
+
+| Specification | Details |
+|--------------|----------|
+| GPU Memory | 48 GB GDDR6 with error-correcting code (ECC) |
+| GPU Memory Bandwidth | 696 GB/s |
+| Interconnect | NVIDIA NVLink 112.5 GB/s (bidirectional); PCIe Gen4: 64 GB/s |
+| NVLink | 2-way low profile (2-slot) |
+| Display Ports | 3x DisplayPort 1.4* |
+| Max Power Consumption | 300 W |
+| Form Factor | 4.4" (H) x 10.5" (L), Dual Slot |
+| Thermal | Passive |
+| vGPU Software Support | NVIDIA Virtual PC, NVIDIA Virtual Applications, NVIDIA RTX Virtual Workstation, NVIDIA Virtual Compute Server, NVIDIA AI Enterprise |
+| vGPU Profiles Supported | See the Virtual GPU Licensing Guide |
+| NVENC / NVDEC | 1x / 2x (includes AV1 decode) |
+| Secure Boot | Secure and Measured Boot with Hardware Root of Trust (optional) |
+| NEBS Ready | Level 3 |
+| Power Connector | 8-pin CPU |
+
 ## Citation
 
 ```bibtex
