@@ -42,6 +42,7 @@ class Aftab(
             "bootstrapped-duelling",
             "distributional",
             "distributional-duelling",
+            "distributional-bootstrapped-duelling",
         ] = "distributional-duelling",
         frames: int | Literal["pilot", "full", "ablation"] = "full",
         frame_skip: int = 4,

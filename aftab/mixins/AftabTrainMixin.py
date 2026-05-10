@@ -92,7 +92,7 @@ class AftabTrainMixin(AftabBaseMixin):
             q_values_train = q_values_all[: self.train_environments]
             q_values_test = q_values_all[self.train_environments :]
             state_q_values = q_values_train.float().max(dim=-1).values
-            return q_values_train, q_values_test, state_q_values
+            return q_values_train, q_values_test, state_q_values, None
 
         if active_heads is None:
             raise RuntimeError("Expected active bootstrapped heads.")
@@ -107,7 +107,7 @@ class AftabTrainMixin(AftabBaseMixin):
             q_heads_all[self.train_environments :]
         )
         state_q_values = q_heads_train.float().max(dim=-1).values
-        return q_values_train, q_values_test, state_q_values
+        return q_values_train, q_values_test, state_q_values, q_heads_train
 
     def __initialize_training(self, environment: str, seed: int):
         train_environment, test_environment, action_dimension, observation_shape = (
@@ -200,7 +200,7 @@ class AftabTrainMixin(AftabBaseMixin):
             )
 
             with self.__autocast_float16():
-                q_values_train, q_values_test, state_q_values = (
+                q_values_train, q_values_test, state_q_values, q_heads_train = (
                     self.__get_step_q_values(
                         float_observations=float_observations,
                         active_heads=active_heads,
@@ -215,10 +215,18 @@ class AftabTrainMixin(AftabBaseMixin):
             actions_test = actions_test_tensor.cpu().numpy()
             old_q_values = None
             if rollout_buffer.old_q_values is not None:
-                old_q_values = q_values_train.gather(
-                    1,
-                    actions_train_tensor.unsqueeze(1),
-                ).squeeze(1)
+                if q_heads_train is None:
+                    old_q_values = q_values_train.gather(
+                        1,
+                        actions_train_tensor.unsqueeze(1),
+                    ).squeeze(1)
+                else:
+                    action_indices = actions_train_tensor.reshape(-1, 1, 1).expand(
+                        -1,
+                        self.__get_bootstrap_heads(),
+                        1,
+                    )
+                    old_q_values = q_heads_train.gather(2, action_indices).squeeze(2)
 
             (
                 next_observation_train,
@@ -332,7 +340,19 @@ class AftabTrainMixin(AftabBaseMixin):
         mini_batch_actions: torch.Tensor,
         mini_batch_targets: torch.Tensor,
         mini_batch_bootstrap_masks: torch.Tensor,
+        mini_batch_old_q_values: Optional[torch.Tensor] = None,
+        mini_batch_target_probs: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
+        if bool(getattr(self._network, "distributional", False)):
+            return self.__get_distributional_bootstrapped_loss(
+                mini_batch_observations=mini_batch_observations,
+                mini_batch_actions=mini_batch_actions,
+                mini_batch_targets=mini_batch_targets,
+                mini_batch_bootstrap_masks=mini_batch_bootstrap_masks,
+                mini_batch_old_q_values=mini_batch_old_q_values,
+                mini_batch_target_probs=mini_batch_target_probs,
+            )
+
         mini_batch_observations = mini_batch_observations.float()
         q_heads = self._network.get_q_heads(mini_batch_observations)
         action_indices = mini_batch_actions.reshape(-1, 1, 1).expand(
@@ -342,6 +362,93 @@ class AftabTrainMixin(AftabBaseMixin):
         )
         q_taken = q_heads.gather(2, action_indices).squeeze(2).float()
         loss = 0.5 * (q_taken - mini_batch_targets.float()).pow(2)
+        masks = mini_batch_bootstrap_masks.to(dtype=loss.dtype)
+        return (loss * masks).sum() / masks.sum().clamp_min(1.0)
+
+    def __get_distributional_bootstrapped_cross_entropy(
+        self,
+        *,
+        logits: torch.Tensor,
+        target_probs: torch.Tensor,
+    ) -> torch.Tensor:
+        bins = logits.shape[-1]
+        flattened_logits = logits.reshape(-1, bins)
+        flattened_target_probs = target_probs.reshape(-1, bins)
+        if logits.device.type == "cuda":
+            with torch.autocast("cuda", enabled=False):
+                loss = torch.nn.functional.cross_entropy(
+                    flattened_logits,
+                    flattened_target_probs,
+                    reduction="none",
+                )
+        else:
+            loss = torch.nn.functional.cross_entropy(
+                flattened_logits,
+                flattened_target_probs,
+                reduction="none",
+            )
+        return loss.reshape(logits.shape[:-1])
+
+    def __get_distributional_bootstrapped_loss(
+        self,
+        *,
+        mini_batch_observations: torch.Tensor,
+        mini_batch_actions: torch.Tensor,
+        mini_batch_targets: torch.Tensor,
+        mini_batch_bootstrap_masks: torch.Tensor,
+        mini_batch_old_q_values: Optional[torch.Tensor],
+        mini_batch_target_probs: Optional[torch.Tensor],
+    ) -> torch.Tensor:
+        mini_batch_observations = mini_batch_observations.float()
+        q_logits_heads = self._network.get_q_logits_heads(mini_batch_observations)
+        action_indices = mini_batch_actions.reshape(-1, 1, 1, 1).expand(
+            -1,
+            self.__get_bootstrap_heads(),
+            1,
+            q_logits_heads.shape[-1],
+        )
+        q_logits_taken = q_logits_heads.gather(2, action_indices).squeeze(2)
+
+        if mini_batch_target_probs is None:
+            bins = q_logits_taken.shape[-1]
+            loss = self._network.hl_gauss_loss(
+                q_logits_taken.reshape(-1, bins),
+                mini_batch_targets.reshape(-1),
+                reduction="none",
+            ).reshape(q_logits_taken.shape[:-1])
+        else:
+            loss = self.__get_distributional_bootstrapped_cross_entropy(
+                logits=q_logits_taken,
+                target_probs=mini_batch_target_probs,
+            )
+
+        value_clip = float(getattr(self, "distributional_value_clip", 0.0))
+        if mini_batch_old_q_values is not None and value_clip > 0.0:
+            bins = q_logits_taken.shape[-1]
+            scalar_q_taken = self._network.hl_gauss_loss(
+                q_logits_taken.reshape(-1, bins),
+            ).reshape(q_logits_taken.shape[:-1])
+            scalar_q_clipped = mini_batch_old_q_values + (
+                scalar_q_taken - mini_batch_old_q_values
+            ).clamp(-value_clip, value_clip)
+            q_clipped_logprobs = (
+                self._network.hl_gauss_loss.transform_to_logprobs(
+                    scalar_q_clipped.reshape(-1)
+                ).reshape(*scalar_q_clipped.shape, -1)
+            )
+            if mini_batch_target_probs is None:
+                clipped_loss = self._network.hl_gauss_loss(
+                    q_clipped_logprobs.reshape(-1, bins),
+                    mini_batch_targets.reshape(-1),
+                    reduction="none",
+                ).reshape(q_logits_taken.shape[:-1])
+            else:
+                clipped_loss = self.__get_distributional_bootstrapped_cross_entropy(
+                    logits=q_clipped_logprobs,
+                    target_probs=mini_batch_target_probs,
+                )
+            loss = torch.max(loss, clipped_loss)
+
         masks = mini_batch_bootstrap_masks.to(dtype=loss.dtype)
         return (loss * masks).sum() / masks.sum().clamp_min(1.0)
 
@@ -402,6 +509,8 @@ class AftabTrainMixin(AftabBaseMixin):
                             mini_batch_targets=mini_batch_targets,
                             mini_batch_actions=mini_batch_actions,
                             mini_batch_bootstrap_masks=mini_batch_bootstrap_masks,
+                            mini_batch_old_q_values=mini_batch_old_q_values,
+                            mini_batch_target_probs=mini_batch_target_probs,
                         )
                 scaler.scale(loss).backward()
                 scaler.unscale_(self._optimizer)
@@ -482,8 +591,11 @@ class AftabTrainMixin(AftabBaseMixin):
             ) = rollout_buffer.flatten(targets)
             flattened_target_probs = None
             if bool(getattr(self._network, "distributional", False)):
-                flattened_target_probs = self._network.hl_gauss_loss.transform_to_probs(
-                    flattened_targets
+                target_shape = flattened_targets.shape
+                flattened_target_probs = (
+                    self._network.hl_gauss_loss.transform_to_probs(
+                        flattened_targets.reshape(-1)
+                    ).reshape(*target_shape, -1)
                 )
 
             self.__update_network(

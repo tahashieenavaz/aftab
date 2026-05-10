@@ -19,7 +19,11 @@ class AftabTrainingResultsMixin(AftabBaseMixin):
         filename += f"autocast-float16-{self.autocast_float16}__"
         filename += f"channels-last-{self.channels_last}__"
         filename += f"compiled-{self.torch_compile}__"
-        if self.network in ["bootstrapped", "bootstrapped-duelling"]:
+        if self.network in [
+            "bootstrapped",
+            "bootstrapped-duelling",
+            "distributional-bootstrapped-duelling",
+        ]:
             filename += f"heads-{self.bootstrap_heads}__"
             filename += f"bootstrap-p-{self.bootstrap_probability}__"
 
@@ -45,7 +49,11 @@ class AftabTrainingResultsMixin(AftabBaseMixin):
             "duration_hours": duration / 3600,
         }
 
-        if self.network in ["distributional", "distributional-duelling"]:
+        if self.network in [
+            "distributional",
+            "distributional-duelling",
+            "distributional-bootstrapped-duelling",
+        ]:
             data.update(
                 {
                     "distributional_bins": self.distributional_bins,
@@ -57,7 +65,11 @@ class AftabTrainingResultsMixin(AftabBaseMixin):
                 }
             )
 
-        if self.network in ["bootstrapped", "bootstrapped-duelling"]:
+        if self.network in [
+            "bootstrapped",
+            "bootstrapped-duelling",
+            "distributional-bootstrapped-duelling",
+        ]:
             data.update(
                 {
                     "bootstrap_heads": self.bootstrap_heads,

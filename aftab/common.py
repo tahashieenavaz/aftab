@@ -71,8 +71,9 @@ class RolloutBuffer:
         )
         self.old_q_values = None
         if store_old_q_values:
+            old_q_shape = state_q_shape if bootstrapped else rollout_shape
             self.old_q_values = torch.empty(
-                rollout_shape,
+                old_q_shape,
                 dtype=torch.float32,
                 device=device,
             )
@@ -117,7 +118,7 @@ class RolloutBuffer:
         flattened_actions = self.actions.reshape(-1)
         flattened_old_q_values = None
         if self.old_q_values is not None:
-            flattened_old_q_values = self.old_q_values.reshape(-1)
+            flattened_old_q_values = self.old_q_values.flatten(0, 1)
         flattened_targets = targets.flatten(0, 1)
         flattened_bootstrap_masks = None
         if self.bootstrap_masks is not None:
