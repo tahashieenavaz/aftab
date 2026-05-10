@@ -126,15 +126,15 @@ Base variants:
 
 Hadamax variants: 
 
-| Variant           | Encoder Parameters | Q Regression Head | Total Parameters |
-|-------------------|--------------------|-------------------|------------------|
-| PQN Hadamax       | 156,608            | 3,968,516         | 4,125,124        |
-| Gamma Hadamax V1  | 234,336            | 1,609,220         | 1,843,556        |
-| Gamma Hadamax V2  | 234,336            | 3,280,388         | 3,514,724        |
+| Variant           | Encoder  | Regression Head  | Total Parameters |
+|-------------------|----------|------------------|------------------|
+| PQN Hadamax       | 156,608  | 3,968,516        | 4,125,124        |
+| Gamma Hadamax V1  | 234,336  | 1,609,220        | 1,843,556        |
+| Gamma Hadamax V2  | 234,336  | 3,280,388        | 3,514,724        |
 
 ### FLOPs
 
-| Variant  | Encoder          | Regression Head | Total             |
+| Variant  | Encoder          | Regression Head       | Total FLOPS |
 |----------|------------------|-----------------------|-------------|
 | PQN      | 7.737344         | 1.6102399999999992    | 9.347584    |
 | Alpha    | 27.541504        | 1.610240000000001     | 29.151744   |
@@ -145,6 +145,13 @@ Hadamax variants:
 | Zeta     | 25.362432        | 2.4622080000000004    | 27.82464    |
 | Eta      | 28.422144        | 23.663104             | 52.085248   |
 | Theta    | 9.0656           | 1.053184              | 10.118784   |
+
+
+| Variant           | Encoder     | Regression Head    | Total FLOPs |
+|-------------------|-------------|--------------------|-------------|
+| PQN Hadamax       | 159.014912  | 3.9695359999999766 | 162.984448  |
+| Gamma Hadamax V1  | 122.001408  | 1.6102400000000046 | 123.611648  |
+| Gamma Hadamax V2  | 129.30048   | 3.281407999999999  | 132.581888  |
 
 ## Hyperparameters
 
