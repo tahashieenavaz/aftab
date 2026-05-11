@@ -115,8 +115,8 @@ class Aftab(
         self.total_environments = int(self.train_environments + self.test_environments)
         self.batch_size = int(self.train_environments * self.steps_per_update)
         self.mini_batch_size = int(self.batch_size / self.mini_batches)
-        self.actual_frames = int(self.frames / self.frame_skip)
-        self.total_updates = math.ceil(self.actual_frames / self.batch_size)
+        self.effective_frames = int(self.frames / self.frame_skip)
+        self.total_updates = math.ceil(self.effective_frames / self.batch_size)
 
     def __initialize__encoder(self):
         if isinstance(self.encoder, str):

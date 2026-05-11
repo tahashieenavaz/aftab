@@ -196,7 +196,7 @@ class AftabTrainMixin(AftabBaseMixin):
             float_observations = observation.float()
             epsilon_value = self._network.epsilon.get(
                 frame_count,
-                self.actual_frames,
+                self.effective_frames,
             )
 
             with self.__autocast_float16():
@@ -431,11 +431,9 @@ class AftabTrainMixin(AftabBaseMixin):
             scalar_q_clipped = mini_batch_old_q_values + (
                 scalar_q_taken - mini_batch_old_q_values
             ).clamp(-value_clip, value_clip)
-            q_clipped_logprobs = (
-                self._network.hl_gauss_loss.transform_to_logprobs(
-                    scalar_q_clipped.reshape(-1)
-                ).reshape(*scalar_q_clipped.shape, -1)
-            )
+            q_clipped_logprobs = self._network.hl_gauss_loss.transform_to_logprobs(
+                scalar_q_clipped.reshape(-1)
+            ).reshape(*scalar_q_clipped.shape, -1)
             if mini_batch_target_probs is None:
                 clipped_loss = self._network.hl_gauss_loss(
                     q_clipped_logprobs.reshape(-1, bins),
@@ -592,11 +590,9 @@ class AftabTrainMixin(AftabBaseMixin):
             flattened_target_probs = None
             if bool(getattr(self._network, "distributional", False)):
                 target_shape = flattened_targets.shape
-                flattened_target_probs = (
-                    self._network.hl_gauss_loss.transform_to_probs(
-                        flattened_targets.reshape(-1)
-                    ).reshape(*target_shape, -1)
-                )
+                flattened_target_probs = self._network.hl_gauss_loss.transform_to_probs(
+                    flattened_targets.reshape(-1)
+                ).reshape(*target_shape, -1)
 
             self.__update_network(
                 scaler=scaler,
