@@ -119,53 +119,31 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 
 ## Model Complexity
 
-### Parameters
+### Base Variants
 
-Base variants:
+| Variant | Encoder Parameters | Regression Head Parameters | Total Parameters | Encoder FLOPs | Regression Head FLOPs | Total FLOPs |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **PQN** | 78,304 | 1,686,500 | 1,764,804 | 7.734 | 1.610 | 9.347 |
+| **Alpha** | 174,752 | 1,782,948 | 1,957,700 | 27.541 | 1.610 | 29.151 |
+| **Beta** | 89,008 | 1,782,948 | 1,871,956 | 61.515 | 1.610 | 63.126 |
+| **Gamma** | 117,168 | 1,725,364 | 1,842,532 | 22.901 | 1.610 | 24.512 |
+| **Delta** | 78,552 | 1,850,588 | 1,929,140 | 6.143 | 1.774 | 7.917 |
+| **Epsilon** | 80,112 | 2,179,828 | 2,259,940 | 13.252 | 2.101 | 15.354 |
+| **Zeta** | 77,232 | 2,537,396 | 2,614,628 | 25.362 | 2.462 | 27.824 |
+| **Eta** | 78,400 | 23,739,460 | 23,817,860 | 28.422 | 23.663 | 52.085 |
+| **Theta** | 76,288 | 1,127,428 | 1,203,716 | 9.065 | 1.053 | 10.118 |
 
-| Variant  | Encoder Parameters | Q Regression Head | Total Parameters |
-|----------|------------------|------------------|------------------|
-| PQN      | 78,304           | 1,686,500        | 1,764,804        |
-| Alpha    | 174,752          | 1,782,948        | 1,957,700        |
-| Beta     | 89,008           | 1,782,948        | 1,871,956        |
-| Gamma    | 117,168          | 1,725,364        | 1,842,532        |
-| Delta    | 78,552           | 1,850,588        | 1,929,140        |
-| Epsilon  | 80,112           | 2,179,828        | 2,259,940        |
-| Zeta     | 77,232           | 2,537,396        | 2,614,628        |
-| Eta      | 78,400           | 23,739,460       | 23,817,860       |
-| Theta    | 76,288           | 1,127,428        | 1,203,716        |
+> **Note:** The Eta variant has significantly more parameters than other variants, primarily due to the encoder producing a large number of features.
 
-**Note:** The Eta variant has significantly more parameters than other variants, primarily due to the encoder producing a large number of features.
+---
 
+### Hadamax Variants
 
-Hadamax variants: 
-
-| Variant           | Encoder  | Regression Head  | Total Parameters |
-|-------------------|----------|------------------|------------------|
-| PQN Hadamax       | 156,608  | 3,968,516        | 4,125,124        |
-| Gamma Hadamax V1  | 234,336  | 1,609,220        | 1,843,556        |
-| Gamma Hadamax V2  | 234,336  | 3,280,388        | 3,514,724        |
-
-### FLOPs
-
-| Variant  | Encoder | Regression Head  | Total FLOPS |
-|----------|---------|------------------|-------------|
-| PQN      | 7.734   | 1.610            | 9.347       |
-| Alpha    | 27.541  | 1.610            | 29.151      |
-| Beta     | 61.515  | 1.610            | 63.126      |
-| Gamma    | 22.901  | 1.610            | 24.512      |
-| Delta    | 6.143   | 1.774            | 7.917       |
-| Epsilon  | 13.252  | 2.101            | 15.354      |
-| Zeta     | 25.362  | 2.462            | 27.824      |
-| Eta      | 28.422  | 23.663           | 52.085      |
-| Theta    | 9.065   | 1.053            | 10.118      |
-
-
-| Variant           | Encoder | Regression Head | Total FLOPs |
-|-------------------|---------|-----------------|-------------|
-| PQN Hadamax       | 159.014 | 3.969           | 162.984     |
-| Gamma Hadamax V1  | 122.001 | 1.610           | 123.611     |
-| Gamma Hadamax V2  | 129.300 | 3.281           | 132.581     |
+| Variant | Encoder Parameters | Regression Head Parameters | Total Parameters | Encoder FLOPs | Regression Head FLOPs | Total FLOPs |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **PQN Hadamax** | 156,608 | 3,968,516 | 4,125,124 | 159.014 | 3.969 | 162.984 |
+| **Gamma Hadamax V1** | 234,336 | 1,609,220 | 1,843,556 | 122.001 | 1.610 | 123.611 |
+| **Gamma Hadamax V2** | 234,336 | 3,280,388 | 3,514,724 | 129.300 | 3.281 | 132.581 |
 
 ## Hyperparameters
 
