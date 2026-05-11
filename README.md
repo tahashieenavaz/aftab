@@ -96,9 +96,16 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
 
 ## Results
 
-**Encoder Experiments**: [HNS](results/encoder_experiments/human_normalized_scores.md) | [Scores](results/encoder_experiments/scores.md)
+**Encoder Experiments**:
 
-**Hadamax Experiments**: [HNS](results/hadamax_experiments/human_normalized_scores.md) | [Scores](results/hadamax_experiments/scores.md)
+- Tables: 
+  - [HNS](results/encoder_experiments/human_normalized_scores.md)
+  - [Scores](results/encoder_experiments/scores.md)
+- Charts:
+  - Loss Evolution
+  - IQM HNS
+
+**Hadamax Experiments**: [HNS](results/hadamax_experiments/human_normalized_scores.md) | [Scores](results/hadamax_experiments/scores.md) | Loss Evolution | IQM HNS
 
 **Final Experiments**: (GPUs are working :D)
 
