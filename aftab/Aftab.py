@@ -82,7 +82,6 @@ class Aftab(
         bootstrap_heads: int = 10,
         bootstrap_probability: float = 1.0,
     ):
-
         params = locals()
         params.pop("self")
         self.__initialize(params)
