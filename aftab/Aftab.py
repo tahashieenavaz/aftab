@@ -176,7 +176,6 @@ class Aftab(
         self.__clear_results()
         self.__set_buffer("seed", seed)
         self.__set_buffer("environment", environment)
-
         self.flush_verbose(f"Environment: {environment}")
         self.flush_verbose(f"Seed: {seed}")
         self._train(environment=environment, seed=seed)
