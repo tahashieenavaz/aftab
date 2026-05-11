@@ -4,13 +4,17 @@ import torch
 
 def epsilon_greedy_vectorized(q_values, eps):
     if isinstance(eps, (numpy.ndarray, list)):
-        eps = torch.tensor(eps, device=q_values.device, dtype=torch.float32)
-    elif isinstance(eps, (float, int)):
-        eps = torch.tensor([eps], device=q_values.device, dtype=torch.float32)
+        eps = torch.as_tensor(eps, device=q_values.device, dtype=torch.float32)
+    elif isinstance(eps, (float, int, numpy.number)):
+        eps = float(eps)
     elif isinstance(eps, torch.Tensor):
         eps = eps.to(q_values.device)
 
-    if eps.ndim == 1 and eps.shape[0] != q_values.shape[0]:
+    if (
+        isinstance(eps, torch.Tensor)
+        and eps.ndim == 1
+        and eps.shape[0] != q_values.shape[0]
+    ):
         eps = eps[0]
 
     num_envs, action_dim = q_values.shape

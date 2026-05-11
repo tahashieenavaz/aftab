@@ -1,7 +1,7 @@
 import torch
 from torch.nn.functional import cross_entropy
+from torch.nn.functional import mse_loss
 from typing import Optional
-from ..functions import mse_loss
 
 
 class AftabLossMixin:
@@ -97,4 +97,4 @@ class AftabLossMixin:
 
         q_values = self._network.get_q(mini_batch_observations)
         q_taken = q_values.gather(1, mini_batch_actions.unsqueeze(1)).squeeze(1)
-        return mse_loss(q_taken, mini_batch_targets)
+        return 0.5 * mse_loss(q_taken, mini_batch_targets)

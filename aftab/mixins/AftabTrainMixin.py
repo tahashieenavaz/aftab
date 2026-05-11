@@ -27,6 +27,14 @@ class AftabTrainMixin(AftabBaseMixin):
     def __tensor(self, value, dtype: torch.dtype) -> torch.Tensor:
         return torch.as_tensor(value, dtype=dtype, device=self.device)
 
+    def __copy_array_to_tensor(
+        self,
+        target: torch.Tensor,
+        value,
+        dtype: torch.dtype,
+    ) -> None:
+        target.copy_(torch.as_tensor(value, dtype=dtype))
+
     def __distributional_value_clip_enabled(self) -> bool:
         return bool(getattr(self._network, "distributional", False)) and (
             float(getattr(self, "distributional_value_clip")) > 0.0
@@ -123,12 +131,20 @@ class AftabTrainMixin(AftabBaseMixin):
 
         train_observation, _ = train_environment.reset()
         test_observation, _ = test_environment.reset()
-        observation = torch.cat(
-            [
-                self.__tensor(train_observation, torch.uint8),
-                self.__tensor(test_observation, torch.uint8),
-            ],
-            dim=0,
+        observation = torch.empty(
+            (self.total_environments, *observation_shape),
+            dtype=torch.uint8,
+            device=self.device,
+        )
+        self.__copy_array_to_tensor(
+            observation[: self.train_environments],
+            train_observation,
+            torch.uint8,
+        )
+        self.__copy_array_to_tensor(
+            observation[self.train_environments :],
+            test_observation,
+            torch.uint8,
         )
         episode_returns = numpy.zeros(self.total_environments, dtype=numpy.float32)
         return (
@@ -151,22 +167,33 @@ class AftabTrainMixin(AftabBaseMixin):
             store_old_q_values=self.__distributional_value_clip_enabled(),
         )
 
-    def __get_score_rewards(self, *, rewards, info_train, info_test):
+    def __get_score_rewards(
+        self,
+        *,
+        reward_train,
+        reward_test,
+        info_train,
+        info_test,
+        output,
+    ):
         score_reward_train = info_train.get("reward", None)
         score_reward_test = info_test.get("reward", None)
         if not isinstance(score_reward_train, numpy.ndarray) or not isinstance(
             score_reward_test, numpy.ndarray
         ):
-            return rewards.astype(numpy.float32, copy=False)
+            output[: self.train_environments] = reward_train
+            output[self.train_environments :] = reward_test
+            return output
 
         if score_reward_train.ndim == 0:
-            score_rewards = numpy.stack([score_reward_train, score_reward_test])
-        else:
-            score_rewards = numpy.concatenate(
-                [score_reward_train, score_reward_test],
-                axis=0,
+            return numpy.stack([score_reward_train, score_reward_test]).astype(
+                numpy.float32,
+                copy=False,
             )
-        return score_rewards.astype(numpy.float32, copy=False)
+        else:
+            output[: self.train_environments] = score_reward_train
+            output[self.train_environments :] = score_reward_test
+        return output
 
     def __record_completed_episodes(self, *, episode_returns, terminations):
         if not numpy.any(terminations):
@@ -191,6 +218,26 @@ class AftabTrainMixin(AftabBaseMixin):
         rollout_buffer: RolloutBuffer,
         active_heads: Optional[torch.Tensor],
     ):
+        actions_train_cpu = torch.empty(self.train_environments, dtype=torch.int64)
+        actions_test_cpu = torch.empty(self.test_environments, dtype=torch.int64)
+        actions_train = actions_train_cpu.numpy()
+        actions_test = actions_test_cpu.numpy()
+        terminations = numpy.empty(self.total_environments, dtype=numpy.bool_)
+        score_rewards_output = numpy.empty(
+            self.total_environments,
+            dtype=numpy.float32,
+        )
+        full_bootstrap_masks = None
+        if (
+            rollout_buffer.bootstrap_masks is not None
+            and float(getattr(self, "bootstrap_probability", 1.0)) == 1.0
+        ):
+            full_bootstrap_masks = torch.ones(
+                (self.train_environments, self.__get_bootstrap_heads()),
+                dtype=torch.float32,
+                device=self.device,
+            )
+
         for step in range(self.steps_per_update):
             train_observation = observation[: self.train_environments]
             float_observations = observation.float()
@@ -211,8 +258,8 @@ class AftabTrainMixin(AftabBaseMixin):
                 q_values_test=q_values_test,
                 epsilon_value=epsilon_value,
             )
-            actions_train = actions_train_tensor.cpu().numpy()
-            actions_test = actions_test_tensor.cpu().numpy()
+            actions_train_cpu.copy_(actions_train_tensor)
+            actions_test_cpu.copy_(actions_test_tensor)
             old_q_values = None
             if rollout_buffer.old_q_values is not None:
                 if q_heads_train is None:
@@ -244,23 +291,26 @@ class AftabTrainMixin(AftabBaseMixin):
                 info_test,
             ) = test_environment.step(actions_test)
 
-            next_observation = numpy.concatenate(
-                [next_observation_train, next_observation_test], axis=0
-            )
             reward_train = reward_train.astype(numpy.float32, copy=False)
             reward_test = reward_test.astype(numpy.float32, copy=False)
-            rewards = numpy.concatenate([reward_train, reward_test], axis=0)
-            termination_train = numpy.logical_or(termination_train, truncation_train)
-            termination_test = numpy.logical_or(termination_test, truncation_test)
-            terminations = numpy.concatenate(
-                [termination_train, termination_test],
-                axis=0,
+            numpy.logical_or(
+                termination_train,
+                truncation_train,
+                out=terminations[: self.train_environments],
             )
+            numpy.logical_or(
+                termination_test,
+                truncation_test,
+                out=terminations[self.train_environments :],
+            )
+            termination_train = terminations[: self.train_environments]
 
             score_rewards = self.__get_score_rewards(
-                rewards=rewards,
+                reward_train=reward_train,
+                reward_test=reward_test,
                 info_train=info_train,
                 info_test=info_test,
+                output=score_rewards_output,
             )
             episode_returns += score_rewards
             self.__record_completed_episodes(
@@ -274,7 +324,11 @@ class AftabTrainMixin(AftabBaseMixin):
 
             bootstrap_masks = None
             if rollout_buffer.bootstrap_masks is not None:
-                bootstrap_masks = self.__sample_bootstrap_masks()
+                bootstrap_masks = (
+                    full_bootstrap_masks
+                    if full_bootstrap_masks is not None
+                    else self.__sample_bootstrap_masks()
+                )
 
             rollout_buffer.insert(
                 step=step,
@@ -287,7 +341,16 @@ class AftabTrainMixin(AftabBaseMixin):
                 bootstrap_masks=bootstrap_masks,
             )
 
-            observation = self.__tensor(next_observation, torch.uint8)
+            self.__copy_array_to_tensor(
+                observation[: self.train_environments],
+                next_observation_train,
+                torch.uint8,
+            )
+            self.__copy_array_to_tensor(
+                observation[self.train_environments :],
+                next_observation_test,
+                torch.uint8,
+            )
             frame_count += self.train_environments
 
         return observation, frame_count
