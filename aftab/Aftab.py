@@ -85,13 +85,16 @@ class Aftab(
 
         params = locals()
         params.pop("self")
+        self.__initialize(params)
+        super().__init__()
+
+    def __initialize(self, params):
         self.__initialize_hyperparameters(**params)
         self.__initialize_frames()
         self.__initialize_derived_attributes()
         self.__initialize_constants()
         self.__initialize__encoder()
         self.__initialize_buffer()
-        super().__init__()
 
     def __initialize_buffer(self) -> None:
         self.buffer = SimpleNamespace()
