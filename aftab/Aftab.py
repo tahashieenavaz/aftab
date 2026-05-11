@@ -142,7 +142,7 @@ class Aftab(
     def __set_buffer(self, key, value):
         setattr(self.buffer, key, value)
 
-    def __flush_results(self):
+    def __clear_results(self):
         self.results = SimpleNamespace()
         self.results.rewards = SimpleNamespace()
         self.results.rewards.train = []
@@ -173,7 +173,7 @@ class Aftab(
     def train(self, *, environment: str, seed: int):
         self.__set_precision()
         self.__set_seed(seed)
-        self.__flush_results()
+        self.__clear_results()
         self.__set_buffer("seed", seed)
         self.__set_buffer("environment", environment)
 
