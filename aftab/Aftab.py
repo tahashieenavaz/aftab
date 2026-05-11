@@ -82,7 +82,6 @@ class Aftab(
         bootstrap_heads: int = 10,
         bootstrap_probability: float = 1.0,
     ):
-        self.buffer = SimpleNamespace()
 
         params = locals()
         params.pop("self")
@@ -91,9 +90,13 @@ class Aftab(
         self.__initialize_derived_attributes()
         self.__initialize_constants()
         self.__initialize__encoder()
+        self.__initialize_buffer()
         super().__init__()
 
-    def __initialize_hyperparameters(self, **hyperparameters):
+    def __initialize_buffer(self) -> None:
+        self.buffer = SimpleNamespace()
+
+    def __initialize_hyperparameters(self, **hyperparameters) -> None:
         for key, value in hyperparameters.items():
             setattr(self, key, value)
 
