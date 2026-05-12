@@ -1,6 +1,6 @@
 import torch
-from ..modules import EncoderBlock
-from ..constants import ModuleType
+from aftab.modules import EncoderBlock
+from aftab.constants import ModuleType
 
 
 class AlphaEncoder(torch.nn.Module):

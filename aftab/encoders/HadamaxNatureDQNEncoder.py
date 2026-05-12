@@ -1,6 +1,6 @@
 import torch
-from ..modules import HadamaxBlock
-from ..constants import ModuleType
+from aftab.modules import HadamaxBlock
+from aftab.constants import ModuleType
 
 
 class HadamaxNatureDQNEncoder(torch.nn.Module):

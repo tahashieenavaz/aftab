@@ -1,10 +1,10 @@
-from ..networks import PQNNetwork
-from ..networks import DuellingNetwork
-from ..networks import BootstrappedNetwork
-from ..networks import BootstrappedDuellingNetwork
-from ..networks import DistributionalNetwork
-from ..networks import DistributionalDuellingNetwork
-from ..networks import DistributionalBootstrappedDuellingNetwork
+from aftab.networks import PQNNetwork
+from aftab.networks import DuellingNetwork
+from aftab.networks import BootstrappedNetwork
+from aftab.networks import BootstrappedDuellingNetwork
+from aftab.networks import DistributionalNetwork
+from aftab.networks import DistributionalDuellingNetwork
+from aftab.networks import DistributionalBootstrappedDuellingNetwork
 
 networks_map = {
     "q": PQNNetwork,

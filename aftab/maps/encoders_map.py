@@ -1,18 +1,18 @@
-from ..encoders import NatureDQNEncoder
-from ..encoders import AlphaEncoder
-from ..encoders import BetaEncoder
-from ..encoders import GammaEncoder
-from ..encoders import DeltaEncoder
-from ..encoders import EpsilonEncoder
-from ..encoders import EtaEncoder
-from ..encoders import ZetaEncoder
-from ..encoders import ThetaEncoder
-from ..encoders import HadamaxNatureDQNEncoder
-from ..encoders import HadamaxGammaEncoderV1
-from ..encoders import HadamaxGammaEncoderV2
-from ..encoders import HadamaxEpsilonEncoder
-from ..encoders import HadamaxZetaEncoder
-from ..encoders import HadamaxDeltaEncoder
+from aftab.encoders import NatureDQNEncoder
+from aftab.encoders import AlphaEncoder
+from aftab.encoders import BetaEncoder
+from aftab.encoders import GammaEncoder
+from aftab.encoders import DeltaEncoder
+from aftab.encoders import EpsilonEncoder
+from aftab.encoders import EtaEncoder
+from aftab.encoders import ZetaEncoder
+from aftab.encoders import ThetaEncoder
+from aftab.encoders import HadamaxNatureDQNEncoder
+from aftab.encoders import HadamaxGammaEncoderV1
+from aftab.encoders import HadamaxGammaEncoderV2
+from aftab.encoders import HadamaxEpsilonEncoder
+from aftab.encoders import HadamaxZetaEncoder
+from aftab.encoders import HadamaxDeltaEncoder
 
 encoders_map = {
     "nature": NatureDQNEncoder,
