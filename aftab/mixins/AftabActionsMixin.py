@@ -1,8 +1,8 @@
 import torch
 import numpy
 from typing import Tuple
+from aftab.functions import epsilon_greedy_vectorized
 from .AftabBaseMixin import AftabBaseMixin
-from ..functions import epsilon_greedy_vectorized
 
 
 class AftabActionsMixin(AftabBaseMixin):

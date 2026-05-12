@@ -1,5 +1,5 @@
 import torch
-from ..maps import networks_map
+from aftab.maps import networks_map
 from .AftabBaseMixin import AftabBaseMixin
 
 _DISTRIBUTIONAL_NETWORKS = {

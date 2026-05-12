@@ -1,5 +1,5 @@
 from baloot import funnel
-from ..common import _make_sure_directory_exists
+from aftab.common import _make_sure_directory_exists
 from .AftabBaseMixin import AftabBaseMixin
 
 

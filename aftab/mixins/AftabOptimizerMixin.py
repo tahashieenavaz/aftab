@@ -1,5 +1,5 @@
+from aftab.maps import optimizer_map
 from .AftabBaseMixin import AftabBaseMixin
-from ..maps import optimizer_map
 
 
 class AftabOptimizerMixin(AftabBaseMixin):

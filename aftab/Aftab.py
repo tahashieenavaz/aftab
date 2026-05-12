@@ -4,18 +4,14 @@ import torch
 import math
 import os
 import time
-from .common import _make_sure_directory_exists
+from aftab.common import _make_sure_directory_exists
 from typing import Literal
 from types import SimpleNamespace
-from baloot import acceleration_device
-from baloot import seed_everything
-from .constants import ModuleType
-from .constants import EncoderStringType
-from .constants import OptimizerStringType
-from .maps import encoders_map
-from .maps import acceptable_frames_map
-from .functions import flush
-from .mixins import *
+from baloot import acceleration_device, seed_everything
+from aftab.constants import ModuleType, EncoderStringType, OptimizerStringType
+from aftab.maps import encoders_map, acceptable_frames_map
+from aftab.functions import flush
+from aftab.mixins import *
 
 
 class Aftab(
