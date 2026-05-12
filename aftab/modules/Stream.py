@@ -1,6 +1,6 @@
 import torch
 import inspect
-from ..constants import ModuleType
+from aftab.constants import ModuleType
 
 
 class Stream(torch.nn.Module):
