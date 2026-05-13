@@ -52,7 +52,10 @@ class AftabNetworkMixin(AftabBaseMixin):
                     "`distributional_min_value`."
                 )
             bin_width = (max_value - min_value) / bins
-            sigma = bin_width * float(getattr(self, "distributional_sigma_ratio"))
+            distributional_sigma_ratio = float(
+                getattr(self, "distributional_sigma_ratio")
+            )
+            sigma = bin_width * distributional_sigma_ratio
             sigma_name = "`distributional_sigma_ratio`"
         else:
             sigma = float(sigma)
