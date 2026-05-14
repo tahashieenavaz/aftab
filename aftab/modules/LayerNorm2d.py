@@ -13,7 +13,7 @@ class LayerNorm2d(torch.nn.Module):
             raise Exception("LayerNorm2d input must be four dimensional.")
 
         mean = x.mean(dim=1, keepdim=True)
-        var = (x - mean).pow(2).mean(dim=1, keepdim=True)
-        x = (x - mean) / torch.sqrt(var + self.epsilon)
+        variance = (x - mean).pow(2).mean(dim=1, keepdim=True)
+        x = (x - mean) / torch.sqrt(variance + self.epsilon)
         x = x * self.weight.view(1, -1, 1, 1) + self.bias.view(1, -1, 1, 1)
         return x

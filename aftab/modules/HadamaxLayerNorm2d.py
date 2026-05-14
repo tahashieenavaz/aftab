@@ -12,8 +12,8 @@ class HadamaxLayerNorm2d(torch.nn.Module):
         batch_size, total_channels, height, width = x.shape
         C = total_channels // 2
         reshaped = x.view(batch_size, 2, C, height, width)
-        var, mean = torch.var_mean(reshaped, dim=2, keepdim=True, correction=0)
-        normalized = (reshaped - mean) / torch.sqrt(var + self.epsilon)
+        variance, mean = torch.var_mean(reshaped, dim=2, keepdim=True, correction=0)
+        normalized = (reshaped - mean) / torch.sqrt(variance + self.epsilon)
         weight = self.weight.view(1, 2, C, 1, 1)
         bias = self.bias.view(1, 2, C, 1, 1)
         normalized = normalized * weight + bias
