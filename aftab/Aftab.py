@@ -23,6 +23,7 @@ class Aftab(
     AftabLossMixin,
     AftabReturnsMixin,
     AftabTrainMixin,
+    AftabStoreModelMixin,
 ):
     def __init__(
         self,
