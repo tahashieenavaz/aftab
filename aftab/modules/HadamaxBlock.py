@@ -1,6 +1,6 @@
 import torch
 from aftab.constants import ModuleType
-from .HadamaxLayerNorm2d import HadamaxLayerNorm2d
+from aftab.modules import HadamaxLayerNorm2d
 
 
 class HadamaxBlock(torch.nn.Module):
