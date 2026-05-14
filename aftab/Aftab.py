@@ -4,10 +4,10 @@ import torch
 import math
 import os
 import time
-from aftab.common import _make_sure_directory_exists
 from typing import Literal
 from types import SimpleNamespace
 from baloot import acceleration_device, seed_everything
+from aftab.common import _make_sure_directory_exists
 from aftab.constants import ModuleType, EncoderStringType, OptimizerStringType
 from aftab.maps import encoders_map, acceptable_frames_map
 from aftab.functions import flush
@@ -38,7 +38,7 @@ class Aftab(
             "distributional",
             "distributional-duelling",
             "distributional-bootstrapped-duelling",
-        ] = "distributional-duelling",
+        ] = "distributional-bootstrapped-duelling",
         frames: int | Literal["pilot", "full", "ablation"] = "full",
         frame_skip: int = 4,
         mini_batches: int = 32,

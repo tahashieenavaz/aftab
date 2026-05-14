@@ -14,4 +14,5 @@ networks_map = {
     "distributional": DistributionalNetwork,
     "distributional-duelling": DistributionalDuellingNetwork,
     "distributional-bootstrapped-duelling": DistributionalBootstrappedDuellingNetwork,
+    "bootstrapped-distributional-duelling": DistributionalBootstrappedDuellingNetwork,
 }
