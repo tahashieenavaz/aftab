@@ -1,6 +1,6 @@
 import torch
-from ..constants import ModuleType
-from ..common import LinearEpsilon
+from aftab.constants import ModuleType
+from aftab.common import LinearEpsilon
 
 
 class BaseNetwork(torch.nn.Module):

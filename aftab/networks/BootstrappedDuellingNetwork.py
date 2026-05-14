@@ -1,7 +1,7 @@
 import torch
 from typing import Optional
-from .BaseNetwork import BaseNetwork
-from ..modules import Stream
+from aftab.networks import BaseNetwork
+from aftab.modules import Stream
 
 
 class BootstrappedDuellingNetwork(BaseNetwork):
