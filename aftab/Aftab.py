@@ -7,7 +7,6 @@ import time
 from typing import Literal
 from types import SimpleNamespace
 from baloot import acceleration_device, seed_everything
-from aftab.common import _make_sure_directory_exists
 from aftab.constants import ModuleType, EncoderStringType, OptimizerStringType
 from aftab.maps import encoders_map, acceptable_frames_map
 from aftab.functions import flush
@@ -159,8 +158,7 @@ class Aftab(
         flush(message=message)
 
     def save(self, directory: str = "models"):
-        directory_path = _make_sure_directory_exists(directory).strip("/").strip()
-        torch.save(self._network, f"{directory_path}/{self.__make_network_filename()}")
+        self._save(directory=directory)
 
     def log(self, directory: str = "results") -> None:
         self._log(directory=directory)
