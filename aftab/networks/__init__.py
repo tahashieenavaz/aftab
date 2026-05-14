@@ -1,3 +1,4 @@
+from .BaseNetwork import BaseNetwork
 from .PQNNetwork import PQNNetwork
 from .DuellingNetwork import DuellingNetwork
 from .BootstrappedNetwork import BootstrappedNetwork
