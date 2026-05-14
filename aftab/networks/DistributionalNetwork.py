@@ -1,7 +1,7 @@
 import torch
 from hl_gauss_pytorch import HLGaussLoss
 from aftab.modules import Stream
-from aftab.networks import BaseNetwork
+from .BaseNetwork import BaseNetwork
 
 
 class DistributionalNetwork(BaseNetwork):

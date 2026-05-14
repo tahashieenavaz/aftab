@@ -1,7 +1,7 @@
 import torch
 from typing import Optional
 from aftab.modules import Stream
-from aftab.networks import BaseNetwork
+from .BaseNetwork import BaseNetwork
 
 
 class BootstrappedNetwork(BaseNetwork):

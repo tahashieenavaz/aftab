@@ -1,8 +1,8 @@
 import torch
 from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
-from .BaseNetwork import BaseNetwork
 from aftab.modules import Stream
+from .BaseNetwork import BaseNetwork
 
 
 class DistributionalBootstrappedDuellingNetwork(BaseNetwork):

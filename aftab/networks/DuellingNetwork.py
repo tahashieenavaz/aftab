@@ -1,6 +1,6 @@
 import torch
 from aftab.modules import Stream
-from aftab.networks import BaseNetwork
+from .BaseNetwork import BaseNetwork
 
 
 class DuellingNetwork(BaseNetwork):
