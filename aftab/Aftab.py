@@ -7,7 +7,12 @@ import time
 from typing import Literal
 from types import SimpleNamespace
 from baloot import acceleration_device, seed_everything
-from aftab.constants import ModuleType, EncoderStringType, OptimizerStringType
+from aftab.constants import (
+    ModuleType,
+    EncoderStringType,
+    OptimizerStringType,
+    NetworkStringType,
+)
 from aftab.maps import encoders_map, acceptable_frames_map
 from aftab.functions import flush
 from aftab.mixins import *
@@ -30,15 +35,7 @@ class Aftab(
         *,
         experiment_name: str,
         encoder: ModuleType | EncoderStringType = "gammahadamaxv1",
-        network: Literal[
-            "q",
-            "duelling",
-            "bootstrapped",
-            "bootstrapped-duelling",
-            "distributional",
-            "distributional-duelling",
-            "distributional-bootstrapped-duelling",
-        ] = "distributional-bootstrapped-duelling",
+        network: NetworkStringType = "distributional-bootstrapped-duelling",
         frames: int | Literal["pilot", "full", "ablation"] = "full",
         frame_skip: int = 4,
         mini_batches: int = 32,

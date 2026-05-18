@@ -6,6 +6,15 @@ ModuleType = Type[torch.nn.Module]
 
 EncoderStringType = Annotated[str, "must be a valid encoder key"]
 OptimizerStringType = Literal["adam", "adamw" "radam", "nadam"]
+NetworkStringType = Literal[
+    "q",
+    "duelling",
+    "bootstrapped",
+    "bootstrapped-duelling",
+    "distributional",
+    "distributional-duelling",
+    "distributional-bootstrapped-duelling",
+]
 
 
 seeds = [475284, 219842, 525975, 909314]
