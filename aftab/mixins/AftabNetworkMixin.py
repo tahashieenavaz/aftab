@@ -100,8 +100,9 @@ class AftabNetworkMixin(AftabBaseMixin):
         self._network(self.__dummy_input())
 
     def __handle_compilation(self):
-        if not bool(getattr(self, "torch_compile")):
+        if not hasattr(torch, "compile"):
             return
+
         self._network = torch.compile(self._network)
 
     def __get_network_instance(self):
