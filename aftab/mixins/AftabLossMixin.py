@@ -85,7 +85,6 @@ class AftabLossMixin:
         mini_batch_old_q_values=None,
         mini_batch_target_probs=None,
     ) -> torch.Tensor:
-        mini_batch_observations = mini_batch_observations.float()
         if bool(getattr(self._network, "distributional", False)):
             return self.__get_distributional_loss(
                 mini_batch_observations=mini_batch_observations,

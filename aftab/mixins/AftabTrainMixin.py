@@ -76,25 +76,26 @@ class AftabTrainMixin(AftabBaseMixin):
         if active_heads is None:
             return
 
+        done_count = int(numpy.count_nonzero(terminations))
+        if done_count == 0:
+            return
+
         done_mask = torch.as_tensor(
             terminations,
             dtype=torch.bool,
             device=self.device,
         )
-        done_count = int(done_mask.sum().item())
-        if done_count == 0:
-            return
         active_heads[done_mask] = self.__sample_bootstrap_heads(done_count)
 
     def __get_step_q_values(
         self,
         *,
-        float_observations: torch.Tensor,
+        observations: torch.Tensor,
         active_heads: Optional[torch.Tensor],
     ):
         if not self.__bootstrapped_enabled():
             q_values_all = self.get_q_values(
-                float_observations=float_observations,
+                float_observations=observations,
                 gradient=False,
             )
             q_values_train = q_values_all[: self.train_environments]
@@ -105,7 +106,7 @@ class AftabTrainMixin(AftabBaseMixin):
         if active_heads is None:
             raise RuntimeError("Expected active bootstrapped heads.")
 
-        q_heads_all = self._network.get_q_heads(float_observations)
+        q_heads_all = self._network.get_q_heads(observations)
         q_heads_train = q_heads_all[: self.train_environments]
         q_values_train = self._network.gather_q_heads(
             q_heads=q_heads_train,
@@ -129,8 +130,11 @@ class AftabTrainMixin(AftabBaseMixin):
             enabled=self.device.type == "cuda" and self.__autocast_float16_enabled()
         )
 
-        train_observation, _ = train_environment.reset()
-        test_observation, _ = test_environment.reset()
+        if test_environment is None:
+            (train_observation, _), (test_observation, _) = train_environment.reset_split()
+        else:
+            train_observation, _ = train_environment.reset()
+            test_observation, _ = test_environment.reset()
         observation = torch.empty(
             (self.total_environments, *observation_shape),
             dtype=torch.uint8,
@@ -195,6 +199,28 @@ class AftabTrainMixin(AftabBaseMixin):
             output[self.train_environments :] = score_reward_test
         return output
 
+    def __get_episode_terminations(
+        self,
+        *,
+        info_train,
+        info_test,
+        fallback_terminations,
+        output,
+    ):
+        episode_done_train = info_train.get("terminated", None)
+        episode_done_test = info_test.get("terminated", None)
+        if not isinstance(episode_done_train, numpy.ndarray) or not isinstance(
+            episode_done_test, numpy.ndarray
+        ):
+            return fallback_terminations
+
+        if episode_done_train.ndim == 0:
+            return fallback_terminations
+
+        output[: self.train_environments] = episode_done_train
+        output[self.train_environments :] = episode_done_test
+        return output
+
     def __record_completed_episodes(self, *, episode_returns, terminations):
         if not numpy.any(terminations):
             return
@@ -223,6 +249,7 @@ class AftabTrainMixin(AftabBaseMixin):
         actions_train = actions_train_cpu.numpy()
         actions_test = actions_test_cpu.numpy()
         terminations = numpy.empty(self.total_environments, dtype=numpy.bool_)
+        episode_terminations = numpy.empty(self.total_environments, dtype=numpy.bool_)
         score_rewards_output = numpy.empty(
             self.total_environments,
             dtype=numpy.float32,
@@ -240,7 +267,6 @@ class AftabTrainMixin(AftabBaseMixin):
 
         for step in range(self.steps_per_update):
             train_observation = observation[: self.train_environments]
-            float_observations = observation.float()
             epsilon_value = self._network.epsilon.get(
                 frame_count,
                 self.effective_frames,
@@ -249,7 +275,7 @@ class AftabTrainMixin(AftabBaseMixin):
             with self.__autocast_float16():
                 q_values_train, q_values_test, state_q_values, q_heads_train = (
                     self.__get_step_q_values(
-                        float_observations=float_observations,
+                        observations=observation,
                         active_heads=active_heads,
                     )
                 )
@@ -275,21 +301,41 @@ class AftabTrainMixin(AftabBaseMixin):
                     )
                     old_q_values = q_heads_train.gather(2, action_indices).squeeze(2)
 
-            (
-                next_observation_train,
-                reward_train,
-                termination_train,
-                truncation_train,
-                info_train,
-            ) = train_environment.step(actions_train)
+            if test_environment is None:
+                train_step, test_step = train_environment.step_split(
+                    actions_train,
+                    actions_test,
+                )
+                (
+                    next_observation_train,
+                    reward_train,
+                    termination_train,
+                    truncation_train,
+                    info_train,
+                ) = train_step
+                (
+                    next_observation_test,
+                    reward_test,
+                    termination_test,
+                    truncation_test,
+                    info_test,
+                ) = test_step
+            else:
+                (
+                    next_observation_train,
+                    reward_train,
+                    termination_train,
+                    truncation_train,
+                    info_train,
+                ) = train_environment.step(actions_train)
 
-            (
-                next_observation_test,
-                reward_test,
-                termination_test,
-                truncation_test,
-                info_test,
-            ) = test_environment.step(actions_test)
+                (
+                    next_observation_test,
+                    reward_test,
+                    termination_test,
+                    truncation_test,
+                    info_test,
+                ) = test_environment.step(actions_test)
 
             reward_train = reward_train.astype(numpy.float32, copy=False)
             reward_test = reward_test.astype(numpy.float32, copy=False)
@@ -312,10 +358,16 @@ class AftabTrainMixin(AftabBaseMixin):
                 info_test=info_test,
                 output=score_rewards_output,
             )
+            completed_episodes = self.__get_episode_terminations(
+                info_train=info_train,
+                info_test=info_test,
+                fallback_terminations=terminations,
+                output=episode_terminations,
+            )
             episode_returns += score_rewards
             self.__record_completed_episodes(
                 episode_returns=episode_returns,
-                terminations=terminations,
+                terminations=completed_episodes,
             )
             self.__resample_terminated_bootstrap_heads(
                 active_heads=active_heads,
@@ -368,9 +420,7 @@ class AftabTrainMixin(AftabBaseMixin):
 
         if self.__bootstrapped_enabled():
             with self.__autocast_float16():
-                last_next_q_heads = self._network.get_q_heads(
-                    last_train_observation.float()
-                )
+                last_next_q_heads = self._network.get_q_heads(last_train_observation)
             last_next_q = last_next_q_heads.float().max(dim=-1).values
             returns_rewards = rollout_buffer.rewards.unsqueeze(-1).expand_as(
                 rollout_buffer.state_q_values
@@ -416,7 +466,6 @@ class AftabTrainMixin(AftabBaseMixin):
                 mini_batch_target_probs=mini_batch_target_probs,
             )
 
-        mini_batch_observations = mini_batch_observations.float()
         q_heads = self._network.get_q_heads(mini_batch_observations)
         action_indices = mini_batch_actions.reshape(-1, 1, 1).expand(
             -1,
@@ -462,7 +511,6 @@ class AftabTrainMixin(AftabBaseMixin):
         mini_batch_old_q_values: Optional[torch.Tensor],
         mini_batch_target_probs: Optional[torch.Tensor],
     ) -> torch.Tensor:
-        mini_batch_observations = mini_batch_observations.float()
         q_logits_heads = self._network.get_q_logits_heads(mini_batch_observations)
         action_indices = mini_batch_actions.reshape(-1, 1, 1, 1).expand(
             -1,
@@ -532,7 +580,10 @@ class AftabTrainMixin(AftabBaseMixin):
         scaler,
     ):
         self._network.train()
-        update_losses = []
+        log_batches = bool(getattr(self, "loss_log_batches", False))
+        update_losses = [] if log_batches else None
+        update_loss_sum = None
+        update_loss_count = 0
         clip_grad_foreach = self.device.type in {"cpu", "cuda"}
         for _ in range(self.epochs):
             indices = torch.randperm(self.batch_size, device=self.device)
@@ -582,10 +633,22 @@ class AftabTrainMixin(AftabBaseMixin):
                 )
                 scaler.step(self._optimizer)
                 scaler.update()
-                update_losses.append(loss.detach())
+                detached_loss = loss.detach()
+                if log_batches:
+                    update_losses.append(detached_loss)
+                else:
+                    update_loss_sum = (
+                        detached_loss
+                        if update_loss_sum is None
+                        else update_loss_sum + detached_loss
+                    )
+                    update_loss_count += 1
 
-        if update_losses:
+        if log_batches and update_losses:
             self.results.loss.extend(torch.stack(update_losses).float().cpu().tolist())
+        elif update_loss_sum is not None and update_loss_count > 0:
+            mean_loss = update_loss_sum / update_loss_count
+            self.results.loss.append(float(mean_loss.float().cpu().item()))
 
     def __log_progress(self, *, update: int, frame_count: int):
         if update % self.verbose_interval != 0:
@@ -670,5 +733,6 @@ class AftabTrainMixin(AftabBaseMixin):
             self.__log_progress(update=update, frame_count=frame_count)
 
         train_environment.close()
-        test_environment.close()
+        if test_environment is not None:
+            test_environment.close()
         self.results.duration = time.time() - training_start_time
