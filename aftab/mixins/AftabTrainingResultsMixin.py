@@ -12,6 +12,7 @@ class AftabTrainingResultsMixin(AftabBaseMixin):
         filename += f"network-{self.network}__"
         filename = f"seed-{self.buffer.seed}__"
         filename += f"environment-{self.buffer.environment}__"
+        filename += f"encoder-{self.encoder.__name__}__"
         # removes trailing __
         filename = filename.strip("__")
         return f"{filename}.pkl"
