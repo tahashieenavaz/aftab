@@ -6,7 +6,7 @@ from aftab.jax.modules import EncoderBlock
 
 class BaseEncoder(nn.Module):
     activation: Callable
-    configuration: List[List]
+    configuration: List[List[int, int, int, int | str]]
 
     def setup(self):
         self.stream = [
