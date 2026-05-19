@@ -6,6 +6,19 @@ from .AftabBaseMixin import AftabBaseMixin
 from ..common import RolloutBuffer
 
 
+_TORCH_TO_NUMPY_DTYPE = {
+    torch.bool: numpy.bool_,
+    torch.uint8: numpy.uint8,
+    torch.int8: numpy.int8,
+    torch.int16: numpy.int16,
+    torch.int32: numpy.int32,
+    torch.int64: numpy.int64,
+    torch.float16: numpy.float16,
+    torch.float32: numpy.float32,
+    torch.float64: numpy.float64,
+}
+
+
 class AftabTrainMixin(AftabBaseMixin):
     def __init__(self):
         super().__init__()
@@ -24,8 +37,32 @@ class AftabTrainMixin(AftabBaseMixin):
             enabled=self.__autocast_float16_enabled(),
         )
 
+    def __numpy_array(self, value, dtype: torch.dtype) -> numpy.ndarray:
+        numpy_dtype = _TORCH_TO_NUMPY_DTYPE.get(dtype)
+        if isinstance(value, numpy.ndarray):
+            array = value
+            if numpy_dtype is not None and array.dtype != numpy_dtype:
+                array = array.astype(numpy_dtype, copy=False)
+        else:
+            array = numpy.asarray(value, dtype=numpy_dtype)
+
+        if not array.flags.c_contiguous:
+            array = numpy.ascontiguousarray(array)
+        return array
+
     def __tensor(self, value, dtype: torch.dtype) -> torch.Tensor:
-        return torch.as_tensor(value, dtype=dtype, device=self.device)
+        if isinstance(value, torch.Tensor):
+            return value.to(dtype=dtype, device=self.device)
+
+        tensor = torch.from_numpy(self.__numpy_array(value, dtype))
+        if tensor.dtype != dtype:
+            tensor = tensor.to(dtype=dtype)
+        if tensor.device == self.device:
+            return tensor
+        return tensor.to(
+            device=self.device,
+            non_blocking=self.device.type == "cuda",
+        )
 
     def __copy_array_to_tensor(
         self,
@@ -33,7 +70,13 @@ class AftabTrainMixin(AftabBaseMixin):
         value,
         dtype: torch.dtype,
     ) -> None:
-        target.copy_(torch.as_tensor(value, dtype=dtype))
+        if isinstance(value, torch.Tensor):
+            source = value.to(dtype=dtype, device=target.device)
+        else:
+            source = torch.from_numpy(self.__numpy_array(value, dtype))
+            if source.dtype != dtype:
+                source = source.to(dtype=dtype)
+        target.copy_(source, non_blocking=target.device.type == "cuda")
 
     def __distributional_value_clip_enabled(self) -> bool:
         return bool(getattr(self._network, "distributional", False)) and (
@@ -76,16 +119,16 @@ class AftabTrainMixin(AftabBaseMixin):
         if active_heads is None:
             return
 
-        done_count = int(numpy.count_nonzero(terminations))
+        done_indices = numpy.nonzero(terminations)[0]
+        done_count = int(done_indices.size)
         if done_count == 0:
             return
 
-        done_mask = torch.as_tensor(
-            terminations,
-            dtype=torch.bool,
+        done_indices = torch.from_numpy(done_indices).to(
             device=self.device,
+            non_blocking=self.device.type == "cuda",
         )
-        active_heads[done_mask] = self.__sample_bootstrap_heads(done_count)
+        active_heads[done_indices] = self.__sample_bootstrap_heads(done_count)
 
     def __get_step_q_values(
         self,
@@ -222,15 +265,15 @@ class AftabTrainMixin(AftabBaseMixin):
         return output
 
     def __record_completed_episodes(self, *, episode_returns, terminations):
-        if not numpy.any(terminations):
+        idx = numpy.nonzero(terminations)[0]
+        if idx.size == 0:
             return
 
-        idx = numpy.nonzero(terminations)[0]
-        scores = episode_returns[terminations]
+        scores = episode_returns[idx]
         split = idx < self.train_environments
         self.results.rewards.train.extend(scores[split].tolist())
         self.results.rewards.test.extend(scores[~split].tolist())
-        episode_returns[terminations] = 0
+        episode_returns[idx] = 0
 
     @torch.inference_mode()
     def __collect_trajectories(
