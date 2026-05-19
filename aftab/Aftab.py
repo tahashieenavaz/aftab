@@ -65,7 +65,6 @@ class Aftab(
         test_episodic_life: bool = False,
         train_reward_clip: bool = True,
         test_reward_clip: bool = True,
-        shared_envpool: bool = True,
         loss_log_batches: bool = False,
         distributional_bins: int = 51,
         distributional_min_value: float = -10.0,
@@ -75,6 +74,7 @@ class Aftab(
         distributional_value_clip: float = 0.0,
         bootstrap_heads: int = 10,
         bootstrap_probability: float = 1.0,
+        seed_offset: int = 1000,
     ):
         params = locals()
         params.pop("self")
