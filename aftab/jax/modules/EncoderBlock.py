@@ -5,7 +5,6 @@ from .LayerNorm2d import LayerNorm2d
 
 
 class EncoderBlock(nn.Module):
-    in_channels: int
     out_channels: int
     kernel: int
     stride: int
