@@ -10,7 +10,7 @@ class AftabTrainingResultsMixin(AftabBaseMixin):
     def __make_log_filename(self) -> str:
         filename = f"experiment-{self.experiment_name}__"
         filename += f"network-{self.network}__"
-        filename = f"seed-{self.buffer.seed}__"
+        filename += f"seed-{self.buffer.seed}__"
         filename += f"environment-{self.buffer.environment}__"
         filename += f"encoder-{self.encoder.__name__}__"
         # removes trailing __
