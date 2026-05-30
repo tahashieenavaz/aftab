@@ -42,14 +42,10 @@ It provides standardized training, evaluation, and reproducibility tools for dee
 
 </div>
 
-<p>
-  Comparison of two Gamma encoder variants based on findings from 
-  <a href="https://arxiv.org/abs/2505.15345">
-    Hadamax Encoding: Elevating Performance in Model-Free Atari
-  </a>.
-</p>
+References:
+- [Hadamax Encoding: Elevating Performance in Model-Free Atari](https://arxiv.org/abs/2505.15345)
 
-<hr />
+## Comparisons between different regression head strategies.
 
 <div align="center">
 
@@ -59,9 +55,10 @@ It provides standardized training, evaluation, and reproducibility tools for dee
 
 </div>
 
-<p>
-  Comparisons between different regression head strategies.
-</p>
+References:
+- [Stop Regressing](https://arxiv.org/abs/2403.03950)
+- [Deep Exploration via Bootstrapped DQN](https://arxiv.org/abs/1602.04621)
+- [Improving Regression Performance with Distributional Losses](https://arxiv.org/abs/1806.04613)
 
 ## Installation
 
