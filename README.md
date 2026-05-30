@@ -21,6 +21,7 @@
 **Aftab** (Persian: آفتاب, meaning "sun" or "sun rays") is a benchmarking framework for evaluating CNN-based encoders in PQN across Atari environments.  
 It provides standardized training, evaluation, and reproducibility tools for deep reinforcement learning research.
 
+### Encoder Experiments
 
 <div align="center">
 
@@ -29,8 +30,6 @@ It provides standardized training, evaluation, and reproducibility tools for dee
 | ![Global Performance](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/encoder_experiments/global.png) | ![Last 50M Frames](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/encoder_experiments/global_zoomed.png) |
 
 </div>
-
-<p>Global performance of base encoders.</p>
 
 ### Hadamard Product Experimentation
 
