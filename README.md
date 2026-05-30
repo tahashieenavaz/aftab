@@ -31,7 +31,7 @@ It provides standardized training, evaluation, and reproducibility tools for dee
 
 </div>
 
-### Hadamard Product Experimentation
+### Hadamard Product Experiments
 
 <div align="center">
 
@@ -44,7 +44,7 @@ It provides standardized training, evaluation, and reproducibility tools for dee
 References:
 - [Hadamax Encoding: Elevating Performance in Model-Free Atari](https://arxiv.org/abs/2505.15345)
 
-### Comparisons Between Different Q-Values Strategies
+### Q-Values Experiments
 
 <div align="center">
 
