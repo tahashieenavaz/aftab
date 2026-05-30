@@ -116,7 +116,13 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
   - Loss Evolution
   - IQM HNS
 
-**Final Experiments**: (GPUs are working :D)
+**Final Experiments**:
+- Tables:
+  - [HNS](results/final_experiments/human_normalized_scores.md)
+  - [Scores](results/final_experiments/scores.md)
+- Charts:
+  - Loss Evolution
+  - IQM HNS
 
 
 ## Model Complexity
