@@ -32,20 +32,20 @@ It provides standardized training, evaluation, and reproducibility tools for dee
 
 <p>Global performance of base encoders.</p>
 
-<hr />
+### Hadamard Product Experimentation
 
 <div align="center">
 
 | IQM HNS | IQM HNS (Last 50M Frames) |
 | :---: | :---: |
-| ![Hadamax Global Performance](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/hadamax_experiments/global.png) | ![Last 50M Frames](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/hadamax_experiments/global_zoomed.png) |
+| ![Global Performance](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/hadamax_experiments/global.png) | ![Last 50M Frames](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/hadamax_experiments/global_zoomed.png) |
 
 </div>
 
 References:
 - [Hadamax Encoding: Elevating Performance in Model-Free Atari](https://arxiv.org/abs/2505.15345)
 
-## Comparisons between different regression head strategies.
+### Comparisons Between Different Q-Values Strategies
 
 <div align="center">
 
