@@ -30,7 +30,9 @@ It provides standardized training, evaluation, and reproducibility tools for dee
 
 </div>
 
-<p align="center"><em>Global performance of base encoders.</em></p>
+<p>Global performance of base encoders.</p>
+
+<hr />
 
 <div align="center">
 
@@ -40,15 +42,26 @@ It provides standardized training, evaluation, and reproducibility tools for dee
 
 </div>
 
-<p align="center">
-  <em>
+<p>
   Comparison of two Gamma encoder variants based on findings from 
   <a href="https://arxiv.org/abs/2505.15345">
     Hadamax Encoding: Elevating Performance in Model-Free Atari
   </a>.
-  </em>
 </p>
 
+<hr />
+
+<div align="center">
+
+| IQM HNS | IQM HNS (Last 50M Frames) |
+| :---: | :---: |
+| ![Global Performance](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/final_experiments/global.png) | ![Last 50M Frames](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/final_experiments/global_zoomed.png) |
+
+</div>
+
+<p>
+  Comparisons between different regression head strategies.
+</p>
 
 ## Installation
 
