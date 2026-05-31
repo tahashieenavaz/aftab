@@ -156,8 +156,8 @@ class Aftab(
 
         flush(message=message)
 
-    def save(self, directory: str = "models"):
-        self._save(directory=directory)
+    def save(self, filename: str, directory: str = "models"):
+        self._save(filename=filename, directory=directory)
 
     def log(self, directory: str = "results") -> None:
         self._log(directory=directory)
