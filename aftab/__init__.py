@@ -1,3 +1,5 @@
+from importlib.metadata import version
+
 from .Aftab import Aftab
 
 from .constants import seeds
@@ -8,4 +10,4 @@ from .constants import environments
 from .constants import environments as ENVS
 from .constants import environments as aftab_environments
 
-__version__ = "0.1.59"
+__version__ = version("aftab")
