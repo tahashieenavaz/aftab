@@ -7,7 +7,7 @@ class AftabStoreModelMixin(AftabBaseMixin):
     def __init__(self):
         super().__init__()
 
-    def _save(self, directory: str):
+    def _save(self, directory: str, filename: str):
         directory_path = _make_sure_directory_exists(directory).strip("/").strip()
-        filename = f"{directory_path}/{self.__make_network_filename()}.model"
-        torch.save(self._network, filename)
+        _filename = f"{directory_path}/{filename}.model"
+        torch.save(self._network, _filename)
