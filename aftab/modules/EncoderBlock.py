@@ -1,6 +1,6 @@
 import torch
 from aftab.constants import ModuleType
-from aftab.modules import LayerNorm2d
+from .LayerNorm2d import LayerNorm2d
 
 DEFAULT_ACTIVATION = torch.nn.ReLU
 
