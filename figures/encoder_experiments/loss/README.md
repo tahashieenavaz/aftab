@@ -4,44 +4,80 @@
 <details>
 <summary><strong>Click to expand all loss curves</strong></summary>
 
-| Alien | Amidar | Assault | Asterix | Asteroids | Atlantis |
-|--------|--------|----------|---------|-----------|----------|
-| ![](alien_loss.png) | ![](amidar_loss.png) | ![](assault_loss.png) | ![](asterix_loss.png) | ![](asteroids_loss.png) | ![](atlantis_loss.png) |
+| Alien | Amidar | Assault |
+|--------|--------|--------|
+| <img src="alien_loss.png" width="300"> | <img src="amidar_loss.png" width="300"> | <img src="assault_loss.png" width="300"> |
 
-| BankHeist | BattleZone | BeamRider | Berzerk | Bowling | Boxing |
-|-----------|------------|-----------|---------|---------|--------|
-| ![](bankheist_loss.png) | ![](battlezone_loss.png) | ![](beamrider_loss.png) | ![](berzerk_loss.png) | ![](bowling_loss.png) | ![](boxing_loss.png) |
+| Asterix | Asteroids | Atlantis |
+|---------|-----------|----------|
+| <img src="asterix_loss.png" width="300"> | <img src="asteroids_loss.png" width="300"> | <img src="atlantis_loss.png" width="300"> |
 
-| Breakout | Centipede | ChopperCommand | CrazyClimber | Defender | DemonAttack |
-|-----------|------------|----------------|--------------|----------|-------------|
-| ![](breakout_loss.png) | ![](centipede_loss.png) | ![](choppercommand_loss.png) | ![](crazyclimber_loss.png) | ![](defender_loss.png) | ![](demonattack_loss.png) |
+| BankHeist | BattleZone | BeamRider |
+|-----------|------------|-----------|
+| <img src="bankheist_loss.png" width="300"> | <img src="battlezone_loss.png" width="300"> | <img src="beamrider_loss.png" width="300"> |
 
-| DoubleDunk | Enduro | FishingDerby | Freeway | Frostbite | Gopher |
-|------------|--------|--------------|---------|-----------|--------|
-| ![](doubledunk_loss.png) | ![](enduro_loss.png) | ![](fishingderby_loss.png) | ![](freeway_loss.png) | ![](frostbite_loss.png) | ![](gopher_loss.png) |
+| Berzerk | Bowling | Boxing |
+|---------|---------|--------|
+| <img src="berzerk_loss.png" width="300"> | <img src="bowling_loss.png" width="300"> | <img src="boxing_loss.png" width="300"> |
 
-| Gravitar | Hero | IceHockey | JamesBond | Kangaroo | Krull |
-|----------|------|-----------|-----------|----------|-------|
-| ![](gravitar_loss.png) | ![](hero_loss.png) | ![](icehockey_loss.png) | ![](jamesbond_loss.png) | ![](kangaroo_loss.png) | ![](krull_loss.png) |
+| Breakout | Centipede | ChopperCommand |
+|-----------|-----------|----------------|
+| <img src="breakout_loss.png" width="300"> | <img src="centipede_loss.png" width="300"> | <img src="choppercommand_loss.png" width="300"> |
 
-| KungFuMaster | MontezumaRevenge | MsPacman | NameThisGame | Phoenix | Pitfall |
-|--------------|------------------|----------|--------------|---------|---------|
-| ![](kungfumaster_loss.png) | ![](montezumarevenge_loss.png) | ![](mspacman_loss.png) | ![](namethisgame_loss.png) | ![](phoenix_loss.png) | ![](pitfall_loss.png) |
+| CrazyClimber | Defender | DemonAttack |
+|--------------|----------|-------------|
+| <img src="crazyclimber_loss.png" width="300"> | <img src="defender_loss.png" width="300"> | <img src="demonattack_loss.png" width="300"> |
 
-| Pong | PrivateEye | Qbert | RiverRaid | RoadRunner | Robotank |
-|------|------------|-------|-----------|------------|----------|
-| ![](pong_loss.png) | ![](privateeye_loss.png) | ![](qbert_loss.png) | ![](riverraid_loss.png) | ![](roadrunner_loss.png) | ![](robotank_loss.png) |
+| DoubleDunk | Enduro | FishingDerby |
+|------------|--------|--------------|
+| <img src="doubledunk_loss.png" width="300"> | <img src="enduro_loss.png" width="300"> | <img src="fishingderby_loss.png" width="300"> |
 
-| Seaquest | Skiing | Solaris | SpaceInvaders | StarGunner | Surround |
-|----------|--------|---------|---------------|------------|----------|
-| ![](seaquest_loss.png) | ![](skiing_loss.png) | ![](solaris_loss.png) | ![](spaceinvaders_loss.png) | ![](stargunner_loss.png) | ![](surround_loss.png) |
+| Freeway | Frostbite | Gopher |
+|---------|-----------|--------|
+| <img src="freeway_loss.png" width="300"> | <img src="frostbite_loss.png" width="300"> | <img src="gopher_loss.png" width="300"> |
 
-| Tennis | TimePilot | Tutankham | UpNDown | Venture | VideoPinball |
-|---------|-----------|-----------|---------|---------|--------------|
-| ![](tennis_loss.png) | ![](timepilot_loss.png) | ![](tutankham_loss.png) | ![](upndown_loss.png) | ![](venture_loss.png) | ![](videopinball_loss.png) |
+| Gravitar | Hero | IceHockey |
+|----------|------|-----------|
+| <img src="gravitar_loss.png" width="300"> | <img src="hero_loss.png" width="300"> | <img src="icehockey_loss.png" width="300"> |
+
+| JamesBond | Kangaroo | Krull |
+|-----------|----------|-------|
+| <img src="jamesbond_loss.png" width="300"> | <img src="kangaroo_loss.png" width="300"> | <img src="krull_loss.png" width="300"> |
+
+| KungFuMaster | MontezumaRevenge | MsPacman |
+|--------------|------------------|----------|
+| <img src="kungfumaster_loss.png" width="300"> | <img src="montezumarevenge_loss.png" width="300"> | <img src="mspacman_loss.png" width="300"> |
+
+| NameThisGame | Phoenix | Pitfall |
+|--------------|---------|---------|
+| <img src="namethisgame_loss.png" width="300"> | <img src="phoenix_loss.png" width="300"> | <img src="pitfall_loss.png" width="300"> |
+
+| Pong | PrivateEye | Qbert |
+|------|------------|-------|
+| <img src="pong_loss.png" width="300"> | <img src="privateeye_loss.png" width="300"> | <img src="qbert_loss.png" width="300"> |
+
+| RiverRaid | RoadRunner | Robotank |
+|-----------|------------|----------|
+| <img src="riverraid_loss.png" width="300"> | <img src="roadrunner_loss.png" width="300"> | <img src="robotank_loss.png" width="300"> |
+
+| Seaquest | Skiing | Solaris |
+|----------|--------|---------|
+| <img src="seaquest_loss.png" width="300"> | <img src="skiing_loss.png" width="300"> | <img src="solaris_loss.png" width="300"> |
+
+| SpaceInvaders | StarGunner | Surround |
+|---------------|------------|----------|
+| <img src="spaceinvaders_loss.png" width="300"> | <img src="stargunner_loss.png" width="300"> | <img src="surround_loss.png" width="300"> |
+
+| Tennis | TimePilot | Tutankham |
+|---------|-----------|-----------|
+| <img src="tennis_loss.png" width="300"> | <img src="timepilot_loss.png" width="300"> | <img src="tutankham_loss.png" width="300"> |
+
+| UpNDown | Venture | VideoPinball |
+|----------|---------|--------------|
+| <img src="upndown_loss.png" width="300"> | <img src="venture_loss.png" width="300"> | <img src="videopinball_loss.png" width="300"> |
 
 | WizardOfWor | YarsRevenge | Zaxxon |
 |-------------|-------------|--------|
-| ![](wizardofwor_loss.png) | ![](yarsrevenge_loss.png) | ![](zaxxon_loss.png) |
+| <img src="wizardofwor_loss.png" width="300"> | <img src="yarsrevenge_loss.png" width="300"> | <img src="zaxxon_loss.png" width="300"> |
 
 </details>
