@@ -1,5 +1,7 @@
-# Encoder Experiment
-## Training Loss Curves
+<div align="center">
+    <img src="../legend.png" width=400 />
+</div>
+
 
 | Alien | Amidar | Assault |
 |--------|--------|--------|
