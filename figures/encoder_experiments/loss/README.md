@@ -1,9 +1,6 @@
 # Encoder Experiment
 ## Training Loss Curves
 
-<details>
-<summary><strong>Click to expand all loss curves</strong></summary>
-
 | Alien | Amidar | Assault |
 |--------|--------|--------|
 | <img src="images/alien_loss.png" width="300"> | <img src="images/amidar_loss.png" width="300"> | <img src="images/assault_loss.png" width="300"> |
@@ -79,5 +76,3 @@
 | WizardOfWor | YarsRevenge | Zaxxon |
 |-------------|-------------|--------|
 | <img src="images/wizardofwor_loss.png" width="300"> | <img src="images/yarsrevenge_loss.png" width="300"> | <img src="images/zaxxon_loss.png" width="300"> |
-
-</details>
