@@ -113,7 +113,7 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
   - [HNS](results/encoder_experiments/human_normalized_scores.md)
   - [Scores](results/encoder_experiments/scores.md)
 - Charts:
-  - [IQM HNS](https://github.com/tahashieenavaz/aftab/tree/main/figures/encoder_experiments/human_normalized_scores)
+  - [IQM HNS](https://github.com/tahashieenavaz/aftab/tree/main/figures/encoder_experiments/human_normalized_score)
   - [Loss Evolution](https://github.com/tahashieenavaz/aftab/tree/main/figures/encoder_experiments/loss)
 
 **Hadamax Experiments**:
@@ -122,7 +122,7 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
   - [HNS](results/hadamax_experiments/human_normalized_scores.md)
   - [Scores](results/hadamax_experiments/scores.md)
 - Charts:
-  - [IQM HNS](https://github.com/tahashieenavaz/aftab/tree/main/figures/hadamax_experiments/human_normalized_scores)
+  - [IQM HNS](https://github.com/tahashieenavaz/aftab/tree/main/figures/hadamax_experiments/human_normalized_score)
   - [Loss Evolution](https://github.com/tahashieenavaz/aftab/tree/main/figures/hadamax_experiments/loss)
 
 **Final Experiments**:
@@ -130,7 +130,7 @@ agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
   - [HNS](results/final_experiments/human_normalized_scores.md)
   - [Scores](results/final_experiments/scores.md)
 - Charts:
-  - [IQM HNS](https://github.com/tahashieenavaz/aftab/tree/main/figures/final_experiments/human_normalized_scores)
+  - [IQM HNS](https://github.com/tahashieenavaz/aftab/tree/main/figures/final_experiments/human_normalized_score)
   - [Loss Evolution](https://github.com/tahashieenavaz/aftab/tree/main/figures/final_experiments/loss)
 
 
