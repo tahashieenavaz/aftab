@@ -95,13 +95,9 @@ import torch
 from aftab import Aftab
 
 class CustomImageEncoder(torch.nn.Module):
-    def __init__(self):
-        super().__init__()
-  
-    def forward(self, x):
-        pass
+    pass
 
-agent = Aftab(encoder=CustomImageEncoder, frames="pilot")
+agent = Aftab(encoder=CustomImageEncoder)
 ```
 
 
