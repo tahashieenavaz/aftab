@@ -2,6 +2,15 @@
 
 |                     | PQN        | Distributional Duelling   | Bootstrapped Duelling   | Distributional Bootstrapped Duelling   |
 |:--------------------|:-----------|:--------------------------|:------------------------|:---------------------------------------|
+| Median              | 1.885      | 4.172                     | 3.645                   | **4.421**                              |
+| IQM                 | 2.692      | 6.031                     | 5.592                   | **6.479**                              |
+
+</div>
+
+<div align="center">
+
+|                     | PQN        | Distributional Duelling   | Bootstrapped Duelling   | Distributional Bootstrapped Duelling   |
+|:--------------------|:-----------|:--------------------------|:------------------------|:---------------------------------------|
 | Alien               | 0.542      | 2.936                     | **4.074**               | 3.120                                  |
 | Amidar              | 0.640      | 1.563                     | **1.761**               | 1.726                                  |
 | Assault             | 30.169     | 32.991                    | **40.048**              | 38.902                                 |
@@ -59,14 +68,5 @@
 | Wizard of Wor       | 4.443      | 8.275                     | 5.871                   | **8.354**                              |
 | Yars' Revenge       | 2.222      | 5.245                     | 5.521                   | **5.677**                              |
 | Zaxxon              | 1.834      | 3.675                     | 2.171                   | **4.839**                              |
-
-</div>
-
-<div align="center">
-
-|                     | PQN        | Distributional Duelling   | Bootstrapped Duelling   | Distributional Bootstrapped Duelling   |
-|:--------------------|:-----------|:--------------------------|:------------------------|:---------------------------------------|
-| Median              | 1.885      | 4.172                     | 3.645                   | **4.421**                              |
-| IQM                 | 2.692      | 6.031                     | 5.592                   | **6.479**                              |
 
 </div>
