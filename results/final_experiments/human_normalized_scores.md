@@ -1,3 +1,5 @@
+<div align="center">
+
 |                     | PQN        | Distributional Duelling   | Bootstrapped Duelling   | Distributional Bootstrapped Duelling   |
 |:--------------------|:-----------|:--------------------------|:------------------------|:---------------------------------------|
 | Alien               | 0.542      | 2.936                     | **4.074**               | 3.120                                  |
@@ -57,6 +59,8 @@
 | Wizard of Wor       | 4.443      | 8.275                     | 5.871                   | **8.354**                              |
 | Yars' Revenge       | 2.222      | 5.245                     | 5.521                   | **5.677**                              |
 | Zaxxon              | 1.834      | 3.675                     | 2.171                   | **4.839**                              |
+
+</div>
 
 <div align="center">
 
