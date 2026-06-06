@@ -23,7 +23,7 @@ It provides standardized training, evaluation, and reproducibility tools for dee
 
 | Aftab | PQN |
 | :---: | :---: |
-| [![Aftab Agent: Breakout](https://img.youtube.com/vi/LzQrzZiHPQw/0.jpg)](https://www.youtube.com/watch?v=LzQrzZiHPQw) | [![PQN Agent: Breakout](https://img.youtube.com/vi/aNiJVpfgKHg/0.jpg)](https://www.youtube.com/watch?v=aNiJVpfgKHg)
+| [Aftab: Breakout](./videos/Breakout-aftab.gif) | [PQN: Breakout](./videos/Breakout-pqn.gif)
 
 
 
