@@ -23,7 +23,7 @@ It provides standardized training, evaluation, and reproducibility tools for dee
 
 | Aftab | PQN |
 | :---: | :---: |
-| [Aftab: Breakout](./videos/Breakout-aftab.gif) | [PQN: Breakout](./videos/Breakout-pqn.gif)
+| ![Aftab: Breakout](./videos/Breakout-aftab.gif) | ![PQN: Breakout](./videos/Breakout-pqn.gif)
 
 
 
