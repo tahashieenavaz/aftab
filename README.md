@@ -23,7 +23,7 @@ It provides standardized training, evaluation, and reproducibility tools for dee
 
 | Aftab | PQN |
 | :---: | :---: |
-| <iframe width="716" height="940" src="https://www.youtube.com/embed/LzQrzZiHPQw" title="Aftab Agent: Breakout" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> | <iframe width="716" height="940" src="https://www.youtube.com/embed/aNiJVpfgKHg" title="PQN Agent: Breakout" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> | 
+| https://www.youtube.com/embed/LzQrzZiHPQw | https://www.youtube.com/embed/aNiJVpfgKHg | 
 
 
 ### Encoder Experiments
