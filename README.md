@@ -23,11 +23,11 @@ It provides standardized training, evaluation, and reproducibility tools for dee
 
 | Aftab | PQN |
 | :---: | :---: |
-| <video src="./videos/Breakout-aftab.mp4" controls muted loop width="100%"></video> | <video src="./videos/Breakout-pqn.mp4" controls muted loop width="100%"></video> |
+| <video src="https://raw.githubusercontent.com/tahashieenavaz/aftab/main/videos/Breakout-aftab.mp4" controls muted loop width="100%"></video> | <video src="https://raw.githubusercontent.com/tahashieenavaz/aftab/main/videos/Breakout-pqn.mp4" controls muted loop width="100%"></video> |
 
 | Aftab | PQN |
 | :---: | :---: |
-| <video src="./videos/Hero-aftab.mp4" controls muted loop width="100%"></video> | <video src="./videos/Hero-pqn.mp4" controls muted loop width="100%"></video> |
+| <video src="https://raw.githubusercontent.com/tahashieenavaz/aftab/main/videos/Hero-aftab.mp4" controls muted loop width="100%"></video> | <video src="https://raw.githubusercontent.com/tahashieenavaz/aftab/main/videos/Hero-pqn.mp4" controls muted loop width="100%"></video> |
 
 ### Encoder Experiments
 
