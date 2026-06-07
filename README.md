@@ -23,9 +23,7 @@ It provides standardized training, evaluation, and reproducibility tools for dee
 
 | Aftab | PQN |
 | :---: | :---: |
-| ![Aftab: Breakout](./videos/Breakout-aftab.gif) | ![PQN: Breakout](./videos/Breakout-pqn.gif)
-
-
+| <video src="./videos/Breakout-aftab.mp4" controls muted loop width="100%"></video> | <video src="./videos/Breakout-pqn.mp4" controls muted loop width="100%"></video> |
 
 ### Encoder Experiments
 
