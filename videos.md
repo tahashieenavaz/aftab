@@ -1,5 +1,3 @@
-# Afatb Agent Videos
-
 ## Breakout
 
 | Aftab | PQN |
