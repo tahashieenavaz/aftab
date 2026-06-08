@@ -143,13 +143,6 @@ class Aftab(
         self.results.loss = []
         self.results.duration = 0.0
 
-    def __make_network_filename(self) -> str:
-        timestamp = time.time()
-        filename = (
-            f"{timestamp}__{self.experiment_name}__{self.encoder}__{self.network}.model"
-        )
-        return filename
-
     def flush_verbose(self, message: str):
         if not self.verbose:
             return
