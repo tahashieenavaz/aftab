@@ -3,7 +3,6 @@ from __future__ import annotations
 import torch
 import math
 import os
-import time
 from typing import Literal
 from types import SimpleNamespace
 from baloot import acceleration_device, seed_everything
