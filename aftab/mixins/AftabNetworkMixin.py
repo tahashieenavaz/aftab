@@ -6,11 +6,13 @@ _DISTRIBUTIONAL_NETWORKS = {
     "distributional",
     "distributional-duelling",
     "distributional-bootstrapped-duelling",
+    "bootstrapped-distributional-duelling",
 }
 _BOOTSTRAPPED_NETWORKS = {
     "bootstrapped",
     "bootstrapped-duelling",
     "distributional-bootstrapped-duelling",
+    "bootstrapped-distributional-duelling",
 }
 
 
