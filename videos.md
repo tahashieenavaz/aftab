@@ -30,7 +30,7 @@ Below is a side-by-side comparison of **Aftab** and **PQN** across various envir
 
 | Game | Aftab | PQN |
 | :--- | :---: | :---: |
-| **James Bond** | <video src="https://github.com/user-attachments/assets/f7e48e03-d62a-4e78-a90b-c37b7975adc9" width="280" autoplay loop muted playsinline></video> | <video src="https://github.com/user-attachments/assets/c952eb63-393e-47f0-b0e0-efc5b73d8de1" width="280" autoplay loop muted playsinline></video> |
+| **James Bond** | <video src="https://github.com/user-attachments/assets/3b39765c-2425-4db5-b1e3-681e6fe96349" width="280" autoplay loop muted playsinline></video> | <video src="https://github.com/user-attachments/assets/c952eb63-393e-47f0-b0e0-efc5b73d8de1" width="280" autoplay loop muted playsinline></video> |
 | **Hero** | <video src="https://github.com/user-attachments/assets/3018ce4f-aa2e-464d-b396-41936377c6c5" width="280" autoplay loop muted playsinline></video> | <video src="https://github.com/user-attachments/assets/f90df4f5-b372-4814-b6f3-1da50c1c9807" width="280" autoplay loop muted playsinline></video> |
 | **Road Runner** | <video src="https://github.com/user-attachments/assets/e9f81d9c-4e49-44e1-8b70-81f03fb55298" width="280" autoplay loop muted playsinline></video> | <video src="https://github.com/user-attachments/assets/5cc29832-563b-4c64-80c8-059771985a26" width="280" autoplay loop muted playsinline></video> |
 
