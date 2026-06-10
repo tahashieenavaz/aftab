@@ -190,7 +190,7 @@ agent = Aftab(encoder=CustomImageEncoder)
 
 ## Statistical Significance
 
-<div align="center">
+### Encoder Experiments
 
 |         |   PQN |   Alpha |   Beta |   Gamma |   Delta |   Epsilon |   Zeta |   Eta |   Theta |
 |:--------|------:|--------:|-------:|--------:|--------:|----------:|-------:|------:|--------:|
@@ -204,9 +204,7 @@ agent = Aftab(encoder=CustomImageEncoder)
 | Eta     | 0.001 |   0.337 |  0.757 |   0.221 |   0     |     0.819 |  0.967 | -     |   -     | 
 | Theta   | 0.431 |   0     |  0.004 |   0     |   0.046 |     0.001 |  0.001 | 0.002 |   -     |
 
-</div>
-
-<div align="center">
+### Hadamax Experiments
 
 |                    |   Gamma |   Hadamax Gamma V1 |   Hadamax Gamma V2 |   Hadamax |
 |:-------------------|--------:|-------------------:|-------------------:|----------:|
@@ -215,9 +213,8 @@ agent = Aftab(encoder=CustomImageEncoder)
 | Hadamax Gamma V2   |       0 |              0.72  |              -     |     -     |
 | Hadamax Nature DQN |       0 |              0.078 |              0.151 |     -     |
 
-</div>
 
-<div align="center">
+### Final Experiments
 
 |                                      |   PQN |   Distributional Duelling |   Bootstrapped Duelling |   Distributional Bootstrapped Duelling |
 |:-------------------------------------|------:|--------------------------:|------------------------:|---------------------------------------:|
@@ -225,8 +222,6 @@ agent = Aftab(encoder=CustomImageEncoder)
 | Distributional Duelling              |     0 |                     -     |                   - |                                    -   |
 | Bootstrapped Duelling                |     0 |                     0.115 |                   -     |                                    - |
 | Distributional Bootstrapped Duelling |     0 |                     0     |                   0.3   |                                    -   |
-
-</div>
 
 ## Reproducibility
 
