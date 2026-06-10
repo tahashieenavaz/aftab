@@ -1,5 +1,3 @@
-## 🎮 Agent Performance Comparison
-
 Below is a side-by-side comparison of **Aftab** and **PQN** across various environments. Expand the categories to see the agents in action.
 
 <details>
