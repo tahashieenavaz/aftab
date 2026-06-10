@@ -222,7 +222,7 @@ agent = Aftab(encoder=CustomImageEncoder)
 |                                      |   PQN |   Distributional Duelling |   Bootstrapped Duelling |   Distributional Bootstrapped Duelling |
 |:-------------------------------------|------:|--------------------------:|------------------------:|---------------------------------------:|
 | PQN                                  |     - |                     -     |                   -     |                                    -   |
-| Distributional Duelling              |     0 |                     -     |                   0.115 |                                    0   |
+| Distributional Duelling              |     0 |                     -     |                   - |                                    -   |
 | Bootstrapped Duelling                |     0 |                     0.115 |                   -     |                                    0.3 |
 | Distributional Bootstrapped Duelling |     0 |                     0     |                   0.3   |                                    -   |
 
