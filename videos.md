@@ -1,2 +1,2 @@
-| Category | Aftab | PQN |
+| Game | Aftab | PQN |
 | :--- | :---: | :---: |
