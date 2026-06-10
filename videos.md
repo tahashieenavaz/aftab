@@ -3,7 +3,7 @@
 Below is a side-by-side comparison of **Aftab** and **PQN** across various environments. Expand the categories to see the agents in action.
 
 <details>
-<summary>🕹️ <b>Classic Arcade & Action</b></summary>
+<summary><b>Classic Arcade & Action</b></summary>
 <br>
 
 | Game | Aftab | PQN |
@@ -15,7 +15,7 @@ Below is a side-by-side comparison of **Aftab** and **PQN** across various envir
 </details>
 
 <details>
-<summary>🚁 <b>Vehicular, Flight & Combat</b></summary>
+<summary><b>Vehicular, Flight & Combat</b></summary>
 <br>
 
 | Game | Aftab | PQN |
@@ -27,7 +27,7 @@ Below is a side-by-side comparison of **Aftab** and **PQN** across various envir
 </details>
 
 <details>
-<summary>🏃 <b>Platforming & Adventure</b></summary>
+<summary><b>Platforming & Adventure</b></summary>
 <br>
 
 | Game | Aftab | PQN |
