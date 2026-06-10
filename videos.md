@@ -6,9 +6,9 @@ Below is a side-by-side comparison of **Aftab** and **PQN** across various envir
 
 | Game | Aftab | PQN |
 | :--- | :---: | :---: |
-| **Atlantis** | <video src="https://github.com/user-attachments/assets/783a8186-abc1-48a4-98fa-4c8980ad309c" width="280" autoplay loop muted playsinline></video> | <video src="https://github.com/user-attachments/assets/94ff03e0-da27-4e3f-9960-822343533ada" width="280" autoplay loop muted playsinline></video> |
-| **Breakout** | <video src="https://github.com/user-attachments/assets/743ef67b-6462-4228-b482-e7fbc478f68c" width="280" autoplay loop muted playsinline></video> | <video src="https://github.com/user-attachments/assets/55478f40-89db-4a9c-8f7b-7f93431057c5" width="280" autoplay loop muted playsinline></video> |
 | **Seaquest** | <video src="https://github.com/user-attachments/assets/909bdd04-2491-4747-855f-db17235a1f1b" width="280" autoplay loop muted playsinline></video> | <video src="https://github.com/user-attachments/assets/66978a3c-b905-41a6-bf0a-6b281efc68f4" width="280" autoplay loop muted playsinline></video> |
+| **Breakout** | <video src="https://github.com/user-attachments/assets/743ef67b-6462-4228-b482-e7fbc478f68c" width="280" autoplay loop muted playsinline></video> | <video src="https://github.com/user-attachments/assets/55478f40-89db-4a9c-8f7b-7f93431057c5" width="280" autoplay loop muted playsinline></video> |
+| **Atlantis** | <video src="https://github.com/user-attachments/assets/783a8186-abc1-48a4-98fa-4c8980ad309c" width="280" autoplay loop muted playsinline></video> | <video src="https://github.com/user-attachments/assets/94ff03e0-da27-4e3f-9960-822343533ada" width="280" autoplay loop muted playsinline></video> |
 
 </details>
 
