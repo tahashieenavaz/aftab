@@ -217,6 +217,17 @@ agent = Aftab(encoder=CustomImageEncoder)
 
 </div>
 
+<div align="center">
+
+|                                      |   PQN |   Distributional Duelling |   Bootstrapped Duelling |   Distributional Bootstrapped Duelling |
+|:-------------------------------------|------:|--------------------------:|------------------------:|---------------------------------------:|
+| PQN                                  |     - |                     -     |                   -     |                                    -   |
+| Distributional Duelling              |     0 |                     -     |                   0.115 |                                    0   |
+| Bootstrapped Duelling                |     0 |                     0.115 |                   -     |                                    0.3 |
+| Distributional Bootstrapped Duelling |     0 |                     0     |                   0.3   |                                    -   |
+
+</div>
+
 ## Reproducibility
 
 Due to the stochastic nature of deep reinforcement learning, exact reproducibility via fixed datasets is not feasible.  
