@@ -11,16 +11,20 @@ class RecurrentStream(torch.nn.Module):
         stream_hidden_dimension: int,
         stream_output_dimension: int,
         heads: int = 8,
+        encoders: int = 2,
         normalization: bool = True,
     ):
         super().__init__()
         self.normalization = normalization
-        self.attention = torch.nn.MultiheadAttention(
-            embed_dim=hidden_dimension,
-            num_heads=heads,
-            batch_first=True,
+        self.encoder_projection = torch.nn.Linear(input_dimension, hidden_dimension)
+        self.encoder = torch.nn.TransformerEncoder(
+            torch.nn.TransformerEncoderLayer(
+                d_model=hidden_dimension,
+                nhead=heads,
+                batch_first=True,
+            ),
+            num_layers=encoders,
         )
-        self.attention_projection = torch.nn.Linear(input_dimension, hidden_dimension)
         self.stream = Stream(
             input_dimension=hidden_dimension,
             hidden_dimension=stream_hidden_dimension,
@@ -30,5 +34,6 @@ class RecurrentStream(torch.nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.attention_projection(x)
-        features, _ = self.attention(x, x, x)
+        x = self.encoder(x)
+        features = x.mean(dim=1)
         return self.stream(features)
