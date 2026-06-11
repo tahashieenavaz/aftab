@@ -1,7 +1,7 @@
 import torch
 from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
-from aftab.modules import Stream
+from aftab.modules import RecurrentStream
 from .BaseNetwork import BaseNetwork
 
 
@@ -33,7 +33,7 @@ class DistributionalBootstrappedDuellingRecurrentNetwork(BaseNetwork):
         )
         self.advantage_heads = torch.nn.ModuleList(
             [
-                Stream(
+                RecurrentStream(
                     input_dimension=self.feature_dimension,
                     hidden_dimension=self.embedding_dimension,
                     output_dimension=self.action_dimension * self.distributional_bins,
@@ -44,7 +44,7 @@ class DistributionalBootstrappedDuellingRecurrentNetwork(BaseNetwork):
         )
         self.value_heads = torch.nn.ModuleList(
             [
-                Stream(
+                RecurrentStream(
                     input_dimension=self.feature_dimension,
                     hidden_dimension=self.embedding_dimension,
                     output_dimension=self.distributional_bins,
