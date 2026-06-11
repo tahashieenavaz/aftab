@@ -74,6 +74,7 @@ class DistributionalBootstrappedDuellingRecurrentNetwork(BaseNetwork):
     def get_q_logits_heads(self, states: torch.Tensor) -> torch.Tensor:
         B, F, H, W = states.shape
         states = states.reshape(B * F, 1, H, W)
+        print(states.shape, flush=True)
         features = self.get_features(states)
         features = features.reshape(B, F, -1)
         value_logits = self.get_value_logits_heads(features=features)
