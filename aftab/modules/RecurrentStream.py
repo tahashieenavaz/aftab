@@ -33,7 +33,7 @@ class RecurrentStream(torch.nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = self.attention_projection(x)
+        x = self.encoder_projection(x)
         x = self.encoder(x)
         features = x.mean(dim=1)
         return self.stream(features)
