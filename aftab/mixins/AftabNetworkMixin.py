@@ -56,7 +56,7 @@ class AftabNetworkMixin(AftabBaseMixin):
 
     def __network_kwargs(self) -> dict:
         kwargs = {}
-        print(self.network.__class__.__name__.lower(), flush=True)
+        print("name here", self.network.__class__.__name__.lower(), flush=True)
         if "distributional" in self.network.__class__.__name__.lower():
             kwargs.update(
                 distributional_bins=int(getattr(self, "distributional_bins")),
