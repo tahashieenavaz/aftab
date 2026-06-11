@@ -26,5 +26,5 @@ class RecurrentStream(torch.nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         recurrent_output, _ = self.recurrent(x)
-        features, _ = recurrent_output.mean(dim=1)
+        features = recurrent_output.mean(dim=1)
         return self.stream(features)
