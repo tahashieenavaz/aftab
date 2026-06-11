@@ -2,19 +2,6 @@ import torch
 from aftab.maps import networks_map
 from .AftabBaseMixin import AftabBaseMixin
 
-_DISTRIBUTIONAL_NETWORKS = {
-    "distributional",
-    "distributional-duelling",
-    "distributional-bootstrapped-duelling",
-    "bootstrapped-distributional-duelling",
-}
-_BOOTSTRAPPED_NETWORKS = {
-    "bootstrapped",
-    "bootstrapped-duelling",
-    "distributional-bootstrapped-duelling",
-    "bootstrapped-distributional-duelling",
-}
-
 
 class AftabNetworkMixin(AftabBaseMixin):
     def __init__(self):
@@ -69,7 +56,7 @@ class AftabNetworkMixin(AftabBaseMixin):
 
     def __network_kwargs(self) -> dict:
         kwargs = {}
-        if self.network in _DISTRIBUTIONAL_NETWORKS:
+        if "distributional" in self.network.__class__.__name__.lower():
             kwargs.update(
                 distributional_bins=int(getattr(self, "distributional_bins")),
                 distributional_min_value=float(
@@ -81,7 +68,7 @@ class AftabNetworkMixin(AftabBaseMixin):
                 distributional_sigma=self.__distributional_sigma(),
             )
 
-        if self.network not in _BOOTSTRAPPED_NETWORKS:
+        if "bootstrapped" in self.network.__class__.__name__.lower():
             return kwargs
 
         bootstrap_heads = int(getattr(self, "bootstrap_heads"))
