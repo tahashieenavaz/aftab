@@ -5,6 +5,7 @@ from aftab.networks import BootstrappedDuellingNetwork
 from aftab.networks import DistributionalNetwork
 from aftab.networks import DistributionalDuellingNetwork
 from aftab.networks import DistributionalBootstrappedDuellingNetwork
+from aftab.networks import DistributionalBootstrappedDuellingRecurrentNetwork
 
 networks_map = {
     "q": PQNNetwork,
@@ -15,6 +16,7 @@ networks_map = {
     "distributional-duelling": DistributionalDuellingNetwork,
     "distributional-bootstrapped-duelling": DistributionalBootstrappedDuellingNetwork,
     "bootstrapped-distributional-duelling": DistributionalBootstrappedDuellingNetwork,
+    "distributional-bootstrapped-recurrent-duelling": DistributionalBootstrappedDuellingRecurrentNetwork,
     "d": DuellingNetwork,
     "bdd": DistributionalBootstrappedDuellingNetwork,
     "bd": BootstrappedDuellingNetwork,
