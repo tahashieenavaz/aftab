@@ -14,7 +14,10 @@ class BaseNetwork(torch.nn.Module):
     ):
         super().__init__()
         self.channels_last = channels_last
-        self.phi = encoder()
+        if "recurrent" in self.__class__.__name__.lower():
+            self.phi = encoder(in_channels=1)
+        else:
+            self.phi = encoder()
 
         self.epsilon_greedy = True
         self.epsilon = LinearEpsilon()
