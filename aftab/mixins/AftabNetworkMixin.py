@@ -56,8 +56,7 @@ class AftabNetworkMixin(AftabBaseMixin):
 
     def __network_kwargs(self) -> dict:
         kwargs = {}
-        print("name here", self.network.__class__.__name__.lower(), flush=True)
-        if "distributional" in self.network.__class__.__name__.lower():
+        if "distributional" in self.network.lower():
             kwargs.update(
                 distributional_bins=int(getattr(self, "distributional_bins")),
                 distributional_min_value=float(
@@ -69,7 +68,7 @@ class AftabNetworkMixin(AftabBaseMixin):
                 distributional_sigma=self.__distributional_sigma(),
             )
 
-        if "bootstrapped" in self.network.__class__.__name__.lower():
+        if "bootstrapped" not in self.network.lower():
             return kwargs
 
         bootstrap_heads = int(getattr(self, "bootstrap_heads"))
