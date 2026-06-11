@@ -1,12 +1,11 @@
 import torch
 from typing import Type
-from typing import Literal, Annotated
+from typing import Literal, Annotated, TypeAlias, List
 
-ModuleType = Type[torch.nn.Module]
-
-EncoderStringType = Annotated[str, "must be a valid encoder key"]
-OptimizerStringType = Literal["adam", "adamw" "radam", "nadam"]
-NetworkStringType = Literal[
+ModuleType: TypeAlias = Type[torch.nn.Module]
+EncoderStringType: TypeAlias = Annotated[str, "must be a valid encoder key"]
+OptimizerStringType: TypeAlias = Literal["adam", "adamw" "radam", "nadam"]
+NetworkStringType: TypeAlias = Literal[
     "q",
     "duelling",
     "bootstrapped",
@@ -17,9 +16,8 @@ NetworkStringType = Literal[
 ]
 
 
-seeds = [475284, 219842, 525975, 909314]
-
-environments = [
+seeds: List[int] = [475284, 219842, 525975, 909314]
+environments: List[str] = [
     "Alien-v5",
     "Amidar-v5",
     "Assault-v5",
