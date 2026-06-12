@@ -74,6 +74,7 @@ class Aftab(
         bootstrap_heads: int = 10,
         bootstrap_probability: float = 1.0,
         seed_offset: int = 1000,
+        attention_heads: int = 8,
     ):
         params = locals()
         params.pop("self")
