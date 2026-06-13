@@ -49,10 +49,10 @@ class RecurrentStream(torch.nn.Module):
     def __initialize_downsample(
         self,
         *,
-        normalization: bool,
-        activation: ModuleType,
         input_dimension: int,
         hidden_dimension: int,
+        normalization: bool,
+        activation: ModuleType,
     ):
         self.downsample = torch.nn.Sequential(
             torch.nn.Linear(input_dimension, hidden_dimension),
