@@ -14,6 +14,7 @@ class RecurrentStream(torch.nn.Module):
         num_layers: int = 1,
         normalization: bool = True,
         downsample_activation: Type[torch.nn.Module] = torch.nn.GELU,
+        stream_activation: Type[torch.nn.Module] = torch.nn.ReLU,
     ):
         super().__init__()
         self.normalization = normalization
@@ -33,6 +34,7 @@ class RecurrentStream(torch.nn.Module):
             hidden_dimension=stream_hidden_dimension,
             output_dimension=output_dimension,
             normalization=normalization,
+            activation=stream_activation,
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
