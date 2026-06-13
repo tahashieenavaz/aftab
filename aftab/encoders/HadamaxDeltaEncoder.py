@@ -4,11 +4,11 @@ from aftab.constants import ModuleType
 
 
 class HadamaxDeltaEncoder(torch.nn.Module):
-    def __init__(self, *, activation: ModuleType = torch.nn.GELU):
+    def __init__(self, *, activation: ModuleType = torch.nn.GELU, in_channels: int = 4):
         super().__init__()
         self.stream = torch.nn.Sequential(
             HadamaxBlock(
-                4,
+                in_channels,
                 24,
                 kernel_size=9,
                 stride=1,
