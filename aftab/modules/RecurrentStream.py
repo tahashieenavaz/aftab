@@ -14,10 +14,14 @@ class RecurrentStream(torch.nn.Module):
         num_encoder_layers: int = 2,
         normalization: bool = True,
         batch_first: bool = True,
+        max_sequence_length: int = 10,
     ):
         super().__init__()
         self.normalization = normalization
         self.encoder_projection = torch.nn.Linear(input_dimension, hidden_dimension)
+        self.positional_embedding = torch.nn.Parameter(
+            torch.randn(1, max_sequence_length, hidden_dimension)
+        )
         self.encoder = self.__create_encoder(
             dimension=hidden_dimension,
             heads=heads,
@@ -52,6 +56,10 @@ class RecurrentStream(torch.nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.encoder_projection(x)
+
+        sequence_length = x.size(1)
+        x = x + self.positional_embedding[:, :sequence_length, :]
+
         x = self.encoder(x)
         features = x.mean(dim=1)
         return self.stream(features)
