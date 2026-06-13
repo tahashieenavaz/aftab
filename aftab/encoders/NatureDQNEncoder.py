@@ -4,11 +4,16 @@ from aftab.constants import ModuleType
 
 
 class NatureDQNEncoder(torch.nn.Module):
-    def __init__(self, *, activation: ModuleType = torch.nn.ReLU):
+    def __init__(self, *, activation: ModuleType = torch.nn.ReLU, in_channels: int = 4):
         super().__init__()
         self.stream = torch.nn.Sequential(
             EncoderBlock(
-                4, 32, kernel_size=8, stride=4, padding=0, activation=activation
+                in_channels,
+                32,
+                kernel_size=8,
+                stride=4,
+                padding=0,
+                activation=activation,
             ),
             EncoderBlock(
                 32, 64, kernel_size=4, stride=2, padding=0, activation=activation
