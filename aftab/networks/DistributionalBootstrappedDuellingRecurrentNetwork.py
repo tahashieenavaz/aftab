@@ -35,8 +35,8 @@ class DistributionalBootstrappedDuellingRecurrentNetwork(BaseNetwork):
             [
                 RecurrentStream(
                     input_dimension=self.feature_dimension,
-                    hidden_dimension=self.embedding_dimension,
-                    stream_hidden_dimension=self.embedding_dimension,
+                    hidden_dimension=self.embedding_dimension // 2,
+                    stream_hidden_dimension=self.embedding_dimension // 2,
                     output_dimension=self.action_dimension * self.distributional_bins,
                     normalization=True,
                 )
@@ -47,8 +47,8 @@ class DistributionalBootstrappedDuellingRecurrentNetwork(BaseNetwork):
             [
                 RecurrentStream(
                     input_dimension=self.feature_dimension,
-                    hidden_dimension=self.embedding_dimension,
-                    stream_hidden_dimension=self.embedding_dimension,
+                    hidden_dimension=self.embedding_dimension // 2,
+                    stream_hidden_dimension=self.embedding_dimension // 2,
                     output_dimension=self.distributional_bins,
                     normalization=True,
                 )
