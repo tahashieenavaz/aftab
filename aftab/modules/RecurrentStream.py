@@ -19,17 +19,21 @@ class RecurrentStream(torch.nn.Module):
     ):
         super().__init__()
         self.normalization = normalization
-        self.downsample = torch.nn.Sequential(
-            torch.nn.Linear(input_dimension, hidden_dimension),
-            downsample_activation(),
-            torch.nn.LayerNorm(hidden_dimension),
+
+        self.__initialize_downsample(
+            normalization=normalization,
+            activation=downsample_activation,
+            input_dimension=input_dimension,
+            hidden_dimension=hidden_dimension,
         )
+
         self.recurrent = torch.nn.GRU(
             hidden_dimension,
             hidden_dimension,
             num_layers=num_layers,
             batch_first=batch_first,
         )
+
         self.stream = Stream(
             input_dimension=hidden_dimension,
             hidden_dimension=stream_hidden_dimension,
@@ -37,6 +41,23 @@ class RecurrentStream(torch.nn.Module):
             normalization=normalization,
             activation=stream_activation,
         )
+
+    def __initialize_downsample(
+        self,
+        *,
+        normalization: bool,
+        activation: Type[torch.nn.Module],
+        input_dimension: int,
+        hidden_dimension: int,
+    ):
+        self.downsample = torch.nn.Sequential(
+            torch.nn.Linear(input_dimension, hidden_dimension),
+            activation(),
+        )
+        if normalization:
+            self.downsample = torch.nn.Sequential(
+                *list(self.downsample), torch.nn.LayerNorm(hidden_dimension)
+            )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.downsample(x)
