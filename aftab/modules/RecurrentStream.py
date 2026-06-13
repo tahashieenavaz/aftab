@@ -1,5 +1,6 @@
 import torch
 from typing import Type
+from aftab.constants import ModuleType
 from .Stream import Stream
 
 _DEFAULT_DOWNSAMPLE_ACTIVATION = torch.nn.GELU
@@ -17,8 +18,8 @@ class RecurrentStream(torch.nn.Module):
         num_layers: int = 1,
         normalization: bool = True,
         batch_first: bool = True,
-        downsample_activation: Type[torch.nn.Module] = _DEFAULT_DOWNSAMPLE_ACTIVATION,
-        stream_activation: Type[torch.nn.Module] = _DEFAULT_STREAM_ACTIVATION,
+        downsample_activation: ModuleType = _DEFAULT_DOWNSAMPLE_ACTIVATION,
+        stream_activation: ModuleType = _DEFAULT_STREAM_ACTIVATION,
     ):
         super().__init__()
         self.normalization = normalization
