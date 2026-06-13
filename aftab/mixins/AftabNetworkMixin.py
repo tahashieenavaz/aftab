@@ -106,6 +106,9 @@ class AftabNetworkMixin(AftabBaseMixin):
     def _initialize_network(self, action_dimension: int):
         network_instance = self.__get_network_instance()
         self.flush_verbose(f"Network: {network_instance.__name__}")
+        self.flush_verbose(
+            f"Parameters: {sum(p.numel() for p in network_instance.parameters() if p.requires_grad)}"
+        )
         self._network = network_instance(
             action_dimension=action_dimension,
             embedding_dimension=self.embedding_dimension,
