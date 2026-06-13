@@ -4,11 +4,16 @@ from aftab.constants import ModuleType
 
 
 class ThetaEncoder(torch.nn.Module):
-    def __init__(self, *, activation: ModuleType = torch.nn.ReLU):
+    def __init__(self, *, activation: ModuleType = torch.nn.ReLU, in_channels: int = 4):
         super().__init__()
         self.stream = torch.nn.Sequential(
             EncoderBlock(
-                4, 32, kernel_size=7, stride=4, padding=2, activation=activation
+                in_channels,
+                32,
+                kernel_size=7,
+                stride=4,
+                padding=2,
+                activation=activation,
             ),
             EncoderBlock(
                 32, 64, kernel_size=5, stride=2, padding=1, activation=activation
