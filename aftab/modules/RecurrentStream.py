@@ -2,6 +2,9 @@ import torch
 from typing import Type
 from .Stream import Stream
 
+_DEFAULT_DOWNSAMPLE_ACTIVATION = torch.nn.GELU
+_DEFAULT_STREAM_ACTIVATION = torch.nn.ReLU
+
 
 class RecurrentStream(torch.nn.Module):
     def __init__(
@@ -14,8 +17,8 @@ class RecurrentStream(torch.nn.Module):
         num_layers: int = 1,
         normalization: bool = True,
         batch_first: bool = True,
-        downsample_activation: Type[torch.nn.Module] = torch.nn.GELU,
-        stream_activation: Type[torch.nn.Module] = torch.nn.ReLU,
+        downsample_activation: Type[torch.nn.Module] = _DEFAULT_DOWNSAMPLE_ACTIVATION,
+        stream_activation: Type[torch.nn.Module] = _DEFAULT_STREAM_ACTIVATION,
     ):
         super().__init__()
         self.normalization = normalization
