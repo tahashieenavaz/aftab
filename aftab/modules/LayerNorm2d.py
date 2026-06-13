@@ -1,8 +1,10 @@
 import torch
 
+_DEFAULT_EPSILON = 1e-6
+
 
 class LayerNorm2d(torch.nn.Module):
-    def __init__(self, num_channels: int, epsilon: float = 1e-6):
+    def __init__(self, num_channels: int, epsilon: float = _DEFAULT_EPSILON):
         super().__init__()
         self.weight = torch.nn.Parameter(torch.ones(num_channels))
         self.bias = torch.nn.Parameter(torch.zeros(num_channels))
