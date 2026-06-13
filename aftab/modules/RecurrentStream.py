@@ -13,6 +13,7 @@ class RecurrentStream(torch.nn.Module):
         stream_hidden_dimension: int,
         num_layers: int = 1,
         normalization: bool = True,
+        batch_first: bool = True,
         downsample_activation: Type[torch.nn.Module] = torch.nn.GELU,
         stream_activation: Type[torch.nn.Module] = torch.nn.ReLU,
     ):
@@ -27,7 +28,7 @@ class RecurrentStream(torch.nn.Module):
             hidden_dimension,
             hidden_dimension,
             num_layers=num_layers,
-            batch_first=True,
+            batch_first=batch_first,
         )
         self.stream = Stream(
             input_dimension=hidden_dimension,
