@@ -50,7 +50,7 @@ class RecurrentStream(torch.nn.Module):
         self,
         *,
         normalization: bool,
-        activation: Type[torch.nn.Module],
+        activation: ModuleType,
         input_dimension: int,
         hidden_dimension: int,
     ):
