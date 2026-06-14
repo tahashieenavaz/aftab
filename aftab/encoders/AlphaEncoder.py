@@ -2,9 +2,13 @@ import torch
 from aftab.modules import EncoderBlock
 from aftab.constants import ModuleType
 
+_DEFAULT_ACTIVATION = torch.nn.ReLU
+
 
 class AlphaEncoder(torch.nn.Module):
-    def __init__(self, *, activation: ModuleType = torch.nn.ReLU, in_channels: int = 4):
+    def __init__(
+        self, *, activation: ModuleType = _DEFAULT_ACTIVATION, in_channels: int = 4
+    ):
         super().__init__()
         self.stream = torch.nn.Sequential(
             EncoderBlock(
