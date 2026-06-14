@@ -2,7 +2,7 @@ import torch
 from aftab.constants import ModuleType
 from .LayerNorm2d import LayerNorm2d
 
-DEFAULT_ACTIVATION = torch.nn.ReLU
+_DEFAULT_ACTIVATION = torch.nn.ReLU
 
 
 class EncoderBlock(torch.nn.Module):
@@ -14,7 +14,7 @@ class EncoderBlock(torch.nn.Module):
         kernel_size: int,
         stride: int,
         padding: int,
-        activation: ModuleType = DEFAULT_ACTIVATION,
+        activation: ModuleType = _DEFAULT_ACTIVATION,
     ):
         super().__init__()
         self.convolutional = torch.nn.Conv2d(
