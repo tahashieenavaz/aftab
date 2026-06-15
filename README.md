@@ -53,7 +53,7 @@ References:
 
 | IQM HNS | IQM HNS (Last 50M Frames) |
 | :---: | :---: |
-| ![Global Performance](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/final_experiments/global.png) | ![Last 50M Frames](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/final_experiments/global_zoomed.png) |
+| ![Global Performance](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/qvalue_experiments/global.png) | ![Last 50M Frames](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/qvalue_experiments/global_zoomed.png) |
 
 </div>
 
@@ -124,13 +124,13 @@ agent = Aftab(encoder=CustomImageEncoder)
   - [IQM HNS](https://github.com/tahashieenavaz/aftab/tree/main/figures/hadamax_experiments/human_normalized_score)
   - [Loss Evolution](https://github.com/tahashieenavaz/aftab/tree/main/figures/hadamax_experiments/loss)
 
-**Final Experiments**:
+**Q-Value Experiments**:
 - Tables:
-  - [HNS](results/final_experiments/human_normalized_scores.md)
-  - [Scores](results/final_experiments/scores.md)
+  - [HNS](results/qvalue_experiments/human_normalized_scores.md)
+  - [Scores](results/qvalue_experiments/scores.md)
 - Charts:
-  - [IQM HNS](https://github.com/tahashieenavaz/aftab/tree/main/figures/final_experiments/human_normalized_score)
-  - [Loss Evolution](https://github.com/tahashieenavaz/aftab/tree/main/figures/final_experiments/loss)
+  - [IQM HNS](https://github.com/tahashieenavaz/aftab/tree/main/figures/qvalue_experiments/human_normalized_score)
+  - [Loss Evolution](https://github.com/tahashieenavaz/aftab/tree/main/figures/qvalue_experiments/loss)
 
 
 ## Model Complexity
@@ -214,7 +214,7 @@ agent = Aftab(encoder=CustomImageEncoder)
 | Hadamax Nature DQN |       0 |              0.078 |              0.151 |     -     |
 
 
-### Final Experiments
+### Q-Value Experiments
 
 |                                      |   PQN |   Distributional Duelling |   Bootstrapped Duelling |   Distributional Bootstrapped Duelling |
 |:-------------------------------------|------:|--------------------------:|------------------------:|---------------------------------------:|
