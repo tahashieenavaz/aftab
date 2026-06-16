@@ -7,20 +7,18 @@ from aftab.modules import GatedLinearUnit
 from aftab.modules import GoLU
 from .BaseNetwork import BaseNetwork
 
-_ACTIVATION_POOL = cycle(
-    [
-        SiLU,
-        CELU,
-        SELU,
-        Mish,
-        GoLU,
-        PReLU,
-        PReLU,
-        PReLU,
-        PReLU,
-        PReLU,
-    ]
-)
+_ACTIVATION_POOL = [
+    SiLU,
+    CELU,
+    SELU,
+    Mish,
+    GoLU,
+    PReLU,
+    PReLU,
+    PReLU,
+    PReLU,
+    PReLU,
+]
 _ADVANTAGE_ACTIVATION_POOL = cycle(_ACTIVATION_POOL)
 _VALUE_ACTIVATION_POOL = cycle(_ACTIVATION_POOL)
 
