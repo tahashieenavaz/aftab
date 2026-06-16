@@ -13,7 +13,11 @@ class GatedLinearUnit(torch.nn.Module):
         super().__init__()
         self.projection = torch.nn.Linear(input_dimension, hidden_dimension * 2)
         self.output = torch.nn.Linear(hidden_dimension, output_dimension)
-        self.activation = activation()
+        self.activation = (
+            activation(hidden_dimension)
+            if isinstance(activation, torch.nn.PReLU)
+            else activation()
+        )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x1, x2 = self.projection(x).chunk(2, dim=-1)
