@@ -14,22 +14,14 @@ class BaseNetwork(torch.nn.Module):
     ):
         super().__init__()
         self.channels_last = channels_last
-        if "recurrent" in self.__class__.__name__.lower():
-            self.phi = encoder(in_channels=1)
-        else:
-            self.phi = encoder()
+        self.phi = encoder()
 
         self.epsilon_greedy = True
         self.epsilon = LinearEpsilon()
 
         self.action_dimension = action_dimension
         self.embedding_dimension = embedding_dimension
-
-        if "recurrent" in self.__class__.__name__.lower():
-            dummy_input = self.__as_channels_last(torch.randn(8, 1, 84, 84))
-        else:
-            dummy_input = self.__as_channels_last(torch.randn(2, 4, 84, 84))
-
+        dummy_input = self.__as_channels_last(torch.randn(2, 4, 84, 84))
         with torch.inference_mode():
             self.feature_dimension = self.phi(dummy_input).flatten(1).size(1)
 
