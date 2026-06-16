@@ -9,8 +9,14 @@ class GatedLinearUnit(torch.nn.Module):
         hidden_dimension: int,
         output_dimension: int,
         activation: ModuleType,
+        normalization: bool,
     ):
         super().__init__()
+        self.normalization = normalization
+
+        if normalization:
+            self.layer_norm = torch.nn.LayerNorm(input_dimension)
+
         self.projection = torch.nn.Linear(input_dimension, hidden_dimension * 2)
         self.output = torch.nn.Linear(hidden_dimension, output_dimension)
         self.activation = (
@@ -20,5 +26,8 @@ class GatedLinearUnit(torch.nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        if self.normalization:
+            x = self.layer_norm(x)
+
         x1, x2 = self.projection(x).chunk(2, dim=-1)
         return self.output(self.activation(x1) * x2)
