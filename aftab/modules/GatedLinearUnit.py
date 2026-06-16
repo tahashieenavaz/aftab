@@ -9,7 +9,7 @@ class GatedLinearUnit(torch.nn.Module):
         hidden_dimension: int,
         output_dimension: int,
         activation: ModuleType,
-        normalization: bool,
+        normalization: bool = True,
     ):
         super().__init__()
         self.normalization = normalization
