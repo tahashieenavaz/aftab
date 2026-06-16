@@ -3,4 +3,4 @@ from .EncoderBlock import EncoderBlock
 from .LayerNorm2d import LayerNorm2d
 from .HadamaxBlock import HadamaxBlock
 from .HadamaxLayerNorm2d import HadamaxLayerNorm2d
-from .RecurrentStream import RecurrentStream
+from .RandomActivationStream import RandomActivationStream
