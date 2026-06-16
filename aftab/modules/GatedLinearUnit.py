@@ -7,7 +7,7 @@ class GatedLinearUnit(torch.nn.Module):
         self,
         input_dimension: int,
         hidden_dimension: int,
-        output_dimension,
+        output_dimension: int,
         activation: ModuleType,
     ):
         super().__init__()
