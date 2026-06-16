@@ -2,25 +2,12 @@ import torch
 from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
 from itertools import cycle
-from torch.nn import SiLU, CELU, SELU, Mish, PReLU
 from aftab.modules import GatedLinearUnit
-from aftab.modules import GoLU
+from aftab.constants import ActivationPool
 from .BaseNetwork import BaseNetwork
 
-_ACTIVATION_POOL = [
-    SiLU,
-    CELU,
-    SELU,
-    Mish,
-    GoLU,
-    PReLU,
-    PReLU,
-    PReLU,
-    PReLU,
-    PReLU,
-]
-_ADVANTAGE_ACTIVATION_POOL = cycle(_ACTIVATION_POOL)
-_VALUE_ACTIVATION_POOL = cycle(_ACTIVATION_POOL)
+_ADVANTAGE_ACTIVATION_POOL = cycle(ActivationPool)
+_VALUE_ACTIVATION_POOL = cycle(ActivationPool)
 
 
 class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):

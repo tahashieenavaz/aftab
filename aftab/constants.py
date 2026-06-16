@@ -1,6 +1,7 @@
 import torch
 from typing import Type
 from typing import Literal, Annotated, TypeAlias, List
+from aftab.modules import GoLU
 
 ModuleType: TypeAlias = Type[torch.nn.Module]
 EncoderStringType: TypeAlias = Annotated[str, "must be a valid encoder key"]
@@ -76,4 +77,17 @@ environments: List[str] = [
     "WizardOfWor-v5",
     "YarsRevenge-v5",
     "Zaxxon-v5",
+]
+
+ActivationPool: List[ModuleType] = [
+    torch.nn.SiLU,
+    torch.nn.CELU,
+    torch.nn.SELU,
+    torch.nn.Mish,
+    GoLU,
+    torch.nn.PReLU,
+    torch.nn.PReLU,
+    torch.nn.PReLU,
+    torch.nn.PReLU,
+    torch.nn.PReLU,
 ]
