@@ -8,7 +8,7 @@ class GatedLinearUnit(torch.nn.Module):
         input_dimension: int,
         hidden_dimension: int,
         output_dimension: int,
-        activation: ModuleType,
+        activation: ModuleType = torch.nn.SiLU,
         normalization: bool = True,
     ):
         super().__init__()
