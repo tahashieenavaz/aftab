@@ -1,11 +1,31 @@
 import torch
 from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
-from aftab.modules import RecurrentStream
+from itertools import cycle
+from torch.nn import SiLU, CELU, SELU, Mish, PReLU
+from aftab.modules import GatedLinearUnit
+from aftab.modules import GoLU
 from .BaseNetwork import BaseNetwork
 
+_ACTIVATION_POOL = cycle(
+    [
+        SiLU,
+        CELU,
+        SELU,
+        Mish,
+        GoLU,
+        PReLU,
+        PReLU,
+        PReLU,
+        PReLU,
+        PReLU,
+    ]
+)
+_ADVANTAGE_ACTIVATION_POOL = cycle(_ACTIVATION_POOL)
+_VALUE_ACTIVATION_POOL = cycle(_ACTIVATION_POOL)
 
-class DistributionalBootstrappedDuellingRecurrentNetwork(BaseNetwork):
+
+class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
     def __init__(
         self,
         *,
@@ -33,11 +53,11 @@ class DistributionalBootstrappedDuellingRecurrentNetwork(BaseNetwork):
         )
         self.advantage_heads = torch.nn.ModuleList(
             [
-                RecurrentStream(
+                GatedLinearUnit(
                     input_dimension=self.feature_dimension,
                     hidden_dimension=self.embedding_dimension // 2,
-                    stream_hidden_dimension=self.embedding_dimension // 2,
                     output_dimension=self.action_dimension * self.distributional_bins,
+                    activation=next(_ADVANTAGE_ACTIVATION_POOL),
                     normalization=True,
                 )
                 for _ in range(self.bootstrap_heads)
@@ -45,11 +65,11 @@ class DistributionalBootstrappedDuellingRecurrentNetwork(BaseNetwork):
         )
         self.value_heads = torch.nn.ModuleList(
             [
-                RecurrentStream(
+                GatedLinearUnit(
                     input_dimension=self.feature_dimension,
                     hidden_dimension=self.embedding_dimension // 2,
-                    stream_hidden_dimension=self.embedding_dimension // 2,
                     output_dimension=self.distributional_bins,
+                    activation=next(_VALUE_ACTIVATION_POOL),
                     normalization=True,
                 )
                 for _ in range(self.bootstrap_heads)
@@ -74,10 +94,7 @@ class DistributionalBootstrappedDuellingRecurrentNetwork(BaseNetwork):
         return advantages - advantages.mean(dim=2, keepdim=True)
 
     def get_q_logits_heads(self, states: torch.Tensor) -> torch.Tensor:
-        B, F, H, W = states.shape
-        states = states.reshape(B * F, 1, H, W)
-        features = self.get_features(states)
-        features = features.reshape(B, F, -1)
+        features = self.get_features(x=states)
         value_logits = self.get_value_logits_heads(features=features)
         advantage_logits = self.get_advantage_logits_heads(features=features)
         return value_logits + advantage_logits

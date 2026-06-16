@@ -3,12 +3,18 @@ from aftab.constants import ModuleType
 
 
 class GatedLinearUnit(torch.nn.Module):
-    def __init__(self, dim_in, dim_hidden, dim_out, activation: ModuleType):
+    def __init__(
+        self,
+        input_dimension: int,
+        hidden_dimension: int,
+        output_dimension,
+        activation: ModuleType,
+    ):
         super().__init__()
-        self.projection = torch.nn.Linear(dim_in, dim_hidden * 2)
-        self.output = torch.nn.Linear(dim_hidden, dim_out)
+        self.projection = torch.nn.Linear(input_dimension, hidden_dimension * 2)
+        self.output = torch.nn.Linear(hidden_dimension, output_dimension)
         self.activation = activation()
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         x1, x2 = self.projection(x).chunk(2, dim=-1)
         return self.output(self.activation(x1) * x2)
