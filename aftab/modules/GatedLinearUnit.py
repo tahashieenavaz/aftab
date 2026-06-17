@@ -29,5 +29,6 @@ class GatedLinearUnit(torch.nn.Module):
         if self.normalization:
             x = self.normalization_layer(x)
 
-        x1, x2 = self.projection(x).chunk(2, dim=-1)
-        return self.output(self.activation(x1) * x2)
+        pre_gate, hidden = self.projection(x).chunk(2, dim=-1)
+        gate = self.activation(pre_gate)
+        return self.output(gate * hidden)

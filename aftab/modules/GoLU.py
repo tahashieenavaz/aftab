@@ -1,8 +1,5 @@
 import torch
-
-
-def gompertz(x: torch.Tensor) -> torch.Tensor:
-    return torch.exp(-torch.exp(-x))
+from aftab.functions import gompertz
 
 
 class GoLU(torch.nn.Module):
