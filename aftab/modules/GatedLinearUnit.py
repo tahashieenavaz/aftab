@@ -30,5 +30,5 @@ class GatedLinearUnit(torch.nn.Module):
             x = self.normalization_layer(x)
 
         pre_gate, hidden = self.projection(x).chunk(2, dim=-1)
-        gate = self.activation(pre_gate)
-        return self.output(gate * hidden)
+        # self.activation(pre_gate) is often called gate. I removed it here to enhance memory efficiency
+        return self.output(self.activation(pre_gate) * hidden)
