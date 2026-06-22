@@ -81,13 +81,13 @@ environments: List[str] = [
 
 ActivationPool: List[ModuleType] = [
     torch.nn.SiLU,
-    torch.nn.CELU,
-    torch.nn.SELU,
-    torch.nn.Mish,
-    GoLU,
-    torch.nn.PReLU,
-    torch.nn.PReLU,
-    torch.nn.PReLU,
-    torch.nn.PReLU,
-    torch.nn.PReLU,
+    torch.nn.SiLU,
+    torch.nn.SiLU,
+    torch.nn.SiLU,
+    torch.nn.SiLU,
+    torch.nn.GELU,
+    torch.nn.GELU,
+    torch.nn.GELU,
+    torch.nn.GELU,
+    torch.nn.GELU,
 ]
