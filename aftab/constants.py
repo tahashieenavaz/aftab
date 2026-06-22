@@ -1,7 +1,6 @@
 import torch
 from typing import Type
 from typing import Literal, Annotated, TypeAlias, List
-from aftab.modules import GoLU
 
 ModuleType: TypeAlias = Type[torch.nn.Module]
 EncoderStringType: TypeAlias = Annotated[str, "must be a valid encoder key"]
