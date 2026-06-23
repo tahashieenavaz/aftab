@@ -64,11 +64,14 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
         )
 
     def replace_activations(self):
-        for name, child in self.phi.named_children():
-            if isinstance(child, torch.nn.GELU):
-                setattr(self.phi, name, RandomGELUSiLU())
-            else:
-                self.replace_activations(child)
+        def _replace_recursive(module: torch.nn.Module):
+            for name, child in module.named_children():
+                if isinstance(child, torch.nn.GELU):
+                    setattr(module, name, RandomGELUSiLU())
+                else:
+                    _replace_recursive(child)
+
+        _replace_recursive(self.phi)
 
     def get_value_logits_heads(self, features: torch.Tensor) -> torch.Tensor:
         values = [head(features) for head in self.value_heads]
