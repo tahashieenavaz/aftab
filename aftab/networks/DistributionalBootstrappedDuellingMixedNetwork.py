@@ -62,6 +62,7 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
                 for _ in range(self.bootstrap_heads)
             ]
         )
+        self.replace_activations()
 
     def replace_activations(self):
         def _replace_recursive(module: torch.nn.Module):

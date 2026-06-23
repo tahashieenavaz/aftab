@@ -5,7 +5,6 @@ from typing import Optional
 from .AftabBaseMixin import AftabBaseMixin
 from ..common import RolloutBuffer
 
-
 _TORCH_TO_NUMPY_DTYPE = {
     torch.bool: numpy.bool_,
     torch.uint8: numpy.uint8,
@@ -174,7 +173,9 @@ class AftabTrainMixin(AftabBaseMixin):
         )
 
         if test_environment is None:
-            (train_observation, _), (test_observation, _) = train_environment.reset_split()
+            (train_observation, _), (test_observation, _) = (
+                train_environment.reset_split()
+            )
         else:
             train_observation, _ = train_environment.reset()
             test_observation, _ = test_environment.reset()
@@ -416,6 +417,9 @@ class AftabTrainMixin(AftabBaseMixin):
                 active_heads=active_heads,
                 terminations=terminations,
             )
+
+            if self.__bootstrapped_enabled():
+                self._network.replace_activations()
 
             bootstrap_masks = None
             if rollout_buffer.bootstrap_masks is not None:
