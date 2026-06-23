@@ -67,8 +67,6 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
 
     def get_advantage_logits_heads(self, features: torch.Tensor) -> torch.Tensor:
         batch_size = features.size(0)
-        # OPTIMIZATION: Run the loops, stack first, then do a single view operation.
-        # This replaces `self.bootstrap_heads` individual reshape calls with just one.
         advantages = torch.stack(
             [head(features) for head in self.advantage_heads], dim=1
         )
