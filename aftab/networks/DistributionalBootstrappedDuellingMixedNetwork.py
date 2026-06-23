@@ -4,6 +4,8 @@ from typing import Optional
 from itertools import cycle
 from aftab.modules import Stream
 from aftab.constants import ActivationPool
+from typing import List
+from aftab.constants import ModuleType
 from .BaseNetwork import BaseNetwork
 
 _ADVANTAGE_ACTIVATION_POOL = cycle(ActivationPool)
@@ -60,6 +62,8 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
                 for _ in range(self.bootstrap_heads)
             ]
         )
+
+    def replace_phi_activations(self, activation_pool: List[ModuleType] = [torch.nn.GELU, torch.nn.SiLU])
 
     def get_value_logits_heads(self, features: torch.Tensor) -> torch.Tensor:
         values = [head(features) for head in self.value_heads]
