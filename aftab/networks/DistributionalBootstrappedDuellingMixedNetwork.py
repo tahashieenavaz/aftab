@@ -2,7 +2,7 @@ import torch
 from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
 from itertools import cycle
-from aftab.modules import Stream
+from aftab.modules import Stream, RandomGELUSiLU
 from aftab.constants import ActivationPool
 from typing import List
 from aftab.constants import ModuleType
@@ -63,7 +63,12 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
             ]
         )
 
-    def replace_phi_activations(self, activation_pool: List[ModuleType] = [torch.nn.GELU, torch.nn.SiLU])
+    def replace_activations(self):
+        for name, child in self.phi.named_children():
+            if isinstance(child, torch.nn.GELU):
+                setattr(self.phi, name, RandomGELUSiLU())
+            else:
+                self.replace_activations(child)
 
     def get_value_logits_heads(self, features: torch.Tensor) -> torch.Tensor:
         values = [head(features) for head in self.value_heads]

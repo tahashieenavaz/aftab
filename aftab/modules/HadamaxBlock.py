@@ -30,16 +30,11 @@ class HadamaxBlock(torch.nn.Module):
         self.pool = torch.nn.MaxPool2d(
             kernel_size=pool_kernel, stride=pool_stride, padding=pool_padding
         )
-
-        self.same_activations = chi == psi
         self.chi = chi()
-        self.psi = psi() if not self.same_activations else None
+        self.psi = psi()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.normalization(self.convolutional(x))
-        if self.same_activations:
-            a, b = torch.chunk(self.chi(x), 2, dim=1)
-        else:
-            a, b = torch.chunk(x, 2, dim=1)
-            a, b = self.chi(a), self.psi(b)
+        a, b = torch.chunk(x, 2, dim=1)
+        a, b = self.chi(a), self.psi(b)
         return self.pool(a * b)
