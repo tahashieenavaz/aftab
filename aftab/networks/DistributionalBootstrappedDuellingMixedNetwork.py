@@ -2,7 +2,7 @@ import torch
 from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
 from itertools import cycle
-from aftab.modules import GatedLinearUnit
+from aftab.modules import Stream
 from aftab.constants import ActivationPool
 from .BaseNetwork import BaseNetwork
 
@@ -38,9 +38,9 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
         )
         self.advantage_heads = torch.nn.ModuleList(
             [
-                GatedLinearUnit(
+                Stream(
                     input_dimension=self.feature_dimension,
-                    hidden_dimension=self.embedding_dimension // 2,
+                    hidden_dimension=self.embedding_dimension,
                     output_dimension=self.action_dimension * self.distributional_bins,
                     activation=next(_ADVANTAGE_ACTIVATION_POOL),
                     normalization=True,
@@ -50,9 +50,9 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
         )
         self.value_heads = torch.nn.ModuleList(
             [
-                GatedLinearUnit(
+                Stream(
                     input_dimension=self.feature_dimension,
-                    hidden_dimension=self.embedding_dimension // 2,
+                    hidden_dimension=self.embedding_dimension,
                     output_dimension=self.distributional_bins,
                     activation=next(_VALUE_ACTIVATION_POOL),
                     normalization=True,
