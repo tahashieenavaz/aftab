@@ -60,7 +60,6 @@ class DistributionalBootstrappedDuellingNetwork(BaseNetwork):
 
     def get_advantage_logits_heads(self, features: torch.Tensor) -> torch.Tensor:
         batch_size = features.size(0)
-        # OPTIMIZED: Stack first, then run a single, fast view operation
         advantages = torch.stack(
             [head(features) for head in self.advantage_heads], dim=1
         )
@@ -83,7 +82,6 @@ class DistributionalBootstrappedDuellingNetwork(BaseNetwork):
         q_heads: torch.Tensor,
         head_indices: torch.Tensor,
     ) -> torch.Tensor:
-        # OPTIMIZED: Advanced indexing bypasses memory expansion and .gather() kernel
         batch_indices = torch.arange(q_heads.size(0), device=q_heads.device)
         return q_heads[batch_indices, head_indices]
 
@@ -92,7 +90,6 @@ class DistributionalBootstrappedDuellingNetwork(BaseNetwork):
         q_logits_heads: torch.Tensor,
         head_indices: torch.Tensor,
     ) -> torch.Tensor:
-        # OPTIMIZED: Advanced indexing handles dynamic shapes seamlessly
         batch_indices = torch.arange(
             q_logits_heads.size(0), device=q_logits_heads.device
         )
