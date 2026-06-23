@@ -418,7 +418,7 @@ class AftabTrainMixin(AftabBaseMixin):
                 terminations=terminations,
             )
 
-            if self.__bootstrapped_enabled():
+            if hasattr(self._network, "replace_activations"):
                 self._network.replace_activations()
 
             bootstrap_masks = None
