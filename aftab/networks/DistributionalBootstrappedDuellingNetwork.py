@@ -60,15 +60,16 @@ class DistributionalBootstrappedDuellingNetwork(BaseNetwork):
 
     def get_advantage_logits_heads(self, features: torch.Tensor) -> torch.Tensor:
         batch_size = features.size(0)
-        advantages = [
-            head(features).reshape(
-                batch_size,
-                self.action_dimension,
-                self.distributional_bins,
-            )
-            for head in self.advantage_heads
-        ]
-        advantages = torch.stack(advantages, dim=1)
+        # OPTIMIZED: Stack first, then run a single, fast view operation
+        advantages = torch.stack(
+            [head(features) for head in self.advantage_heads], dim=1
+        )
+        advantages = advantages.view(
+            batch_size,
+            self.bootstrap_heads,
+            self.action_dimension,
+            self.distributional_bins,
+        )
         return advantages - advantages.mean(dim=2, keepdim=True)
 
     def get_q_logits_heads(self, states: torch.Tensor) -> torch.Tensor:
@@ -82,24 +83,20 @@ class DistributionalBootstrappedDuellingNetwork(BaseNetwork):
         q_heads: torch.Tensor,
         head_indices: torch.Tensor,
     ) -> torch.Tensor:
-        action_dimension = q_heads.shape[-1]
-        indices = head_indices.reshape(-1, 1, 1).expand(-1, 1, action_dimension)
-        return q_heads.gather(1, indices).squeeze(1)
+        # OPTIMIZED: Advanced indexing bypasses memory expansion and .gather() kernel
+        batch_indices = torch.arange(q_heads.size(0), device=q_heads.device)
+        return q_heads[batch_indices, head_indices]
 
     def gather_q_logits_heads(
         self,
         q_logits_heads: torch.Tensor,
         head_indices: torch.Tensor,
     ) -> torch.Tensor:
-        action_dimension = q_logits_heads.shape[-2]
-        bins = q_logits_heads.shape[-1]
-        indices = head_indices.reshape(-1, 1, 1, 1).expand(
-            -1,
-            1,
-            action_dimension,
-            bins,
+        # OPTIMIZED: Advanced indexing handles dynamic shapes seamlessly
+        batch_indices = torch.arange(
+            q_logits_heads.size(0), device=q_logits_heads.device
         )
-        return q_logits_heads.gather(1, indices).squeeze(1)
+        return q_logits_heads[batch_indices, head_indices]
 
     def get_q_logits(
         self,
