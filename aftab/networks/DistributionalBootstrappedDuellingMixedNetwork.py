@@ -62,12 +62,12 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
                 for _ in range(self.bootstrap_heads)
             ]
         )
-        self.replace_activations()
+        self.replace_activations(torch.nn.GELU)
 
-    def replace_activations(self):
+    def replace_activations(self, search):
         def _replace_recursive(module: torch.nn.Module):
             for name, child in module.named_children():
-                if isinstance(child, torch.nn.GELU):
+                if isinstance(child, search):
                     setattr(module, name, RandomGELUSiLU())
                 else:
                     _replace_recursive(child)
