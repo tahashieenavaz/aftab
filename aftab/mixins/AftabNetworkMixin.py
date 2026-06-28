@@ -76,6 +76,11 @@ class AftabNetworkMixin(AftabBaseMixin):
             raise ValueError("Expected `bootstrap_heads` to be positive.")
         kwargs["bootstrap_heads"] = bootstrap_heads
 
+        if self.network.lower() == "distributional-bootstrapped-mixed-duelling":
+            kwargs["training_perturbation_std"] = float(
+                getattr(self, "training_perturbation_std")
+            )
+
         return kwargs
 
     def __handle_channel_last(self):
