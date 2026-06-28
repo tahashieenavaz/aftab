@@ -8,4 +8,7 @@ class RandomGELUSiLU(torch.nn.Module):
         self.gate = random.choice([torch.nn.functional.gelu, torch.nn.functional.silu])
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        if not self.training:
+            return torch.nn.functional.gelu(x)
+
         return self.gate(x)
