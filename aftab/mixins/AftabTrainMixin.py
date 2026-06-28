@@ -2,7 +2,6 @@ import torch
 import numpy
 import time
 from typing import Optional
-from aftab.modules import RandomGELUSiLU
 from .AftabBaseMixin import AftabBaseMixin
 from ..common import RolloutBuffer
 
@@ -418,9 +417,6 @@ class AftabTrainMixin(AftabBaseMixin):
                 active_heads=active_heads,
                 terminations=terminations,
             )
-
-            if hasattr(self._network, "replace_activations"):
-                self._network.replace_activations(RandomGELUSiLU)
 
             bootstrap_masks = None
             if rollout_buffer.bootstrap_masks is not None:
