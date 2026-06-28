@@ -2,10 +2,8 @@ import torch
 from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
 from itertools import cycle
-from aftab.modules import Stream, RandomGELUSiLU
 from aftab.constants import ActivationPool
-from typing import List
-from aftab.constants import ModuleType
+from aftab.modules import Stream
 from .BaseNetwork import BaseNetwork
 
 _ADVANTAGE_ACTIVATION_POOL = cycle(ActivationPool)
