@@ -78,7 +78,7 @@ environments: List[str] = [
     "Zaxxon-v5",
 ]
 
-ActivationPool: List[ModuleType] = [
+StreamActivationPool: List[ModuleType] = [
     torch.nn.SiLU,
     torch.nn.GELU,
     torch.nn.SiLU,

@@ -2,12 +2,12 @@ import torch
 from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
 from itertools import cycle
-from aftab.constants import ActivationPool
+from aftab.constants import StreamActivationPool
 from aftab.modules import Stream
 from .BaseNetwork import BaseNetwork
 
-_ADVANTAGE_ACTIVATION_POOL = cycle(ActivationPool)
-_VALUE_ACTIVATION_POOL = cycle(ActivationPool)
+_ADVANTAGE_ACTIVATION_POOL = cycle(StreamActivationPool)
+_VALUE_ACTIVATION_POOL = cycle(StreamActivationPool)
 
 
 class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
