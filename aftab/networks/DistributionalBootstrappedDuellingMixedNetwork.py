@@ -18,13 +18,15 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
         distributional_min_value: float,
         distributional_max_value: float,
         distributional_sigma: float,
-        bootstrap_heads: int = 10,
-        training_perturbation_std: float = 0.01,
+        bootstrap_heads: int,
+        training_perturbation_std: float,
         **kwargs,
     ):
         super().__init__(**kwargs)
+
         if bootstrap_heads <= 0:
             raise ValueError("Expected `bootstrap_heads` to be positive.")
+
         if training_perturbation_std < 0:
             raise ValueError("Expected `training_perturbation_std` to be non-negative.")
 
