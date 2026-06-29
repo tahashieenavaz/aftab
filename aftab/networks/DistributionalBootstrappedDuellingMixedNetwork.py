@@ -19,7 +19,6 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
         distributional_max_value: float,
         distributional_sigma: float,
         bootstrap_heads: int,
-        training_perturbation_std: float,
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -27,13 +26,9 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
         if bootstrap_heads <= 0:
             raise ValueError("Expected `bootstrap_heads` to be positive.")
 
-        if training_perturbation_std < 0:
-            raise ValueError("Expected `training_perturbation_std` to be non-negative.")
-
         self.distributional = True
         self.bootstrapped = True
         self.bootstrap_heads = bootstrap_heads
-        self.training_perturbation_std = training_perturbation_std
         self.distributional_bins = distributional_bins
         self.hl_gauss_loss = HLGaussLoss(
             min_value=distributional_min_value,
@@ -84,18 +79,8 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
         )
         return advantages - advantages.mean(dim=2, keepdim=True)
 
-    def perturb_training_features(self, features: torch.Tensor) -> torch.Tensor:
-        if (
-            not self.training
-            or not torch.is_grad_enabled()
-            or self.training_perturbation_std == 0.0
-        ):
-            return features
-        return features + torch.randn_like(features) * self.training_perturbation_std
-
     def get_q_logits_heads(self, states: torch.Tensor) -> torch.Tensor:
         features = self.get_features(x=states)
-        features = self.perturb_training_features(features)
         value_logits = self.get_value_logits_heads(features=features)
         advantage_logits = self.get_advantage_logits_heads(features=features)
         return value_logits + advantage_logits

@@ -73,7 +73,6 @@ class Aftab(
         distributional_value_clip: float = 0.0,
         bootstrap_heads: int = 10,
         bootstrap_probability: float = 1.0,
-        training_perturbation_std: float = 0.01,
         seed_offset: int = 1000,
     ):
         params = locals()
