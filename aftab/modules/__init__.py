@@ -1,4 +1,4 @@
-from .Stream import Stream
+from .Stream import Stream, forward_stream_heads
 from .EncoderBlock import EncoderBlock
 from .LayerNorm2d import LayerNorm2d
 from .HadamaxBlock import HadamaxBlock

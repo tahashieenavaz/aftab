@@ -1,6 +1,6 @@
 import torch
 from typing import Optional
-from aftab.modules import Stream
+from aftab.modules import Stream, forward_stream_heads
 from .BaseNetwork import BaseNetwork
 
 
@@ -36,12 +36,10 @@ class BootstrappedDuellingNetwork(BaseNetwork):
         )
 
     def get_value_heads(self, features: torch.Tensor) -> torch.Tensor:
-        values = [head(features) for head in self.value_heads]
-        return torch.stack(values, dim=1)
+        return forward_stream_heads(heads=self.value_heads, x=features)
 
     def get_advantage_heads(self, features: torch.Tensor) -> torch.Tensor:
-        advantages = [head(features) for head in self.advantage_heads]
-        advantages = torch.stack(advantages, dim=1)
+        advantages = forward_stream_heads(heads=self.advantage_heads, x=features)
         return advantages - advantages.mean(dim=2, keepdim=True)
 
     def get_q_heads(self, states: torch.Tensor) -> torch.Tensor:

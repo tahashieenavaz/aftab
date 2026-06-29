@@ -1,7 +1,7 @@
 import torch
 from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
-from aftab.modules import Stream
+from aftab.modules import Stream, forward_stream_heads
 from .BaseNetwork import BaseNetwork
 
 
@@ -55,14 +55,11 @@ class DistributionalBootstrappedDuellingNetwork(BaseNetwork):
         )
 
     def get_value_logits_heads(self, features: torch.Tensor) -> torch.Tensor:
-        values = [head(features) for head in self.value_heads]
-        return torch.stack(values, dim=1).unsqueeze(2)
+        return forward_stream_heads(heads=self.value_heads, x=features).unsqueeze(2)
 
     def get_advantage_logits_heads(self, features: torch.Tensor) -> torch.Tensor:
         batch_size = features.size(0)
-        advantages = torch.stack(
-            [head(features) for head in self.advantage_heads], dim=1
-        )
+        advantages = forward_stream_heads(heads=self.advantage_heads, x=features)
         advantages = advantages.view(
             batch_size,
             self.bootstrap_heads,

@@ -1,6 +1,6 @@
 import torch
 from typing import Optional
-from aftab.modules import Stream
+from aftab.modules import Stream, forward_stream_heads
 from .BaseNetwork import BaseNetwork
 
 
@@ -25,8 +25,7 @@ class BootstrappedNetwork(BaseNetwork):
 
     def get_q_heads(self, states: torch.Tensor) -> torch.Tensor:
         features = self.get_features(states)
-        q_values = [head(features) for head in self.q_heads]
-        return torch.stack(q_values, dim=1)
+        return forward_stream_heads(heads=self.q_heads, x=features)
 
     def gather_q_heads(
         self,
