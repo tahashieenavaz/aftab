@@ -22,7 +22,7 @@
 
 ## Overview
 
-**Aftab** (Persian: آفتاب, meaning "sun" or "sun rays") is a benchmarking framework for evaluating CNN-based encoders in PQN across Atari environments.  
+**Aftab** (<a href="https://en.wikipedia.org/wiki/Aftab">Persian</a>: آفتاب, meaning "sun" or "sun rays") is a benchmarking framework for evaluating CNN-based encoders in PQN across Atari environments.  
 It provides standardized training, evaluation, and reproducibility tools for deep reinforcement learning research.
 
 We have compiled a few videos comparing PQN and Aftab agents. Watch them [here](./videos.md).
