@@ -342,7 +342,10 @@ https://envpool.readthedocs.io/en/latest/env/atari.html#available-tasks
 
 - [Wikipedia: Reinforcement Learning (RL)](https://en.wikipedia.org/wiki/Reinforcement_learning)
 - [Wikipedia: Deep Reinforcement Learning (DRL)](https://en.wikipedia.org/wiki/Deep_reinforcement_learning)
+- [Wikipedia: Q-Learning](https://en.wikipedia.org/wiki/Q-learning)
 - [Wikipedia: PyTorch](https://en.wikipedia.org/wiki/PyTorch)
+- [Wikipedia: Statistical Hypothesis Test](https://en.wikipedia.org/wiki/Statistical_hypothesis_test)
+- [Wikipedia: Wilcoxon Signed-Rank Test](https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test)
 - [PyTorch](https://pytorch.org/)
 
 ## License
