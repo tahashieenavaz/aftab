@@ -340,8 +340,10 @@ https://envpool.readthedocs.io/en/latest/env/atari.html#available-tasks
 
 ## Useful Links
 
-- [Reinforcement Learning (RL)](https://en.wikipedia.org/wiki/Reinforcement_learning)
-- [Deep Reinforcement Learning (DRL)](https://en.wikipedia.org/wiki/Deep_reinforcement_learning)
+- [Wikipedia: Reinforcement Learning (RL)](https://en.wikipedia.org/wiki/Reinforcement_learning)
+- [Wikipedia: Deep Reinforcement Learning (DRL)](https://en.wikipedia.org/wiki/Deep_reinforcement_learning)
+- [Wikipedia: PyTorch](https://en.wikipedia.org/wiki/PyTorch)
+- [PyTorch](https://pytorch.org/)
 
 ## License
 
