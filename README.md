@@ -2,10 +2,6 @@
   <img src="https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/header.svg" />
 </div>
 
-<div align="center">
-  Taha Shieenavaz | Shabnam Zareshahraki | Loris Nanni
-</div>
-
 <p align="center">
   <img src="https://img.shields.io/pypi/v/aftab" />
   <img src="https://img.shields.io/github/stars/tahashieenavaz/aftab?style=social" />
@@ -18,6 +14,10 @@
   <img src="https://img.shields.io/badge/citable-yes-success" />
   <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b" />
 </p>
+
+<div align="center">
+  Taha Shieenavaz | Shabnam Zareshahraki | Loris Nanni
+</div>
 
 
 ## Overview
