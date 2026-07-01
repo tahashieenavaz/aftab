@@ -16,7 +16,7 @@
 </p>
 
 <div align="center">
-  Taha Shieenavaz | Shabnam Zareshahraki | Loris Nanni
+  Taha Shieenavaz | <a href="https://shbnmzr.github.io">Shabnam Zareshahraki</a> | <a href="https://scholar.google.com/citations?user=5NSGzcQAAAAJ&hl=en">Loris Nanni</a>
 </div>
 
 
