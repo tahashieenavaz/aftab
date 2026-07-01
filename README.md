@@ -72,6 +72,12 @@ Install via pip:
 pip install aftab
 ```
 
+Alternatively, you can clone the repository and install in `editable` mode. 
+
+```
+git clone https://github.com/tahashieenavaz/aftab.git aftab_source
+pip install -e aftab_source
+```
 
 ## Usage
 
