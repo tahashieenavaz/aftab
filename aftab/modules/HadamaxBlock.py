@@ -48,7 +48,10 @@ class HadamaxBlock(torch.nn.Module):
                 padding=padding,
                 bias=False,
             )
-        self.normalization = HadamaxLayerNorm2d(out_channels)
+
+        self.normalization = HadamaxLayerNorm2d(
+            out_channels
+        )  # Assuming this handles the 2x channels internally
         self.pool = torch.nn.MaxPool2d(
             kernel_size=pool_kernel, stride=pool_stride, padding=pool_padding
         )
@@ -57,23 +60,13 @@ class HadamaxBlock(torch.nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         if self.mixed:
-            padding_size = self.convolutional_a.kernel_size[0] // 2
-            w_b_padded = torch.nn.functional.pad(
-                self.convolutional_b.weight,
-                (padding_size, padding_size, padding_size, padding_size),
-            )
-            fused_weight = torch.cat([self.convolutional_a.weight, w_b_padded], dim=0)
-            x = torch.nn.functional.conv2d(
-                x,
-                weight=fused_weight,
-                stride=self.convolutional_a.stride,
-                padding=self.convolutional_a.padding,
-                bias=None,
-            )
+            a = self.convolutional_a(x)
+            b = self.convolutional_b(x)
+            x = torch.cat([a, b], dim=1)
         else:
             x = self.convolutional(x)
-
         x = self.normalization(x)
-        a, b = torch.chunk(x, 2, dim=1)
-        a, b = self.chi(a), self.psi(b)
+        a, b = x.chunk(2, dim=1)
+        a = self.chi(a)
+        b = self.psi(b)
         return self.pool(a * b)
