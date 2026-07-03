@@ -15,12 +15,12 @@ class MaskedStream(torch.nn.Module):
         p: float,
     ):
         super().__init__()
-        alpha = int(p * input_dimension)
+        mask_size = int(p * input_dimension)
         new_hidden_dimension = math.ceil(hidden_dimension * (1 / p))
-        indices = torch.randperm(input_dimension)[:alpha]
-        self.register_buffer("feature_indices", indices)
+        indices = torch.randperm(input_dimension)[:mask_size]
+        self.register_buffer("mask", indices)
         self.stream = Stream(
-            input_dimension=alpha,
+            input_dimension=mask_size,
             hidden_dimension=new_hidden_dimension,
             output_dimension=output_dimension,
             normalization=normalization,
@@ -28,5 +28,5 @@ class MaskedStream(torch.nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        masked_x = x[:, self.feature_indices]
+        masked_x = x[:, self.mask]
         return self.stream(masked_x)
