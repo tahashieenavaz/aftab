@@ -28,5 +28,5 @@ class MaskedStream(torch.nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        sliced_x = x[:, self.feature_indices]
-        return self.stream(sliced_x)
+        masked_x = x[:, self.feature_indices]
+        return self.stream(masked_x)
