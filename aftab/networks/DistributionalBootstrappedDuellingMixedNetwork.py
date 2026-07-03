@@ -40,6 +40,7 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
                     output_dimension=self.action_dimension * self.distributional_bins,
                     activation=torch.nn.GELU,
                     normalization=True,
+                    p=0.8,
                 )
                 for _ in range(self.bootstrap_heads)
             ]
