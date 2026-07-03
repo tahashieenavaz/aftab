@@ -13,3 +13,5 @@ from .HadamaxGammaEncoderV2 import HadamaxGammaEncoderV2
 from .HadamaxEpsilonEncoder import HadamaxEpsilonEncoder
 from .HadamaxZetaEncoder import HadamaxZetaEncoder
 from .HadamaxDeltaEncoder import HadamaxDeltaEncoder
+
+from .HadamaxGammaEncoderV1Mixed import HadamaxGammaEncoderV1Mixed

@@ -77,16 +77,3 @@ environments: List[str] = [
     "YarsRevenge-v5",
     "Zaxxon-v5",
 ]
-
-StreamActivationPool: List[ModuleType] = [
-    torch.nn.SiLU,
-    torch.nn.SiLU,
-    torch.nn.GELU,
-    torch.nn.GELU,
-    torch.nn.Hardswish,
-    torch.nn.Hardswish,
-    torch.nn.Mish,
-    torch.nn.Mish,
-    torch.nn.SELU,
-    torch.nn.SELU,
-]
