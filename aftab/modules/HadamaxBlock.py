@@ -1,5 +1,4 @@
 import torch
-import torch.nn.functional as F
 from aftab.constants import ModuleType
 from .HadamaxLayerNorm2d import HadamaxLayerNorm2d
 from .LearnableGELU import LearnableGELU
