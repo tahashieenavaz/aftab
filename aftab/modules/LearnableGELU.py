@@ -10,7 +10,7 @@ class LearnableGELU(nn.Module):
         self.min_lambda = min_lambda
         self.lambdas = nn.Parameter(torch.ones(in_channels))
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         shape = [1] * x.ndim
         shape[self.dim] = self.in_channels
         lam = self.lambdas.view(*shape)
