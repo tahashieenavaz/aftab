@@ -1,6 +1,6 @@
 import torch
 from aftab.constants import ModuleType
-from .HadamaxLayerNorm2d import HadamaxLayerNorm2d
+from .LayerNorm2d import LayerNorm2d
 from .MixedActivation import MixedActivation
 
 
@@ -49,7 +49,7 @@ class HadamaxBlock(torch.nn.Module):
                 bias=False,
             )
 
-        self.normalization = HadamaxLayerNorm2d(out_channels)
+        self.normalization = LayerNorm2d(out_channels)
         self.pool = torch.nn.MaxPool2d(
             kernel_size=pool_kernel, stride=pool_stride, padding=pool_padding
         )
@@ -57,14 +57,10 @@ class HadamaxBlock(torch.nn.Module):
         self.psi = psi(out_channels) if psi is MixedActivation else psi()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        if self.mixed:
-            a = self.convolutional_a(x)
-            b = self.convolutional_b(x)
-            x = torch.cat([a, b], dim=1)
-        else:
-            x = self.convolutional(x)
         x = self.normalization(x)
-        adam, eve = x.chunk(2, dim=1)
-        adam = self.chi(adam)
-        eve = self.psi(eve)
-        return self.pool(adam.mul_(eve))
+        if self.mixed:
+            adam = self.convolutional_a(x)
+            eve = self.convolutional_b(x)
+        else:
+            adam, eve = self.convolutional(x).chunk(2, 1)
+        return self.pool(self.chi(adam).mul_(self.psi(eve)))
