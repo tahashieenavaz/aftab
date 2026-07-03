@@ -12,7 +12,7 @@ class SlicedStream(torch.nn.Module):
         output_dimension: int,
         activation: ModuleType,
         normalization: bool,
-        p: float = 0.9,
+        p: float,
     ):
         super().__init__()
         alpha = int(p * input_dimension)
