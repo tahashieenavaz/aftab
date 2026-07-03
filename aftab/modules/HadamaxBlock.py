@@ -17,17 +17,37 @@ class HadamaxBlock(torch.nn.Module):
         pool_padding: int = 0,
         chi: ModuleType = torch.nn.GELU,
         psi: ModuleType = torch.nn.GELU,
+        mixed: bool = False,
     ):
         super().__init__()
+        self.mixed = mixed
 
-        self.convolutional = torch.nn.Conv2d(
-            in_channels,
-            out_channels * 2,
-            kernel_size=kernel_size,
-            stride=stride,
-            padding=padding,
-            bias=False,
-        )
+        if self.mixed:
+            self.convolutional_a = torch.nn.Conv2d(
+                in_channels,
+                out_channels,
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                bias=False,
+            )
+            self.convolutional_b = torch.nn.Conv2d(
+                in_channels,
+                out_channels,
+                kernel_size=1,
+                stride=stride,
+                padding=0,
+                bias=False,
+            )
+        else:
+            self.convolutional = torch.nn.Conv2d(
+                in_channels,
+                out_channels * 2,
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                bias=False,
+            )
         self.normalization = HadamaxLayerNorm2d(out_channels)
         self.pool = torch.nn.MaxPool2d(
             kernel_size=pool_kernel, stride=pool_stride, padding=pool_padding
@@ -36,7 +56,12 @@ class HadamaxBlock(torch.nn.Module):
         self.psi = psi(out_channels) if psi is MixedActivation else psi()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = self.normalization(self.convolutional(x))
+        if self.mixed:
+            x = torch.cat([self.convolutional_a(x), self.convolutional_b(x)], dim=1)
+        else:
+            x = self.convolutional(x)
+
+        x = self.normalization(x)
         a, b = torch.chunk(x, 2, dim=1)
         a, b = self.chi(a), self.psi(b)
         return self.pool(a * b)

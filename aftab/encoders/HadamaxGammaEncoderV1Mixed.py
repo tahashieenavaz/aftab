@@ -19,6 +19,7 @@ class HadamaxGammaEncoderV1(torch.nn.Module):
                 pool_stride=2,
                 chi=activation,
                 psi=activation,
+                mixed=True,
             ),
             HadamaxBlock(
                 32,
@@ -30,6 +31,7 @@ class HadamaxGammaEncoderV1(torch.nn.Module):
                 pool_stride=2,
                 chi=activation,
                 psi=activation,
+                mixed=True,
             ),
             HadamaxBlock(
                 48,
@@ -42,6 +44,7 @@ class HadamaxGammaEncoderV1(torch.nn.Module):
                 pool_padding=0,
                 chi=activation,
                 psi=activation,
+                mixed=True,
             ),
             HadamaxBlock(
                 64,
@@ -53,6 +56,7 @@ class HadamaxGammaEncoderV1(torch.nn.Module):
                 pool_stride=2,
                 chi=activation,
                 psi=activation,
+                mixed=True,
             ),
             HadamaxBlock(
                 64,
@@ -65,6 +69,7 @@ class HadamaxGammaEncoderV1(torch.nn.Module):
                 pool_padding=0,
                 chi=activation,
                 psi=activation,
+                mixed=True,
             ),
             torch.nn.Flatten(),
         )
