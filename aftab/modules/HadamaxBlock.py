@@ -57,7 +57,19 @@ class HadamaxBlock(torch.nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         if self.mixed:
-            x = torch.cat([self.convolutional_a(x), self.convolutional_b(x)], dim=1)
+            padding_size = self.convolutional_a.kernel_size[0] // 2
+            w_b_padded = torch.nn.functional.pad(
+                self.convolutional_b.weight,
+                (padding_size, padding_size, padding_size, padding_size),
+            )
+            fused_weight = torch.cat([self.convolutional_a.weight, w_b_padded], dim=0)
+            x = torch.nn.functional.conv2d(
+                x,
+                weight=fused_weight,
+                stride=self.convolutional_a.stride,
+                padding=self.convolutional_a.padding,
+                bias=None,
+            )
         else:
             x = self.convolutional(x)
 
