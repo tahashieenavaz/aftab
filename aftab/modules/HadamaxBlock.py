@@ -64,7 +64,7 @@ class HadamaxBlock(torch.nn.Module):
         else:
             x = self.convolutional(x)
         x = self.normalization(x)
-        a, b = x.chunk(2, dim=1)
-        a = self.chi(a)
-        b = self.psi(b)
-        return self.pool(a.mul_(b))
+        adam, eve = x.chunk(2, dim=1)
+        adam = self.chi(adam)
+        eve = self.psi(eve)
+        return self.pool(adam.mul_(eve))
