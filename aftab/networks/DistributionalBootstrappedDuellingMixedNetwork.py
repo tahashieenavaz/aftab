@@ -1,7 +1,7 @@
 import torch
 from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
-from aftab.modules import Stream, MixedActivation
+from aftab.modules import Stream, LearnableGELU
 from .BaseNetwork import BaseNetwork
 
 
@@ -38,7 +38,7 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
                     input_dimension=self.feature_dimension,
                     hidden_dimension=self.embedding_dimension,
                     output_dimension=self.action_dimension * self.distributional_bins,
-                    activation=MixedActivation,
+                    activation=LearnableGELU,
                     normalization=True,
                 )
                 for _ in range(self.bootstrap_heads)
@@ -50,7 +50,7 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
                     input_dimension=self.feature_dimension,
                     hidden_dimension=self.embedding_dimension,
                     output_dimension=self.distributional_bins,
-                    activation=MixedActivation,
+                    activation=LearnableGELU,
                     normalization=True,
                 )
                 for _ in range(self.bootstrap_heads)

@@ -1,12 +1,10 @@
 import torch
-from aftab.modules import HadamaxBlock, MixedActivation
+from aftab.modules import HadamaxBlock, LearnableGELU
 from aftab.constants import ModuleType
 
 
 class HadamaxGammaEncoderV1Mixed(torch.nn.Module):
-    def __init__(
-        self, *, activation: ModuleType = MixedActivation, in_channels: int = 4
-    ):
+    def __init__(self, *, activation: ModuleType = LearnableGELU, in_channels: int = 4):
         super().__init__()
         self.stream = torch.nn.Sequential(
             HadamaxBlock(

@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 from aftab.constants import ModuleType
 from .HadamaxLayerNorm2d import HadamaxLayerNorm2d
-from .MixedActivation import MixedActivation
+from .LearnableGELU import LearnableGELU
 
 
 class HadamaxBlock(torch.nn.Module):
@@ -44,8 +44,8 @@ class HadamaxBlock(torch.nn.Module):
             self.pool_mix = torch.nn.Parameter(torch.tensor(0.0))
             self.cross_talk = torch.nn.Parameter(torch.zeros(1, out_channels, 1, 1))
 
-        self.chi = chi(out_channels, dim=1) if chi is MixedActivation else chi()
-        self.psi = psi(out_channels, dim=1) if psi is MixedActivation else psi()
+        self.chi = chi(out_channels, dim=1) if chi is LearnableGELU else chi()
+        self.psi = psi(out_channels, dim=1) if psi is LearnableGELU else psi()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.normalization(self.convolutional(x))

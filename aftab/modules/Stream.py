@@ -1,6 +1,6 @@
 import torch
 from aftab.constants import ModuleType
-from .MixedActivation import MixedActivation
+from .LearnableGELU import LearnableGELU
 
 
 class Stream(torch.nn.Module):
@@ -20,8 +20,8 @@ class Stream(torch.nn.Module):
         self.second_linear = torch.nn.Linear(hidden_dimension, output_dimension)
 
         self.activation = (
-            activation(hidden_dimension)
-            if activation is MixedActivation
+            activation(hidden_dimension, dim=-1)
+            if activation is LearnableGELU
             else activation()
         )
 
