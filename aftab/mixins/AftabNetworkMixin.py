@@ -92,7 +92,9 @@ class AftabNetworkMixin(AftabBaseMixin):
         if not hasattr(torch, "compile"):
             return
 
-        self._network = torch.compile(self._network, mode=self.compile_mode)
+        self._network = torch.compile(
+            self._network, mode=self.compile_mode, dynamic=self.compile_dynamic
+        )
 
     def __get_network_instance(self):
         if self.network not in networks_map:

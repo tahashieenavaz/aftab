@@ -75,6 +75,7 @@ class Aftab(
         bootstrap_probability: float = 1.0,
         seed_offset: int = 1000,
         compile_mode: str = "max-autotune",
+        compile_dynamic: bool = True,
     ):
         params = locals()
         params.pop("self")
