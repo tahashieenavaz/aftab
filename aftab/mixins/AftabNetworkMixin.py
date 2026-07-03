@@ -88,8 +88,14 @@ class AftabNetworkMixin(AftabBaseMixin):
     def __handle_dummy_pass(self):
         self._network(self.__dummy_input())
 
+    def __torch_can_compile(self):
+        return hasattr(torch, "compile")
+
+    def __torch_cannot_compile(self):
+        return not self.__torch_can_compile()
+
     def __handle_compilation(self):
-        if not hasattr(torch, "compile"):
+        if self.__torch_cannot_compile():
             return
 
         self._network = torch.compile(
