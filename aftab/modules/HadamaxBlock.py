@@ -31,8 +31,8 @@ class HadamaxBlock(torch.nn.Module):
         self.pool = torch.nn.MaxPool2d(
             kernel_size=pool_kernel, stride=pool_stride, padding=pool_padding
         )
-        self.chi = chi(out_channels) if isinstance(chi, MixedActivation) else chi()
-        self.psi = psi(out_channels) if isinstance(chi, MixedActivation) else psi()
+        self.chi = chi(out_channels) if chi is MixedActivation else chi()
+        self.psi = psi(out_channels) if psi is MixedActivation else psi()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.normalization(self.convolutional(x))

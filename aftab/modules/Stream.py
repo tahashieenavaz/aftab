@@ -21,7 +21,7 @@ class Stream(torch.nn.Module):
 
         self.activation = (
             activation(hidden_dimension)
-            if isinstance(activation, MixedActivation)
+            if activation is MixedActivation
             else activation()
         )
 
