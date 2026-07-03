@@ -4,7 +4,7 @@ from aftab.constants import ModuleType
 from .Stream import Stream
 
 
-class SlicedStream(torch.nn.Module):
+class MaskedStream(torch.nn.Module):
     def __init__(
         self,
         input_dimension: int,
