@@ -19,4 +19,5 @@ class MixedActivation(torch.nn.Module):
         w_gelu = w_gelu.view(*broadcast_shape)
         w_silu = w_silu.view(*broadcast_shape)
         w_relu = w_relu.view(*broadcast_shape)
+
         return w_gelu * F.gelu(x) + w_silu * F.silu(x) + w_relu * F.relu(x)
