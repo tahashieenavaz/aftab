@@ -49,7 +49,7 @@ class HadamaxBlock(torch.nn.Module):
                 bias=False,
             )
 
-        self.normalization = LayerNorm2d(out_channels)
+        self.normalization = LayerNorm2d(in_channels)
         self.pool = torch.nn.MaxPool2d(
             kernel_size=pool_kernel, stride=pool_stride, padding=pool_padding
         )
