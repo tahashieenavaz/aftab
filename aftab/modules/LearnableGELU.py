@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 
 class LearnableGELU(nn.Module):
@@ -16,4 +15,4 @@ class LearnableGELU(nn.Module):
         shape[self.dim] = self.in_channels
         lam = self.lambdas.view(*shape)
         lam = torch.clamp(lam, min=self.min_lambda)
-        return F.gelu(x * lam) / lam
+        return torch.nn.functional.gelu(x * lam) / lam
