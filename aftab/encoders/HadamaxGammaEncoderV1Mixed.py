@@ -3,7 +3,7 @@ from aftab.modules import HadamaxBlock, MixedActivation
 from aftab.constants import ModuleType
 
 
-class HadamaxGammaEncoderV1(torch.nn.Module):
+class HadamaxGammaEncoderV1Mixed(torch.nn.Module):
     def __init__(
         self, *, activation: ModuleType = MixedActivation, in_channels: int = 4
     ):
