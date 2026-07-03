@@ -1,6 +1,5 @@
 import torch
 from aftab.constants import ModuleType
-from .LearnableGELU import LearnableGELU
 
 
 class Stream(torch.nn.Module):
@@ -19,11 +18,7 @@ class Stream(torch.nn.Module):
         self.first_linear = torch.nn.Linear(input_dimension, hidden_dimension)
         self.second_linear = torch.nn.Linear(hidden_dimension, output_dimension)
 
-        self.activation = (
-            activation(hidden_dimension, dim=-1)
-            if activation is LearnableGELU
-            else activation()
-        )
+        self.activation = activation()
 
         if normalization:
             self.normalization_layer = torch.nn.LayerNorm(hidden_dimension)
