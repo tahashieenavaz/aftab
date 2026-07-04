@@ -1,7 +1,7 @@
 import torch
 from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
-from aftab.modules import MaskedStream
+from aftab.modules import WeightedStream
 from .BaseNetwork import BaseNetwork
 
 
@@ -34,28 +34,34 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
         )
         self.advantage_heads = torch.nn.ModuleList(
             [
-                MaskedStream(
+                WeightedStream(
                     input_dimension=self.feature_dimension,
-                    hidden_dimension=self.embedding_dimension,
+                    hidden_dimension=(
+                        self.narrow_embedding_dimension
+                        if index % 2 == 0
+                        else self.wide_embedding_dimension
+                    ),
                     output_dimension=self.action_dimension * self.distributional_bins,
                     activation=torch.nn.GELU,
                     normalization=True,
-                    p=0.8,
                 )
-                for _ in range(self.bootstrap_heads)
+                for index in range(self.bootstrap_heads)
             ]
         )
         self.value_heads = torch.nn.ModuleList(
             [
-                MaskedStream(
+                WeightedStream(
                     input_dimension=self.feature_dimension,
-                    hidden_dimension=self.embedding_dimension,
+                    hidden_dimension=(
+                        self.narrow_embedding_dimension
+                        if index % 2 == 0
+                        else self.wide_embedding_dimension
+                    ),
                     output_dimension=self.distributional_bins,
                     activation=torch.nn.GELU,
                     normalization=True,
-                    p=0.8,
                 )
-                for _ in range(self.bootstrap_heads)
+                for index in range(self.bootstrap_heads)
             ]
         )
 

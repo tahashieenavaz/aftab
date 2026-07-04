@@ -53,6 +53,8 @@ class Aftab(
         verbose_interval: int = 10,
         verbose_window: int = 100,
         embedding_dimension: int = 512,
+        narrow_embedding_dimension: int = 256,
+        wide_embedding_dimension: int = 756,
         optimizer: OptimizerStringType = "radam",
         optimizer_epsilon: float = 1e-5,
         optimizer_weight_decay: float = 0.0,
