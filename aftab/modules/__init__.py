@@ -7,3 +7,4 @@ from .GatedLinearUnit import GatedLinearUnit
 from .MaskedStream import MaskedStream
 from .WeightedMaskedStream import WeightedMaskedStream
 from .LowRankStream import LowRankStream
+from .DeepStream import DeepStream

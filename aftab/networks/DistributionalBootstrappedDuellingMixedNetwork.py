@@ -1,13 +1,8 @@
 import torch
 from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
-from aftab.modules import LowRankStream
-from itertools import cycle
+from aftab.modules import DeepStream
 from .BaseNetwork import BaseNetwork
-
-ranks = [16, 16, 32, 32, 64, 64, 128, 128, 256, 256]
-value_ranks = cycle(ranks)
-advantage_ranks = cycle(ranks)
 
 
 class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
@@ -39,26 +34,24 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
         )
         self.advantage_heads = torch.nn.ModuleList(
             [
-                LowRankStream(
+                DeepStream(
                     input_dimension=self.feature_dimension,
-                    hidden_dimension=4096,
+                    hidden_dimension=self.hidden_dimension,
                     output_dimension=self.action_dimension * self.distributional_bins,
                     activation=torch.nn.GELU,
                     normalization=True,
-                    rank=next(value_ranks),
                 )
                 for _ in range(self.bootstrap_heads)
             ]
         )
         self.value_heads = torch.nn.ModuleList(
             [
-                LowRankStream(
+                DeepStream(
                     input_dimension=self.feature_dimension,
-                    hidden_dimension=self.embedding_dimension * 8,
+                    hidden_dimension=self.embedding_dimension,
                     output_dimension=self.distributional_bins,
                     activation=torch.nn.GELU,
                     normalization=True,
-                    rank=next(advantage_ranks),
                 )
                 for _ in range(self.bootstrap_heads)
             ]
