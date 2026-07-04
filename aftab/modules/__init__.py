@@ -5,4 +5,5 @@ from .HadamaxBlock import HadamaxBlock
 from .HadamaxLayerNorm2d import HadamaxLayerNorm2d
 from .GatedLinearUnit import GatedLinearUnit
 from .MaskedStream import MaskedStream
-from .WeightedStream import WeightedStream
+from .WeightedMaskedStream import WeightedMaskedStream
+from .LowRankStream import LowRankStream

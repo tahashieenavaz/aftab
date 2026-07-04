@@ -3,7 +3,7 @@ from aftab.constants import ModuleType
 from .Stream import Stream
 
 
-class WeightedStream(torch.nn.Module):
+class WeightedMaskedStream(torch.nn.Module):
     def __init__(
         self,
         input_dimension: int,
