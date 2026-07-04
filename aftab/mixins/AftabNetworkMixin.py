@@ -68,13 +68,19 @@ class AftabNetworkMixin(AftabBaseMixin):
                 distributional_sigma=self.__distributional_sigma(),
             )
 
-        if "bootstrapped" not in self.network.lower():
-            return kwargs
+        if "bootstrapped" in self.network.lower():
+            bootstrap_heads = int(getattr(self, "bootstrap_heads"))
+            if bootstrap_heads <= 0:
+                raise ValueError("Expected `bootstrap_heads` to be positive.")
+            kwargs["bootstrap_heads"] = bootstrap_heads
 
-        bootstrap_heads = int(getattr(self, "bootstrap_heads"))
-        if bootstrap_heads <= 0:
-            raise ValueError("Expected `bootstrap_heads` to be positive.")
-        kwargs["bootstrap_heads"] = bootstrap_heads
+        if "mixed" in self.network.lower():
+            kwargs.update(
+                narrow_embedding_dimension=int(
+                    getattr(self, "narrow_embedding_dimension")
+                ),
+                wide_embedding_dimension=int(getattr(self, "wide_embedding_dimension")),
+            )
 
         return kwargs
 

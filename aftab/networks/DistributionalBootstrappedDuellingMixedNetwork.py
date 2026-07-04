@@ -14,6 +14,8 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
         distributional_max_value: float,
         distributional_sigma: float,
         bootstrap_heads: int,
+        narrow_embedding_dimension: int,
+        wide_embedding_dimension: int,
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -37,9 +39,9 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
                 WeightedStream(
                     input_dimension=self.feature_dimension,
                     hidden_dimension=(
-                        self.narrow_embedding_dimension
+                        narrow_embedding_dimension
                         if index % 2 == 0
-                        else self.wide_embedding_dimension
+                        else wide_embedding_dimension
                     ),
                     output_dimension=self.action_dimension * self.distributional_bins,
                     activation=torch.nn.GELU,
@@ -53,9 +55,9 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
                 WeightedStream(
                     input_dimension=self.feature_dimension,
                     hidden_dimension=(
-                        self.narrow_embedding_dimension
+                        narrow_embedding_dimension
                         if index % 2 == 0
-                        else self.wide_embedding_dimension
+                        else wide_embedding_dimension
                     ),
                     output_dimension=self.distributional_bins,
                     activation=torch.nn.GELU,
