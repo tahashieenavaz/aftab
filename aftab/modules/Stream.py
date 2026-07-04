@@ -13,20 +13,18 @@ class Stream(torch.nn.Module):
         normalization: bool,
     ):
         super().__init__()
-        self.normalization = normalization
-
         self.first_linear = torch.nn.Linear(input_dimension, hidden_dimension)
         self.second_linear = torch.nn.Linear(hidden_dimension, output_dimension)
-
         self.activation = activation()
-
-        if normalization:
-            self.normalization_layer = torch.nn.LayerNorm(hidden_dimension)
+        self.normalization_layer = (
+            torch.nn.LayerNorm(hidden_dimension)
+            if normalization
+            else torch.nn.Identity()
+        )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.first_linear(x)
-        if self.normalization:
-            x = self.normalization_layer(x)
+        x = self.normalization_layer(x)
         x = self.activation(x)
         x = self.second_linear(x)
         return x
