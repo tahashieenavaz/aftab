@@ -16,11 +16,10 @@ class HadamaxBlock(torch.nn.Module):
         pool_padding: int = 0,
         chi: ModuleType = torch.nn.GELU,
         psi: ModuleType = torch.nn.GELU,
-        mixed: bool = False,
+        mix: bool = False,
     ):
         super().__init__()
-        self.mixed = mixed
-
+        self.mix = mix
         self.convolutional = torch.nn.Conv2d(
             in_channels,
             out_channels * 2,
@@ -29,35 +28,25 @@ class HadamaxBlock(torch.nn.Module):
             padding=padding,
             bias=False,
         )
-
         self.normalization = HadamaxLayerNorm2d(out_channels)
+        self.chi = chi()
+        self.psi = psi()
+
+        self.temperature = torch.nn.Parameter(torch.ones(1))
+        if mix:
+            self.mixer = torch.nn.Conv2d(
+                out_channels, out_channels, kernel_size=1, bias=False
+            )
         self.pool = torch.nn.MaxPool2d(
             kernel_size=pool_kernel, stride=pool_stride, padding=pool_padding
         )
 
-        if self.mixed:
-            self.avg_pool = torch.nn.AvgPool2d(
-                kernel_size=pool_kernel, stride=pool_stride, padding=pool_padding
-            )
-            self.pool_mix = torch.nn.Parameter(torch.tensor(0.0))
-            self.cross_talk = torch.nn.Parameter(torch.zeros(1, out_channels, 1, 1))
-
-        self.chi = chi()
-        self.psi = psi()
-
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.normalization(self.convolutional(x))
-        if self.mixed:
-            B, C, H, W = x.shape
-            x = x.view(B, 2, C // 2, H, W).transpose(1, 2).contiguous().view(B, C, H, W)
         adam, eve = x.chunk(2, dim=1)
-        if self.mixed:
-            adam = adam + self.cross_talk * eve
-        gated = self.chi(adam).mul_(self.psi(eve))
-        if self.mixed:
-            mix_weight = torch.sigmoid(self.pool_mix)
-            return mix_weight * self.pool(gated) + (1.0 - mix_weight) * self.avg_pool(
-                gated
-            )
-        else:
-            return self.pool(gated)
+        gate = self.psi(eve / self.temperature)
+        gated = self.chi(adam) * gate
+        if self.mix:
+            mixed = self.mixer(gated)
+            return self.pool(mixed)
+        return self.pool(gated)
