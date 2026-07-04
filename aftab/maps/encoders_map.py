@@ -13,7 +13,6 @@ from aftab.encoders import HadamaxGammaEncoderV2
 from aftab.encoders import HadamaxEpsilonEncoder
 from aftab.encoders import HadamaxZetaEncoder
 from aftab.encoders import HadamaxDeltaEncoder
-from aftab.encoders import HadamaxGammaEncoderV1Mixed
 
 encoders_map = {
     "nature": NatureDQNEncoder,
@@ -39,6 +38,4 @@ encoders_map = {
     "zetahadamax": HadamaxZetaEncoder,
     "hadamaxdelta": HadamaxDeltaEncoder,
     "deltahadamax": HadamaxDeltaEncoder,
-    "hadamaxgammav1mixed": HadamaxGammaEncoderV1Mixed,
-    "gammahadamaxv1mixed": HadamaxGammaEncoderV1Mixed,
 }
