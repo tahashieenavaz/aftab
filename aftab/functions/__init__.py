@@ -3,3 +3,4 @@ from .flush import flush
 from .mse_loss import mse_loss
 from .lambda_returns import lambda_returns
 from .gompertz import gompertz
+from .calculate_matched_width import calculate_matched_width
