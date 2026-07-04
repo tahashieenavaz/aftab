@@ -74,14 +74,6 @@ class AftabNetworkMixin(AftabBaseMixin):
                 raise ValueError("Expected `bootstrap_heads` to be positive.")
             kwargs["bootstrap_heads"] = bootstrap_heads
 
-        if "mixed" in self.network.lower():
-            kwargs.update(
-                narrow_embedding_dimension=int(
-                    getattr(self, "narrow_embedding_dimension")
-                ),
-                wide_embedding_dimension=int(getattr(self, "wide_embedding_dimension")),
-            )
-
         return kwargs
 
     def __handle_channel_last(self):

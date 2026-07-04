@@ -1,8 +1,13 @@
 import torch
 from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
-from aftab.modules import WeightedStream
+from aftab.modules import LowRankStream
+from itertools import cycle
 from .BaseNetwork import BaseNetwork
+
+ranks = [16, 16, 32, 32, 64, 64, 128, 128, 256, 256]
+value_ranks = cycle(ranks)
+advantage_ranks = cycle(ranks)
 
 
 class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
@@ -14,8 +19,6 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
         distributional_max_value: float,
         distributional_sigma: float,
         bootstrap_heads: int,
-        narrow_embedding_dimension: int,
-        wide_embedding_dimension: int,
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -36,34 +39,28 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
         )
         self.advantage_heads = torch.nn.ModuleList(
             [
-                WeightedStream(
+                LowRankStream(
                     input_dimension=self.feature_dimension,
-                    hidden_dimension=(
-                        narrow_embedding_dimension
-                        if index % 2 == 0
-                        else wide_embedding_dimension
-                    ),
+                    hidden_dimension=4096,
                     output_dimension=self.action_dimension * self.distributional_bins,
                     activation=torch.nn.GELU,
                     normalization=True,
+                    rank=next(value_ranks),
                 )
-                for index in range(self.bootstrap_heads)
+                for _ in range(self.bootstrap_heads)
             ]
         )
         self.value_heads = torch.nn.ModuleList(
             [
-                WeightedStream(
+                LowRankStream(
                     input_dimension=self.feature_dimension,
-                    hidden_dimension=(
-                        narrow_embedding_dimension
-                        if index % 2 == 0
-                        else wide_embedding_dimension
-                    ),
+                    hidden_dimension=self.embedding_dimension * 8,
                     output_dimension=self.distributional_bins,
                     activation=torch.nn.GELU,
                     normalization=True,
+                    rank=next(advantage_ranks),
                 )
-                for index in range(self.bootstrap_heads)
+                for _ in range(self.bootstrap_heads)
             ]
         )
 
