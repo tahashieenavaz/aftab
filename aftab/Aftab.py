@@ -76,6 +76,7 @@ class Aftab(
         seed_offset: int = 1000,
         compile_mode: str = "max-autotune",
         compile_dynamic: bool = False,
+        stream_depth: int = 4,  # used in DeepStream
     ):
         params = locals()
         params.pop("self")

@@ -14,6 +14,7 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
         distributional_max_value: float,
         distributional_sigma: float,
         bootstrap_heads: int,
+        stream_depth: int,
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -40,6 +41,7 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
                     output_dimension=self.action_dimension * self.distributional_bins,
                     activation=torch.nn.GELU,
                     normalization=True,
+                    depth=stream_depth,
                 )
                 for _ in range(self.bootstrap_heads)
             ]
@@ -52,6 +54,7 @@ class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
                     output_dimension=self.distributional_bins,
                     activation=torch.nn.GELU,
                     normalization=True,
+                    depth=stream_depth,
                 )
                 for _ in range(self.bootstrap_heads)
             ]
