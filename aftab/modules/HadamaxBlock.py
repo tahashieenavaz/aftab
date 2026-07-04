@@ -32,8 +32,8 @@ class HadamaxBlock(torch.nn.Module):
         self.chi = chi()
         self.psi = psi()
 
-        self.temperature = torch.nn.Parameter(torch.ones(1))
         if mix:
+            self.temperature = torch.nn.Parameter(torch.ones(1))
             self.mixer = torch.nn.Conv2d(
                 out_channels, out_channels, kernel_size=1, bias=False
             )
@@ -44,7 +44,12 @@ class HadamaxBlock(torch.nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.normalization(self.convolutional(x))
         adam, eve = x.chunk(2, dim=1)
-        gate = self.psi(eve / self.temperature)
+
+        if self.mix:
+            gate = self.psi(eve / self.temperature)
+        else:
+            gate = self.psi(eve)
+
         gated = self.chi(adam) * gate
         if self.mix:
             mixed = self.mixer(gated)
