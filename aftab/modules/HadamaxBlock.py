@@ -46,12 +46,9 @@ class HadamaxBlock(torch.nn.Module):
         adam, eve = x.chunk(2, dim=1)
 
         if self.mix:
-            gate = self.psi(eve / self.temperature)
-        else:
-            gate = self.psi(eve)
-
-        gated = self.chi(adam) * gate
-        if self.mix:
+            gated = self.chi(adam) * self.psi(eve / self.temperature)
             mixed = self.mixer(gated)
             return self.pool(mixed)
-        return self.pool(gated)
+        else:
+            gated = self.chi(adam) * self.psi(eve)
+            return self.pool(gated)
