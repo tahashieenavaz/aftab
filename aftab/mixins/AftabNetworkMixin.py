@@ -74,7 +74,7 @@ class AftabNetworkMixin(AftabBaseMixin):
                 raise ValueError("Expected `bootstrap_heads` to be positive.")
             kwargs["bootstrap_heads"] = bootstrap_heads
 
-        if "mixed" in self.network.lower():
+        if "deep" in self.network.lower():
             kwargs["stream_depth"] = int(getattr(self, "stream_depth"))
 
         return kwargs

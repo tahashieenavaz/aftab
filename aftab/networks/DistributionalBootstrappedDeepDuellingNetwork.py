@@ -5,7 +5,7 @@ from aftab.modules import DeepStream
 from .BaseNetwork import BaseNetwork
 
 
-class DistributionalBootstrappedDuellingMixedNetwork(BaseNetwork):
+class DistributionalBootstrappedDeepDuellingNetwork(BaseNetwork):
     def __init__(
         self,
         *,
