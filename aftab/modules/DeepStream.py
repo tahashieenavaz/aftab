@@ -33,7 +33,7 @@ class DeepStream(torch.nn.Module):
             self.layers.append(torch.nn.Linear(current_dim, self.internal_width))
             if normalization:
                 self.layers.append(torch.nn.LayerNorm(self.internal_width))
-            if isinstance(activation, torch.nn.Module):
+            if issubclass(activation, torch.nn.Module):
                 self.layers.append(activation())
             elif activation == "random":
                 random_activation = random.choice(
