@@ -19,7 +19,6 @@ class DistributionalBootstrappedDuellingMixedDepthNetwork(BaseNetwork):
         distributional_max_value: float,
         distributional_sigma: float,
         bootstrap_heads: int,
-        stream_depth: int,
         **kwargs,
     ):
         super().__init__(**kwargs)
