@@ -30,9 +30,11 @@ We have compiled a few videos comparing PQN and Aftab agents. Watch them [here](
 
 <div align="center">
 
-| IQM HNS | IQM HNS (Last 50M Frames) |
-| :---: | :---: |
-| ![Global Performance](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/encoder_experiments/global.png) | ![Last 50M Frames](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/encoder_experiments/global_zoomed.png) |
+| IQM HNS |
+| :---: |
+| ![Global Performance](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/encoder_experiments/global.png) |
+| IQM HNS (Last 50M Frames) |
+| ![Last 50M Frames](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/encoder_experiments/global_zoomed.png) |
 
 </div>
 
@@ -40,9 +42,11 @@ We have compiled a few videos comparing PQN and Aftab agents. Watch them [here](
 
 <div align="center">
 
-| IQM HNS | IQM HNS (Last 50M Frames) |
-| :---: | :---: |
-| ![Global Performance](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/hadamax_experiments/global.png) | ![Last 50M Frames](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/hadamax_experiments/global_zoomed.png) |
+| IQM HNS |
+| :---: |
+| ![Global Performance](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/hadamax_experiments/global.png) |
+| IQM HNS (Last 50M Frames) |
+| ![Last 50M Frames](https://raw.githubusercontent.com/tahashieenavaz/aftab/main/figures/hadamax_experiments/global_zoomed.png) |
 
 </div>
 
