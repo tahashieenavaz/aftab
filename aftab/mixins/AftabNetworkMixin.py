@@ -77,6 +77,9 @@ class AftabNetworkMixin(AftabBaseMixin):
         if "deep" in self.network.lower():
             kwargs["stream_depth"] = int(getattr(self, "stream_depth"))
 
+        if "mixeddepth" in self.network.lower():
+            kwargs["stream_mixture"] = getattr(self, "stream_mixture")
+
         return kwargs
 
     def __handle_channel_last(self):

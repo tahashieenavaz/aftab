@@ -3,11 +3,8 @@ from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
 from itertools import cycle
 from aftab.modules import DeepStream
+from aftab.constants import StreamMixtureType
 from .BaseNetwork import BaseNetwork
-
-depths = [2, 2, 3, 3, 4, 4, 5, 5, 6, 6]
-value_depths = cycle(depths)
-advantage_depths = cycle(depths)
 
 
 class DistributionalBootstrappedDuellingMixedDepthNetwork(BaseNetwork):
@@ -19,6 +16,7 @@ class DistributionalBootstrappedDuellingMixedDepthNetwork(BaseNetwork):
         distributional_max_value: float,
         distributional_sigma: float,
         bootstrap_heads: int,
+        stream_mixture: StreamMixtureType,
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -26,6 +24,16 @@ class DistributionalBootstrappedDuellingMixedDepthNetwork(BaseNetwork):
         if bootstrap_heads <= 0:
             raise ValueError("Expected `bootstrap_heads` to be positive.")
 
+        if stream_mixture not in {"all", "top2"}:
+            raise ValueError("Expected `stream_mixture` to be either `all` or `top2`.")
+
+        if stream_mixture == "all":
+            depths = [2, 2, 3, 3, 4, 4, 5, 5, 6, 6]
+        elif stream_mixture == "top2":
+            depths = [4] * 5 + [5] * 5
+
+        value_depths = cycle(depths)
+        advantage_depths = cycle(depths)
         self.distributional = True
         self.bootstrapped = True
         self.bootstrap_heads = bootstrap_heads
