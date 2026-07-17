@@ -79,7 +79,7 @@ class Aftab(
         # used only in DistributionalBootstrappedDeepDuellingNetwork, five is the best performing
         stream_depth: int = 5,
         # used only in DistributionalBootstrappedDuellingMixedDepthNetwork
-        stream_mixture: Literal["all", "top2"] = "top2",
+        depth_mixture: Literal["all", "top2"] = "top2",
     ):
         params = locals()
         params.pop("self")
