@@ -15,7 +15,7 @@ NetworkStringType: TypeAlias = Literal[
     "distributional-bootstrapped-duelling",
     "distributional-bootstrapped-mixed-duelling",
 ]
-StreamMixtureType: TypeAlias = Literal["top2", "all"]
+DepthMixtureType: TypeAlias = Literal["top2", "all"]
 
 
 seeds: List[int] = [475284, 219842, 525975, 909314]

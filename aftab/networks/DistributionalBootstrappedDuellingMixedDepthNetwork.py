@@ -3,7 +3,7 @@ from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
 from itertools import cycle
 from aftab.modules import DeepStream
-from aftab.constants import StreamMixtureType
+from aftab.constants import DepthMixtureType
 from .BaseNetwork import BaseNetwork
 
 
@@ -16,7 +16,7 @@ class DistributionalBootstrappedDuellingMixedDepthNetwork(BaseNetwork):
         distributional_max_value: float,
         distributional_sigma: float,
         bootstrap_heads: int,
-        depth_mixture: StreamMixtureType,
+        depth_mixture: DepthMixtureType,
         **kwargs,
     ):
         super().__init__(**kwargs)

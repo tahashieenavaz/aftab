@@ -56,7 +56,8 @@ class AftabNetworkMixin(AftabBaseMixin):
 
     def __network_kwargs(self) -> dict:
         kwargs = {}
-        if "distributional" in self.network.lower():
+        network = self.network.lower()
+        if "distributional" in network:
             kwargs.update(
                 distributional_bins=int(getattr(self, "distributional_bins")),
                 distributional_min_value=float(
@@ -68,16 +69,16 @@ class AftabNetworkMixin(AftabBaseMixin):
                 distributional_sigma=self.__distributional_sigma(),
             )
 
-        if "bootstrapped" in self.network.lower():
+        if "bootstrapped" in network:
             bootstrap_heads = int(getattr(self, "bootstrap_heads"))
             if bootstrap_heads <= 0:
                 raise ValueError("Expected `bootstrap_heads` to be positive.")
             kwargs["bootstrap_heads"] = bootstrap_heads
 
-        if "deep" in self.network.lower():
+        if "deep" in network:
             kwargs["stream_depth"] = int(getattr(self, "stream_depth"))
 
-        if "mixeddepth" in self.network.lower():
+        if "mixed-depth" in network or "mixeddepth" in network:
             kwargs["depth_mixture"] = str(getattr(self, "depth_mixture"))
 
         return kwargs
