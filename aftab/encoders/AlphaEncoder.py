@@ -1,6 +1,6 @@
 import torch
 from aftab.modules import EncoderBlock
-from aftab.constants import ModuleType
+from aftab.typing import ModuleType
 
 _DEFAULT_ACTIVATION = torch.nn.ReLU
 

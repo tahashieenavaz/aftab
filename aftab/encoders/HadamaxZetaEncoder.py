@@ -1,6 +1,6 @@
 import torch
 from aftab.modules import HadamaxBlock
-from aftab.constants import ModuleType
+from aftab.typing import ModuleType
 
 
 class HadamaxZetaEncoder(torch.nn.Module):

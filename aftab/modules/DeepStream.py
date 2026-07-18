@@ -2,7 +2,7 @@ import torch
 import random
 from typing import Literal
 from aftab.functions import calculate_matched_width
-from aftab.constants import ModuleType
+from aftab.typing import ModuleType
 
 
 class DeepStream(torch.nn.Module):

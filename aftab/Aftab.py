@@ -6,7 +6,7 @@ import os
 from typing import Literal
 from types import SimpleNamespace
 from baloot import acceleration_device, seed_everything
-from aftab.constants import (
+from aftab.typing import (
     ModuleType,
     EncoderStringType,
     OptimizerStringType,

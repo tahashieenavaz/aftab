@@ -1,5 +1,5 @@
 import torch
-from aftab.constants import ModuleType
+from aftab.typing import ModuleType
 from .Stream import Stream
 
 
