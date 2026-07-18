@@ -1,6 +1,6 @@
 import torch
 from typing import Type
-from typing import Literal, Annotated, TypeAlias, List
+from typing import Literal, Annotated, TypeAlias
 
 ModuleType: TypeAlias = Type[torch.nn.Module]
 EncoderStringType: TypeAlias = Annotated[str, "must be a valid encoder key"]
@@ -17,8 +17,29 @@ NetworkStringType: TypeAlias = Literal[
 ]
 
 
-seeds: List[int] = [475284, 219842, 525975, 909314]
-environments: List[str] = [
+seeds: list[int] = [475284, 219842, 525975, 909314]
+
+procgen_environments: list[str] = [
+    "BigfishHard-v0",
+    "BossfightHard-v0",
+    "CaveflyerHard-v0",
+    "ChaserHard-v0",
+    "ClimberHard-v0",
+    "CoinrunHard-v0",
+    "DodgeballHard-v0",
+    "FruitbotHard-v0",
+    "HeistHard-v0",
+    "JumperHard-v0",
+    "LeaperHard-v0",
+    "MazeHard-v0",
+    "MinerHard-v0",
+    "NinjaHard-v0",
+    "PlunderHard-v0",
+    "StarpilotHard-v0",
+]
+
+
+atari_environments: list[str] = [
     "Alien-v5",
     "Amidar-v5",
     "Assault-v5",
@@ -77,3 +98,5 @@ environments: List[str] = [
     "YarsRevenge-v5",
     "Zaxxon-v5",
 ]
+
+environments = atari_environments + procgen_environments
