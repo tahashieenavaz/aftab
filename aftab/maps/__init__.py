@@ -1,9 +1,7 @@
-from .encoders_map import encoders_map
-from .networks_map import networks_map
-from .optimizers_maps import optimizers_map
-
+from .encoder_map import encoder_map
+from .encoder_map import encoder_map as encoders_map
+from .network_map import network_map
+from .network_map import network_map as networks_map
+from .optimizer_map import optimizer_map
+from .optimizer_map import optimizer_map as optimizers_map
 from .acceptable_frames_map import acceptable_frames_map
-
-from .encoders_map import encoders_map as encoder_map
-from .networks_map import networks_map as network_map
-from .optimizers_maps import optimizers_map as optimizer_map

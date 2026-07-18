@@ -14,7 +14,7 @@ from aftab.encoders import HadamaxEpsilonEncoder
 from aftab.encoders import HadamaxZetaEncoder
 from aftab.encoders import HadamaxDeltaEncoder
 
-encoders_map = {
+encoder_map = {
     "nature": NatureDQNEncoder,
     "dqn": NatureDQNEncoder,
     "alpha": AlphaEncoder,

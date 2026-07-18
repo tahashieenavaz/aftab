@@ -8,7 +8,7 @@ from aftab.networks import DistributionalBootstrappedDuellingNetwork
 from aftab.networks import DistributionalBootstrappedDeepDuellingNetwork
 from aftab.networks import DistributionalBootstrappedDuellingMixedDepthNetwork
 
-networks_map = {
+network_map = {
     "q": PQNNetwork,
     "duelling": DuellingNetwork,
     "bootstrapped": BootstrappedNetwork,
