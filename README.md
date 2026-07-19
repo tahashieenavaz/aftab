@@ -289,8 +289,8 @@ https://envpool.readthedocs.io/en/latest/env/atari.html#available-tasks
 ## Citation
 
 ```bibtex
-@article{aftab2026benchmarking,
-  title={Aftab: Benchmarking {CNN} Encoders in {PQN}},
+@article{aftab2026drl,
+  title={Aftab: A Comprehensive Benchmark of CNN Encoders and Advanced Value Functions in Parallelized Q-Networks},
   author={Shieenavaz, Taha and Zareshahraki, Shabnam and Nanni, Loris},
   journal={arXiv preprint arXiv:YYMM.NNNNN},
   year={2026}
