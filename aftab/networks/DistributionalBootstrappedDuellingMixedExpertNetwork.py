@@ -1,7 +1,7 @@
 import torch
+import random
 from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
-from itertools import cycle
 from aftab.modules import Stream
 from .BaseNetwork import BaseNetwork
 
@@ -22,9 +22,23 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
         if bootstrap_heads <= 0:
             raise ValueError("Expected `bootstrap_heads` to be positive.")
 
-        hidden_dimensions = [96, 160, 224, 320, 448, 576, 704, 832, 1024, 736]
-        value_hidden_dimensions = cycle(hidden_dimensions)
-        advantage_hidden_dimensions = cycle(hidden_dimensions)
+        value_hidden_dimensions = []
+        advantage_hidden_dimensions = []
+        value_activation_functions = [
+            random.choice([torch.nn.ReLU, torch.nn.SiLU, torch.nn.GELU])
+            for _ in range(bootstrap_heads)
+        ]
+        advantage_activation_functions = [
+            random.choice([torch.nn.ReLU, torch.nn.SiLU, torch.nn.GELU])
+            for _ in range(bootstrap_heads)
+        ]
+        for _ in range(bootstrap_heads):
+            value_hidden_dimension = random.randint(256, 768)
+            advantage_hidden_dimension = (
+                2 * self.embedding_dimension - value_hidden_dimension
+            )
+            value_hidden_dimensions.append(value_hidden_dimension)
+            advantage_hidden_dimensions.append(advantage_hidden_dimension)
 
         self.distributional = True
         self.bootstrapped = True
@@ -41,24 +55,24 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
             [
                 Stream(
                     input_dimension=self.feature_dimension,
-                    hidden_dimension=next(value_hidden_dimensions),
+                    hidden_dimension=advantage_hidden_dimensions[i],
                     output_dimension=self.action_dimension * self.distributional_bins,
-                    activation=torch.nn.GELU,
+                    activation=advantage_activation_functions[i],
                     normalization=True,
                 )
-                for _ in range(self.bootstrap_heads)
+                for i in range(self.bootstrap_heads)
             ]
         )
         self.value_heads = torch.nn.ModuleList(
             [
                 Stream(
                     input_dimension=self.feature_dimension,
-                    hidden_dimension=next(value_hidden_dimensions),
+                    hidden_dimension=value_hidden_dimensions[i],
                     output_dimension=self.distributional_bins,
-                    activation=torch.nn.GELU,
+                    activation=value_activation_functions[i],
                     normalization=True,
                 )
-                for _ in range(self.bootstrap_heads)
+                for i in range(self.bootstrap_heads)
             ]
         )
 
