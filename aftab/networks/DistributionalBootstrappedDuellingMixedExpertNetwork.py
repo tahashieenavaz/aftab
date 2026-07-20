@@ -15,6 +15,7 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
         distributional_max_value: float,
         distributional_sigma: float,
         bootstrap_heads: int,
+        delta: float,
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -33,8 +34,8 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
             for _ in range(bootstrap_heads)
         ]
 
-        lower_bound = int(self.embedding_dimension * 0.5)
-        upper_bound = int(self.embedding_dimension * 1.5)
+        lower_bound = int(self.embedding_dimension * (1 - delta))
+        upper_bound = int(self.embedding_dimension * (1 + delta))
 
         for _ in range(bootstrap_heads):
             value_hidden_dimension = random.randint(lower_bound, upper_bound)
