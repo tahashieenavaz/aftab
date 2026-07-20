@@ -11,6 +11,6 @@ from .DistributionalBootstrappedDuellingNetwork import (
 from .DistributionalBootstrappedDeepDuellingNetwork import (
     DistributionalBootstrappedDeepDuellingNetwork,
 )
-from .DistributionalBootstrappedDuellingMixedDepthNetwork import (
-    DistributionalBootstrappedDuellingMixedDepthNetwork,
+from .DistributionalBootstrappedDuellingMixedExpertNetwork import (
+    DistributionalBootstrappedDuellingMixedExpertNetwork,
 )
