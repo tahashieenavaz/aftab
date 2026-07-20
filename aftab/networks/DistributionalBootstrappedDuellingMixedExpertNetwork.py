@@ -32,13 +32,20 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
             random.choice([torch.nn.ReLU, torch.nn.SiLU, torch.nn.GELU])
             for _ in range(bootstrap_heads)
         ]
+
+        lower_bound = int(self.embedding_dimension * 0.5)
+        upper_bound = int(self.embedding_dimension * 1.5)
+
         for _ in range(bootstrap_heads):
-            value_hidden_dimension = random.randint(256, 768)
+            value_hidden_dimension = random.randint(lower_bound, upper_bound)
             advantage_hidden_dimension = (
                 2 * self.embedding_dimension - value_hidden_dimension
             )
             value_hidden_dimensions.append(value_hidden_dimension)
             advantage_hidden_dimensions.append(advantage_hidden_dimension)
+
+        random.shuffle(value_hidden_dimensions)
+        random.shuffle(advantage_hidden_dimensions)
 
         self.distributional = True
         self.bootstrapped = True
