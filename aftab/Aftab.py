@@ -76,8 +76,6 @@ class Aftab(
         seed_offset: int = 1000,
         compile_mode: str = "max-autotune",
         compile_dynamic: bool = False,
-        # used only in DistributionalBootstrappedDeepDuellingNetwork, five is the best performing
-        stream_depth: int = 3,
     ):
         params = locals()
         params.pop("self")

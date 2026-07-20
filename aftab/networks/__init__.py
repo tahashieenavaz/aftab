@@ -8,9 +8,6 @@ from .DistributionalDuellingNetwork import DistributionalDuellingNetwork
 from .DistributionalBootstrappedDuellingNetwork import (
     DistributionalBootstrappedDuellingNetwork,
 )
-from .DistributionalBootstrappedDeepDuellingNetwork import (
-    DistributionalBootstrappedDeepDuellingNetwork,
-)
 from .DistributionalBootstrappedDuellingMixedExpertNetwork import (
     DistributionalBootstrappedDuellingMixedExpertNetwork,
 )
