@@ -77,6 +77,7 @@ class Aftab(
         compile_mode: str = "max-autotune",
         compile_dynamic: bool = False,
         mixed_expert_delta: float = 0.5,
+        expert_disagreement_weight: float = 0.01,
     ):
         params = locals()
         params.pop("self")

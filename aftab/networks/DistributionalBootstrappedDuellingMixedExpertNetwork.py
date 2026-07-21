@@ -16,20 +16,21 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
         distributional_sigma: float,
         bootstrap_heads: int,
         delta: float,
+        expert_disagreement_weight: float = 0.01,
         **kwargs,
     ):
         super().__init__(**kwargs)
 
         if bootstrap_heads <= 0:
             raise ValueError("Expected `bootstrap_heads` to be positive.")
+        if expert_disagreement_weight < 0.0:
+            raise ValueError(
+                "Expected `expert_disagreement_weight` to be non-negative."
+            )
 
         value_hidden_dimensions = []
         advantage_hidden_dimensions = []
-        value_activation_functions = [
-            random.choice([torch.nn.ReLU, torch.nn.SiLU, torch.nn.GELU])
-            for _ in range(bootstrap_heads)
-        ]
-        advantage_activation_functions = [
+        activation_functions = [
             random.choice([torch.nn.ReLU, torch.nn.SiLU, torch.nn.GELU])
             for _ in range(bootstrap_heads)
         ]
@@ -45,13 +46,11 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
             value_hidden_dimensions.append(value_hidden_dimension)
             advantage_hidden_dimensions.append(advantage_hidden_dimension)
 
-        random.shuffle(value_hidden_dimensions)
-        random.shuffle(advantage_hidden_dimensions)
-
         self.distributional = True
         self.bootstrapped = True
         self.bootstrap_heads = bootstrap_heads
         self.distributional_bins = distributional_bins
+        self.expert_disagreement_weight = expert_disagreement_weight
         self.hl_gauss_loss = HLGaussLoss(
             min_value=distributional_min_value,
             max_value=distributional_max_value,
@@ -65,7 +64,7 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
                     input_dimension=self.feature_dimension,
                     hidden_dimension=advantage_hidden_dimensions[i],
                     output_dimension=self.action_dimension * self.distributional_bins,
-                    activation=advantage_activation_functions[i],
+                    activation=activation_functions[i],
                     normalization=True,
                 )
                 for i in range(self.bootstrap_heads)
@@ -77,7 +76,7 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
                     input_dimension=self.feature_dimension,
                     hidden_dimension=value_hidden_dimensions[i],
                     output_dimension=self.distributional_bins,
-                    activation=value_activation_functions[i],
+                    activation=activation_functions[i],
                     normalization=True,
                 )
                 for i in range(self.bootstrap_heads)

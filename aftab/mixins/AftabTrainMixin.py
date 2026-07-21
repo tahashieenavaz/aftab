@@ -603,7 +603,19 @@ class AftabTrainMixin(AftabBaseMixin):
             loss = torch.max(loss, clipped_loss)
 
         masks = mini_batch_bootstrap_masks.to(dtype=loss.dtype)
-        return (loss * masks).sum() / masks.sum().clamp_min(1.0)
+        prediction_loss = (loss * masks).sum() / masks.sum().clamp_min(1.0)
+        disagreement_weight = float(
+            getattr(self._network, "expert_disagreement_weight", 0.0)
+        )
+        if disagreement_weight == 0.0 or q_logits_taken.shape[1] < 2:
+            return prediction_loss
+
+        log_probs = q_logits_taken.float().log_softmax(dim=-1)
+        probs = log_probs.exp()
+        mean_probs = probs.mean(dim=1, keepdim=True)
+        mean_log_probs = mean_probs.clamp_min(torch.finfo(probs.dtype).tiny).log()
+        disagreement = (probs * (log_probs - mean_log_probs)).sum(dim=-1).mean()
+        return prediction_loss - disagreement_weight * disagreement
 
     def __slice_optional(
         self,
