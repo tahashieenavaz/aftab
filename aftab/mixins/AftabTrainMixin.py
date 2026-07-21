@@ -610,11 +610,11 @@ class AftabTrainMixin(AftabBaseMixin):
         if disagreement_weight == 0.0 or q_logits_taken.shape[1] < 2:
             return prediction_loss
 
-        log_probs = q_logits_taken.float().log_softmax(dim=-1)
-        probs = log_probs.exp()
-        mean_probs = probs.mean(dim=1, keepdim=True)
-        mean_log_probs = mean_probs.clamp_min(torch.finfo(probs.dtype).tiny).log()
-        disagreement = (probs * (log_probs - mean_log_probs)).sum(dim=-1).mean()
+        probs = q_logits_taken.float().softmax(dim=-1)
+        # disagreement = Entropy(Mean) - Mean(Entropy)
+        entropy_of_mean = torch.special.entr(probs.mean(dim=1)).sum(dim=-1).mean()
+        mean_of_entropies = torch.special.entr(probs).sum(dim=-1).mean()
+        disagreement = entropy_of_mean - mean_of_entropies
         return prediction_loss - disagreement_weight * disagreement
 
     def __slice_optional(
