@@ -2,8 +2,8 @@ import torch
 import numpy
 import time
 from typing import Optional
+from aftab.common import RolloutBuffer
 from .AftabBaseMixin import AftabBaseMixin
-from ..common import RolloutBuffer
 
 _TORCH_TO_NUMPY_DTYPE = {
     torch.bool: numpy.bool_,
@@ -724,6 +724,13 @@ class AftabTrainMixin(AftabBaseMixin):
 
     def _train(self, *, environment: str, seed: int):
         frame_count = 0
+        disagreement_anneal_fraction = float(
+            getattr(self, "expert_disagreement_anneal_fraction", 0.5)
+        )
+        if not 0.0 < disagreement_anneal_fraction <= 1.0:
+            raise ValueError(
+                "Expected `expert_disagreement_anneal_fraction` to be in (0, 1]."
+            )
         (
             train_environment,
             test_environment,
@@ -740,6 +747,9 @@ class AftabTrainMixin(AftabBaseMixin):
             self.__sample_bootstrap_heads(self.total_environments)
             if self.__bootstrapped_enabled()
             else None
+        )
+        initial_disagreement_weight = getattr(
+            self._network, "expert_disagreement_weight", None
         )
 
         training_start_time = time.time()
@@ -775,6 +785,16 @@ class AftabTrainMixin(AftabBaseMixin):
                 flattened_target_probs = self._network.hl_gauss_loss.transform_to_probs(
                     flattened_targets.reshape(-1)
                 ).reshape(*target_shape, -1)
+
+            if initial_disagreement_weight is not None:
+                training_progress = (update - 1) / max(self.total_updates - 1, 1)
+                self._network.expert_disagreement_weight = (
+                    initial_disagreement_weight
+                    * max(
+                        1.0 - training_progress / disagreement_anneal_fraction,
+                        0.0,
+                    )
+                )
 
             self.__update_network(
                 scaler=scaler,

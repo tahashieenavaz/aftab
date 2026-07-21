@@ -3,6 +3,7 @@ import random
 from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
 from aftab.modules import Stream
+from aftab.functions import random_activation_function
 from .BaseNetwork import BaseNetwork
 
 
@@ -32,8 +33,7 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
         value_hidden_dimensions = []
         advantage_hidden_dimensions = []
         activation_functions = [
-            random.choice([torch.nn.ReLU, torch.nn.SiLU, torch.nn.GELU])
-            for _ in range(bootstrap_heads)
+            random_activation_function() for _ in range(bootstrap_heads)
         ]
 
         lower_bound = int(self.embedding_dimension * (1 - delta))
