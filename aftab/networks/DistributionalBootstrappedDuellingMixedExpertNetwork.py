@@ -16,13 +16,14 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
         distributional_sigma: float,
         bootstrap_heads: int,
         delta: float,
-        expert_disagreement_weight: float = 0.01,
+        expert_disagreement_weight: float,
         **kwargs,
     ):
         super().__init__(**kwargs)
 
         if bootstrap_heads <= 0:
             raise ValueError("Expected `bootstrap_heads` to be positive.")
+
         if expert_disagreement_weight < 0.0:
             raise ValueError(
                 "Expected `expert_disagreement_weight` to be non-negative."
