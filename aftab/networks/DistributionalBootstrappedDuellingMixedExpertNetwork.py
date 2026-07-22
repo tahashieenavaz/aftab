@@ -16,6 +16,7 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
         distributional_sigma: float,
         bootstrap_heads: int,
         perturbation_std: float,
+        perturbation_anneal_fraction: float,
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -25,6 +26,9 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
 
         if perturbation_std < 0.0:
             raise ValueError("Expected `perturbation_std` to be non-negative.")
+
+        if not 0.0 < perturbation_anneal_fraction <= 1.0:
+            raise ValueError("Expected `perturbation_anneal_fraction` to be in (0, 1].")
 
         activation_pairs = []
         for _ in range(bootstrap_heads):
@@ -39,6 +43,7 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
         self.bootstrap_heads = bootstrap_heads
         self.distributional_bins = distributional_bins
         self.initial_perturbation_std = perturbation_std
+        self.perturbation_anneal_fraction = perturbation_anneal_fraction
         self.hl_gauss_loss = HLGaussLoss(
             min_value=distributional_min_value,
             max_value=distributional_max_value,
@@ -82,6 +87,16 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
     def set_expert_perturbation_std(self, std: float) -> None:
         for head in (*self.advantage_heads, *self.value_heads):
             head.set_perturbation_std(std)
+
+    @torch.no_grad()
+    def update_expert_perturbations(self, training_progress: float) -> None:
+        perturbation_std = self.initial_perturbation_std * max(
+            1.0 - training_progress / self.perturbation_anneal_fraction,
+            0.0,
+        )
+        self.set_expert_perturbation_std(perturbation_std)
+        if perturbation_std > 0.0:
+            self.resample_expert_perturbations()
 
     def get_value_logits_heads(self, features: torch.Tensor) -> torch.Tensor:
         return torch.stack(

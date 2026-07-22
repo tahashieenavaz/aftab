@@ -79,6 +79,9 @@ class AftabNetworkMixin(AftabBaseMixin):
             kwargs["perturbation_std"] = float(
                 getattr(self, "mixed_expert_perturbation_std")
             )
+            kwargs["perturbation_anneal_fraction"] = float(
+                getattr(self, "mixed_expert_perturbation_anneal_fraction")
+            )
 
         return kwargs
 

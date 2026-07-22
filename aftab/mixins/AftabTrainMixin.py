@@ -729,31 +729,16 @@ class AftabTrainMixin(AftabBaseMixin):
             if self.__bootstrapped_enabled()
             else None
         )
-        initial_perturbation_std = getattr(
-            self._network, "initial_perturbation_std", None
+        update_expert_perturbations = getattr(
+            self._network, "update_expert_perturbations", None
         )
-        perturbation_anneal_fraction = float(
-            getattr(self, "mixed_expert_perturbation_anneal_fraction", 0.5)
-        )
-        if initial_perturbation_std is not None and not (
-            0.0 < perturbation_anneal_fraction <= 1.0
-        ):
-            raise ValueError(
-                "Expected `mixed_expert_perturbation_anneal_fraction` to be in (0, 1]."
-            )
 
         training_start_time = time.time()
 
         for update in range(1, self.total_updates + 1):
-            if initial_perturbation_std is not None:
+            if update_expert_perturbations is not None:
                 training_progress = (update - 1) / max(self.total_updates - 1, 1)
-                perturbation_std = initial_perturbation_std * max(
-                    1.0 - training_progress / perturbation_anneal_fraction,
-                    0.0,
-                )
-                self._network.set_expert_perturbation_std(perturbation_std)
-                if perturbation_std > 0.0:
-                    self._network.resample_expert_perturbations()
+                update_expert_perturbations(training_progress)
 
             self._network.eval()
 

@@ -1,6 +1,3 @@
-import torch
-from aftab.typing import ModuleType
-
 seeds: list[int] = [475284, 219842, 525975, 909314]
 
 procgen_environments: list[str] = [
@@ -84,10 +81,3 @@ atari_environments: list[str] = [
 ]
 
 environments = atari_environments + procgen_environments
-
-stream_activation_pool: list[ModuleType] = [
-    torch.nn.ReLU,
-    torch.nn.GELU,
-    torch.nn.SiLU,
-    torch.nn.Mish,
-]
