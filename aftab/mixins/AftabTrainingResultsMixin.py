@@ -39,6 +39,7 @@ class AftabTrainingResultsMixin(AftabBaseMixin):
             "distributional",
             "distributional-duelling",
             "distributional-bootstrapped-duelling",
+            "distributional-bootstrapped-mixed-expert-duelling",
         ]:
             data.update(
                 {
@@ -55,11 +56,24 @@ class AftabTrainingResultsMixin(AftabBaseMixin):
             "bootstrapped",
             "bootstrapped-duelling",
             "distributional-bootstrapped-duelling",
+            "distributional-bootstrapped-mixed-expert-duelling",
         ]:
             data.update(
                 {
                     "bootstrap_heads": self.bootstrap_heads,
                     "bootstrap_probability": self.bootstrap_probability,
+                }
+            )
+
+        if self.network == "distributional-bootstrapped-mixed-expert-duelling":
+            data.update(
+                {
+                    "mixed_expert_perturbation_std": (
+                        self.mixed_expert_perturbation_std
+                    ),
+                    "mixed_expert_perturbation_anneal_fraction": (
+                        self.mixed_expert_perturbation_anneal_fraction
+                    ),
                 }
             )
 

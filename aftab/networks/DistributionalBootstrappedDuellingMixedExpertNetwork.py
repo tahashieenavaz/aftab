@@ -1,5 +1,4 @@
 import torch
-import random
 from hl_gauss_pytorch import HLGaussLoss
 from typing import Optional
 from aftab.modules import Stream
@@ -16,8 +15,7 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
         distributional_max_value: float,
         distributional_sigma: float,
         bootstrap_heads: int,
-        delta: float,
-        expert_disagreement_weight: float,
+        perturbation_std: float,
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -25,33 +23,22 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
         if bootstrap_heads <= 0:
             raise ValueError("Expected `bootstrap_heads` to be positive.")
 
-        if expert_disagreement_weight < 0.0:
-            raise ValueError(
-                "Expected `expert_disagreement_weight` to be non-negative."
-            )
+        if perturbation_std < 0.0:
+            raise ValueError("Expected `perturbation_std` to be non-negative.")
 
-        value_hidden_dimensions = []
-        advantage_hidden_dimensions = []
-        activation_functions = [
-            random_activation_function() for _ in range(bootstrap_heads)
-        ]
-
-        lower_bound = int(self.embedding_dimension * (1 - delta))
-        upper_bound = int(self.embedding_dimension * (1 + delta))
-
+        activation_pairs = []
         for _ in range(bootstrap_heads):
-            value_hidden_dimension = random.randint(lower_bound, upper_bound)
-            advantage_hidden_dimension = (
-                2 * self.embedding_dimension - value_hidden_dimension
-            )
-            value_hidden_dimensions.append(value_hidden_dimension)
-            advantage_hidden_dimensions.append(advantage_hidden_dimension)
+            advantage_activation = random_activation_function()
+            value_activation = random_activation_function()
+            while value_activation is advantage_activation:
+                value_activation = random_activation_function()
+            activation_pairs.append((advantage_activation, value_activation))
 
         self.distributional = True
         self.bootstrapped = True
         self.bootstrap_heads = bootstrap_heads
         self.distributional_bins = distributional_bins
-        self.expert_disagreement_weight = expert_disagreement_weight
+        self.initial_perturbation_std = perturbation_std
         self.hl_gauss_loss = HLGaussLoss(
             min_value=distributional_min_value,
             max_value=distributional_max_value,
@@ -63,10 +50,11 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
             [
                 Stream(
                     input_dimension=self.feature_dimension,
-                    hidden_dimension=advantage_hidden_dimensions[i],
+                    hidden_dimension=self.embedding_dimension,
                     output_dimension=self.action_dimension * self.distributional_bins,
-                    activation=activation_functions[i],
+                    activation=activation_pairs[i][0],
                     normalization=True,
+                    perturbation_std=perturbation_std,
                 )
                 for i in range(self.bootstrap_heads)
             ]
@@ -75,14 +63,25 @@ class DistributionalBootstrappedDuellingMixedExpertNetwork(BaseNetwork):
             [
                 Stream(
                     input_dimension=self.feature_dimension,
-                    hidden_dimension=value_hidden_dimensions[i],
+                    hidden_dimension=self.embedding_dimension,
                     output_dimension=self.distributional_bins,
-                    activation=activation_functions[i],
+                    activation=activation_pairs[i][1],
                     normalization=True,
+                    perturbation_std=perturbation_std,
                 )
                 for i in range(self.bootstrap_heads)
             ]
         )
+
+    @torch.no_grad()
+    def resample_expert_perturbations(self) -> None:
+        for head in (*self.advantage_heads, *self.value_heads):
+            head.resample_perturbation()
+
+    @torch.no_grad()
+    def set_expert_perturbation_std(self, std: float) -> None:
+        for head in (*self.advantage_heads, *self.value_heads):
+            head.set_perturbation_std(std)
 
     def get_value_logits_heads(self, features: torch.Tensor) -> torch.Tensor:
         return torch.stack(

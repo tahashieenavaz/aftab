@@ -76,9 +76,8 @@ class AftabNetworkMixin(AftabBaseMixin):
             kwargs["bootstrap_heads"] = bootstrap_heads
 
         if "mixed" in network and "expert" in network:
-            kwargs["delta"] = float(getattr(self, "mixed_expert_delta"))
-            kwargs["expert_disagreement_weight"] = float(
-                getattr(self, "expert_disagreement_weight")
+            kwargs["perturbation_std"] = float(
+                getattr(self, "mixed_expert_perturbation_std")
             )
 
         return kwargs

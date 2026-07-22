@@ -603,19 +603,7 @@ class AftabTrainMixin(AftabBaseMixin):
             loss = torch.max(loss, clipped_loss)
 
         masks = mini_batch_bootstrap_masks.to(dtype=loss.dtype)
-        prediction_loss = (loss * masks).sum() / masks.sum().clamp_min(1.0)
-        disagreement_weight = float(
-            getattr(self._network, "expert_disagreement_weight", 0.0)
-        )
-        if disagreement_weight == 0.0 or q_logits_taken.shape[1] < 2:
-            return prediction_loss
-
-        probs = q_logits_taken.float().softmax(dim=-1)
-        # disagreement = Entropy(Mean) - Mean(Entropy)
-        entropy_of_mean = torch.special.entr(probs.mean(dim=1)).sum(dim=-1).mean()
-        mean_of_entropies = torch.special.entr(probs).sum(dim=-1).mean()
-        disagreement = entropy_of_mean - mean_of_entropies
-        return prediction_loss - disagreement_weight * disagreement
+        return (loss * masks).sum() / masks.sum().clamp_min(1.0)
 
     def __slice_optional(
         self,
@@ -724,13 +712,6 @@ class AftabTrainMixin(AftabBaseMixin):
 
     def _train(self, *, environment: str, seed: int):
         frame_count = 0
-        disagreement_anneal_fraction = float(
-            getattr(self, "expert_disagreement_anneal_fraction", 0.5)
-        )
-        if not 0.0 < disagreement_anneal_fraction <= 1.0:
-            raise ValueError(
-                "Expected `expert_disagreement_anneal_fraction` to be in (0, 1]."
-            )
         (
             train_environment,
             test_environment,
@@ -748,13 +729,32 @@ class AftabTrainMixin(AftabBaseMixin):
             if self.__bootstrapped_enabled()
             else None
         )
-        initial_disagreement_weight = getattr(
-            self._network, "expert_disagreement_weight", None
+        initial_perturbation_std = getattr(
+            self._network, "initial_perturbation_std", None
         )
+        perturbation_anneal_fraction = float(
+            getattr(self, "mixed_expert_perturbation_anneal_fraction", 0.5)
+        )
+        if initial_perturbation_std is not None and not (
+            0.0 < perturbation_anneal_fraction <= 1.0
+        ):
+            raise ValueError(
+                "Expected `mixed_expert_perturbation_anneal_fraction` to be in (0, 1]."
+            )
 
         training_start_time = time.time()
 
         for update in range(1, self.total_updates + 1):
+            if initial_perturbation_std is not None:
+                training_progress = (update - 1) / max(self.total_updates - 1, 1)
+                perturbation_std = initial_perturbation_std * max(
+                    1.0 - training_progress / perturbation_anneal_fraction,
+                    0.0,
+                )
+                self._network.set_expert_perturbation_std(perturbation_std)
+                if perturbation_std > 0.0:
+                    self._network.resample_expert_perturbations()
+
             self._network.eval()
 
             observation, frame_count = self.__collect_trajectories(
@@ -785,16 +785,6 @@ class AftabTrainMixin(AftabBaseMixin):
                 flattened_target_probs = self._network.hl_gauss_loss.transform_to_probs(
                     flattened_targets.reshape(-1)
                 ).reshape(*target_shape, -1)
-
-            if initial_disagreement_weight is not None:
-                training_progress = (update - 1) / max(self.total_updates - 1, 1)
-                self._network.expert_disagreement_weight = (
-                    initial_disagreement_weight
-                    * max(
-                        1.0 - training_progress / disagreement_anneal_fraction,
-                        0.0,
-                    )
-                )
 
             self.__update_network(
                 scaler=scaler,
