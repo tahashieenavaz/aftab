@@ -1,5 +1,4 @@
 import torch
-from typing import Optional
 from aftab.typing import ModuleType
 
 
@@ -10,7 +9,7 @@ class Stream(torch.nn.Module):
         input_dimension: int,
         hidden_dimension: int,
         output_dimension: int,
-        normalization: bool,
+        normalization: bool = True,
         activation: ModuleType = torch.nn.ReLU,
     ):
         super().__init__()
