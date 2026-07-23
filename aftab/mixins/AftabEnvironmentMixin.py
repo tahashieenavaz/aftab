@@ -1,60 +1,8 @@
 from collections.abc import Mapping
 
 import envpool
-import numpy
 
 from .AftabBaseMixin import AftabBaseMixin
-
-
-class _ProcgenFrameStack:
-    def __init__(self, environment, stack_num: int):
-        observation_shape = environment.observation_space.shape
-        if len(observation_shape) != 3 or observation_shape[0] != 3:
-            raise ValueError(
-                "Expected Procgen observations with shape (3, height, width)."
-            )
-        if stack_num <= 0:
-            raise ValueError("Expected `frame_stack` to be positive.")
-
-        self.environment = environment
-        self.observation_shape = (stack_num, *observation_shape[1:])
-        self.stack_num = stack_num
-        self.frames = None
-        self.needs_reset = None
-
-    def __getattr__(self, name):
-        return getattr(self.environment, name)
-
-    @staticmethod
-    def _grayscale(observation):
-        rgb = observation.astype(numpy.uint16, copy=False)
-        return ((77 * rgb[:, 0] + 150 * rgb[:, 1] + 29 * rgb[:, 2] + 128) >> 8).astype(
-            numpy.uint8
-        )
-
-    def reset(self, *args, **kwargs):
-        observation, info = self.environment.reset(*args, **kwargs)
-        grayscale = self._grayscale(observation)
-        self.frames = numpy.repeat(grayscale[:, None], self.stack_num, axis=1)
-        self.needs_reset = numpy.zeros(grayscale.shape[0], dtype=numpy.bool_)
-        return self.frames, info
-
-    def step(self, actions):
-        observation, reward, termination, truncation, info = self.environment.step(
-            actions
-        )
-        grayscale = self._grayscale(observation)
-
-        if self.frames is None:
-            self.frames = numpy.repeat(grayscale[:, None], self.stack_num, axis=1)
-            self.needs_reset = numpy.zeros(grayscale.shape[0], dtype=numpy.bool_)
-        else:
-            self.frames[:, :-1] = self.frames[:, 1:]
-            self.frames[:, -1] = grayscale
-            self.frames[self.needs_reset] = grayscale[self.needs_reset, None]
-
-        self.needs_reset = numpy.logical_or(termination, truncation)
-        return self.frames, reward, termination, truncation, info
 
 
 class AftabEnvironmentMixin(AftabBaseMixin):
@@ -120,7 +68,6 @@ class AftabEnvironmentMixin(AftabBaseMixin):
         train_threads, test_threads = self._allocate_threads()
         config_keys = self._environment_config_keys(environment)
         self._configure_frame_accounting(config_keys)
-        procgen = {"env_name", "distribution_mode"}.issubset(config_keys)
 
         train_environment = envpool.make(
             environment,
@@ -150,22 +97,9 @@ class AftabEnvironmentMixin(AftabBaseMixin):
             ),
         )
 
-        if procgen:
-            train_environment = _ProcgenFrameStack(
-                train_environment,
-                stack_num=self.frame_stack,
-            )
-            test_environment = _ProcgenFrameStack(
-                test_environment,
-                stack_num=self.frame_stack,
-            )
-            observation_shape = train_environment.observation_shape
-        else:
-            observation_shape = train_environment.observation_space.shape
-
         return (
             train_environment,
             test_environment,
             train_environment.action_space.n,
-            observation_shape,
+            train_environment.observation_space.shape,
         )
