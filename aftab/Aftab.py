@@ -12,6 +12,7 @@ from aftab.typing import (
     OptimizerStringType,
     NetworkStringType,
 )
+from aftab.constants import procgen_environments
 from aftab.maps import encoders_map, acceptable_frames_map
 from aftab.functions import flush
 from aftab.mixins import *
@@ -76,6 +77,8 @@ class Aftab(
         seed_offset: int = 1000,
         compile_mode: str = "max-autotune",
         compile_dynamic: bool = False,
+        procgen_train_environments: int = 64,
+        procgen_steps_per_update: int = 256,
     ):
         params = locals()
         params.pop("self")
@@ -84,6 +87,8 @@ class Aftab(
 
     def __initialize(self, params):
         self.__initialize_hyperparameters(**params)
+        self.__default_train_environments = self.train_environments
+        self.__default_steps_per_update = self.steps_per_update
         self.__initialize_frames()
         self.__initialize_derived_attributes()
         self.__initialize_constants()
@@ -96,6 +101,20 @@ class Aftab(
     def __initialize_hyperparameters(self, **hyperparameters) -> None:
         for key, value in hyperparameters.items():
             setattr(self, key, value)
+
+    def __initialize_procgen_hyperparameters(self, environment: str) -> None:
+        procgen = environment in procgen_environments
+        self.train_environments = (
+            self.procgen_train_environments
+            if procgen
+            else self.__default_train_environments
+        )
+        self.steps_per_update = (
+            self.procgen_steps_per_update
+            if procgen
+            else self.__default_steps_per_update
+        )
+        self.__initialize_derived_attributes()
 
     def __initialize_frames(self):
         if isinstance(self.frames, int):
@@ -158,6 +177,7 @@ class Aftab(
         self._log(directory=directory)
 
     def train(self, *, environment: str, seed: int):
+        self.__initialize_procgen_hyperparameters(environment)
         self.__set_precision()
         self.__set_seed(seed)
         self.__clear_results()
