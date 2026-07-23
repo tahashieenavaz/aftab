@@ -75,14 +75,6 @@ class AftabNetworkMixin(AftabBaseMixin):
                 raise ValueError("Expected `bootstrap_heads` to be positive.")
             kwargs["bootstrap_heads"] = bootstrap_heads
 
-        if "mixed" in network and "expert" in network:
-            kwargs["perturbation_std"] = float(
-                getattr(self, "mixed_expert_perturbation_std")
-            )
-            kwargs["perturbation_anneal_fraction"] = float(
-                getattr(self, "mixed_expert_perturbation_anneal_fraction")
-            )
-
         return kwargs
 
     def __handle_channel_last(self):

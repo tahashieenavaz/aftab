@@ -13,5 +13,4 @@ NetworkStringType: TypeAlias = Literal[
     "distributional",
     "distributional-duelling",
     "distributional-bootstrapped-duelling",
-    "distributional-bootstrapped-mixed-expert-duelling",
 ]

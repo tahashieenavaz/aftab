@@ -34,9 +34,7 @@ class Aftab(
         *,
         experiment_name: str,
         encoder: ModuleType | EncoderStringType = "gammahadamaxv1",
-        network: NetworkStringType = (
-            "distributional-bootstrapped-mixed-expert-duelling"
-        ),
+        network: NetworkStringType = "distributional-bootstrapped-duelling",
         frames: int | Literal["pilot", "full", "ablation"] = "full",
         frame_skip: int = 4,
         mini_batches: int = 32,
@@ -78,8 +76,6 @@ class Aftab(
         seed_offset: int = 1000,
         compile_mode: str = "max-autotune",
         compile_dynamic: bool = False,
-        mixed_expert_perturbation_std: float = 0.01,
-        mixed_expert_perturbation_anneal_fraction: float = 0.5,
     ):
         params = locals()
         params.pop("self")

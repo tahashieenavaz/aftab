@@ -729,17 +729,10 @@ class AftabTrainMixin(AftabBaseMixin):
             if self.__bootstrapped_enabled()
             else None
         )
-        update_expert_perturbations = getattr(
-            self._network, "update_expert_perturbations", None
-        )
 
         training_start_time = time.time()
 
         for update in range(1, self.total_updates + 1):
-            if update_expert_perturbations is not None:
-                training_progress = (update - 1) / max(self.total_updates - 1, 1)
-                update_expert_perturbations(training_progress)
-
             self._network.eval()
 
             observation, frame_count = self.__collect_trajectories(
