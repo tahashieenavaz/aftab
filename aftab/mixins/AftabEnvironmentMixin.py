@@ -1,3 +1,5 @@
+from collections.abc import Mapping
+
 import envpool
 from .AftabBaseMixin import AftabBaseMixin
 
@@ -22,7 +24,15 @@ class AftabEnvironmentMixin(AftabBaseMixin):
 
     def _environment_config_keys(self, environment: str) -> set[str]:
         config = envpool.make_spec(environment).config
-        return set(config)
+        fields = getattr(config, "_fields", None)
+        if fields is not None:
+            return set(fields)
+        if isinstance(config, Mapping):
+            return set(config.keys())
+        raise TypeError(
+            "Expected EnvPool's environment config to be a named tuple or mapping, "
+            f"but received {type(config).__name__}."
+        )
 
     def _environment_kwargs(
         self,
