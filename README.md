@@ -265,11 +265,11 @@ for environment in aftab_environments:
 A comprehensive set of Atari environments is available via EnvPool:  
 https://envpool.readthedocs.io/en/latest/env/atari.html#available-tasks
 
-Procgen environments use their native RGB observations with shape `(3, 64, 64)`.
+Procgen RGB observations are converted to grayscale and stacked so the network
+receives the latest `frame_stack` frames with shape `(frame_stack, 64, 64)`.
 Aftab reads each task's EnvPool configuration and only applies supported options.
-Atari-only options such as `noop`, `frame_skip`, `frame_stack`,
-`train_episodic_life`, and EnvPool reward clipping are therefore not passed to
-Procgen.
+Atari-only options such as `noop`, `frame_skip`, `train_episodic_life`, and
+EnvPool reward clipping are therefore not passed to Procgen.
 
 A comprehensive set of Procgen environments is available via EnvPool:
 
