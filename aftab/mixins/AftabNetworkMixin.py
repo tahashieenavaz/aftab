@@ -11,16 +11,14 @@ class AftabNetworkMixin(AftabBaseMixin):
         return bool(getattr(self, "channels_last"))
 
     def __dummy_input(self) -> torch.Tensor:
-        if not hasattr(self, "frame_stack"):
-            raise AttributeError("Expected `frame_stack` to be defined.")
         if not hasattr(self, "device"):
             raise AttributeError("Expected `device` to be defined.")
+        if not hasattr(self, "_network"):
+            raise AttributeError("Expected `_network` to be initialized.")
 
         sample = torch.randn(
             1,
-            self.frame_stack,
-            84,
-            84,
+            *self._network.observation_shape,
             device=self.device,
         )
         if self.__channels_last_enabled():
@@ -110,7 +108,11 @@ class AftabNetworkMixin(AftabBaseMixin):
 
         return networks_map[self.network]
 
-    def _initialize_network(self, action_dimension: int):
+    def _initialize_network(
+        self,
+        action_dimension: int,
+        observation_shape: tuple[int, int, int] = (4, 84, 84),
+    ):
         network_instance = self.__get_network_instance()
         self.flush_verbose(f"Experiment Name: {self.experiment_name}")
         self.flush_verbose(f"Network: {network_instance.__name__}")
@@ -120,6 +122,7 @@ class AftabNetworkMixin(AftabBaseMixin):
             embedding_dimension=self.embedding_dimension,
             encoder=self.encoder,
             channels_last=self.__channels_last_enabled(),
+            observation_shape=observation_shape,
             **self.__network_kwargs(),
         )
         self.__handle_channel_last()

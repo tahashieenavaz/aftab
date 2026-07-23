@@ -27,7 +27,7 @@ class AftabTrainingResultsMixin(AftabBaseMixin):
             "lambda": self.return_lambda,
             "network": self.network,
             "frames": self.frames,
-            "frame_skip": self.frame_skip,
+            "frame_skip": self.environment_frame_skip,
             "training_reward": self.results.rewards.train,
             "test_reward": self.results.rewards.test,
             "loss": self.results.loss,

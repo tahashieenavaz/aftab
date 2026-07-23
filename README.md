@@ -265,6 +265,16 @@ for environment in aftab_environments:
 A comprehensive set of Atari environments is available via EnvPool:  
 https://envpool.readthedocs.io/en/latest/env/atari.html#available-tasks
 
+Procgen environments use their native RGB observations with shape `(3, 64, 64)`.
+Aftab reads each task's EnvPool configuration and only applies supported options.
+Atari-only options such as `noop`, `frame_skip`, `frame_stack`,
+`train_episodic_life`, and EnvPool reward clipping are therefore not passed to
+Procgen.
+
+A comprehensive set of Procgen environments is available via EnvPool:
+
+https://envpool.readthedocs.io/en/latest/env/procgen.html#available-tasks
+
 ## Hardware
 
 [Nvidia A40](https://www.nvidia.com/en-us/data-center/a40) GPUs were used to run all the experiments in this experiment.

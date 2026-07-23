@@ -165,7 +165,10 @@ class AftabTrainMixin(AftabBaseMixin):
             self.make_environments(environment=environment, seed=seed)
         )
 
-        self._initialize_network(action_dimension=action_dimension)
+        self._initialize_network(
+            action_dimension=action_dimension,
+            observation_shape=observation_shape,
+        )
         self._initialize_optimizer()
 
         scaler = torch.amp.GradScaler(
@@ -706,7 +709,8 @@ class AftabTrainMixin(AftabBaseMixin):
         )
 
         self.flush_verbose(
-            f"Update {update} | Frames: {frame_count * self.frame_skip:,}"
+            f"Update {update} | "
+            f"Frames: {frame_count * self.environment_frame_skip:,}"
         )
         self.flush_verbose(f"Test Score: {test_score:.4f}")
 
