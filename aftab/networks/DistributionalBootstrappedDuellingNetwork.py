@@ -38,6 +38,7 @@ class DistributionalBootstrappedDuellingNetwork(BaseNetwork):
                     hidden_dimension=self.embedding_dimension,
                     output_dimension=self.action_dimension * self.distributional_bins,
                     normalization=True,
+                    activation=torch.nn.GELU,
                 )
                 for _ in range(self.bootstrap_heads)
             ]
@@ -49,6 +50,7 @@ class DistributionalBootstrappedDuellingNetwork(BaseNetwork):
                     hidden_dimension=self.embedding_dimension,
                     output_dimension=self.distributional_bins,
                     normalization=True,
+                    activation=torch.nn.GELU,
                 )
                 for _ in range(self.bootstrap_heads)
             ]

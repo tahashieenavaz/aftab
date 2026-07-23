@@ -10,8 +10,8 @@ class Stream(torch.nn.Module):
         input_dimension: int,
         hidden_dimension: int,
         output_dimension: int,
-        activation: ModuleType,
         normalization: bool,
+        activation: ModuleType = torch.nn.ReLU,
     ):
         super().__init__()
         self.first_linear = torch.nn.Linear(input_dimension, hidden_dimension)
